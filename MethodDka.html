@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>MethodDka</title>
+
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+        }
+
+        .container {
+
+            max-width: 600px;
+
+            margin: 0 auto;
+
+            padding: 20px;
+
+            background-color: #f9f9f9;
+
+            border-radius: 8px;
+
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .input-field {
+
+            margin-bottom: 10px;
+
+        }
+
+        .input-field input {
+
+            width: 100%;
+
+            padding: 8px;
+
+            box-sizing: border-box;
+
+        }
+
+        .button {
+
+            padding: 10px 20px;
+
+            background-color: #007bff;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+        }
+
+        .button:hover {
+
+            background-color: #0056b3;
+
+        }
+
+        .result {
+
+            margin-top: 20px;
+
+            padding: 10px;
+
+            background-color: #e9ecef;
+
+            border-radius: 4px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>MethodDka</h1>
+
+        <div class="input-field">
+
+            <label for="maxDegree">Max Degree:</label>
+
+            <input type="number" id="maxDegree" />
+
+        </div>
+
+        <button class="button" onclick="createFields()">Set Degree</button>
+
+        <div id="coefficients"></div>
+
+        <button class="button" onclick="calculate()">Start Calculation</button>
+
+        <div id="results"></div>
+
+    </div>
+
+    <script>
+
+        let n;
+
+        let sa = [];
+
+        let sr = [];
+
+        let si = [];
+
+        let bSyuusoku = false;
+
+
+
+        function createFields() {
+
+            const maxDegree = document.getElementById('maxDegree').value;
+
+            n = parseInt(maxDegree);
+
+            const coefficientsDiv = document.getElementById('coefficients');
+
+            coefficientsDiv.innerHTML = '';
+
+
+
+            for (let i = 0; i <= n; i++) {
+
+                const inputField = document.createElement('div');
+
+                inputField.className = 'input-field';
+
+                inputField.innerHTML = `<label for="coefficient${i}">${n - i}次の係数:</label><input type="number" id="coefficient${i}" />`;
+
+                coefficientsDiv.appendChild(inputField);
+
+            }
+
+        }
+
+
+
+        function calculate() {
+
+            for (let i = 0; i <= n; i++) {
+
+                const coefficient = document.getElementById(`coefficient${i}`).value;
+
+                sa[i] = parseFloat(coefficient);
+
+            }
+
+
+
+            if (n === 0) {
+
+                alert('0次の係数を設定してください。');
+
+                return;
+
+            }
+
+
+
+            subroutine();
+
+
+
+            const resultsDiv = document.getElementById('results');
+
+            resultsDiv.innerHTML = '';
+
+
+
+            if (!bSyuusoku) {
+
+                alert('収束しませんでした。');
+
+            } else {
+
+                for (let i = 1; i <= n; i++) {
+
+                    const result = document.createElement('div');
+
+                    result.className = 'result';
+
+                    result.innerText = `解${i}: 実数部 ${sr[i]}, 虚数部 ${si[i]}`;
+
+                    resultsDiv.appendChild(result);
+
+                }
+
+            }
+
+        }
+
+
+
+        function subroutine() {
+
+            let sx = new Array(10000).fill(0);
+
+            let sy = new Array(10000).fill(0);
+
+            let se = 1e-16;
+
+            let m = 100;
+
+            let sp = Math.PI;
+
+            let sw = 0.0;
+
+
+
+            for (let i = 0; i <= n; i++) {
+
+                sa[i] = sa[i] / sa[0];
+
+            }
+
+
+
+            for (let i = 2; i <= n; i++) {
+
+                let sq = n * Math.pow(Math.abs(sa[i]), 1 / i);
+
+                if (sw < sq) sw = sq;
+
+            }
+
+
+
+            let sb = 2 * sp / n;
+
+            let sc = sp / (2 * n);
+
+
+
+            for (let j = 1; j <= n; j++) {
+
+                let st = sb * (j - 1) + sc;
+
+                sr[j] = sw * Math.cos(st);
+
+                si[j] = sw * Math.sin(st);
+
+            }
+
+
+
+            let bContinue;
+
+
+
+            for (let k = 1; k <= m; k++) {
+
+                bContinue = false;
+
+
+
+                for (let i = 1; i <= n; i++) {
+
+                    let s1 = 1.0;
+
+                    let s2 = 0.0;
+
+                    let s3 = 1.0;
+
+                    let s4 = 0.0;
+
+                    sb = sr[i];
+
+                    sc = si[i];
+
+
+
+                    for (let j = 1; j <= n; j++) {
+
+                        let s5 = s1 * sb - s2 * sc;
+
+                        s2 = s1 * sc + s2 * sb;
+
+                        s1 = s5 + sa[j];
+
+                        if (j !== i) {
+
+                            s5 = s3 * (sb - sr[j]) - s4 * (sc - si[j]);
+
+                            s4 = s3 * (sc - si[j]) + s4 * (sb - sr[j]);
+
+                            s3 = s5;
+
+                        }
+
+                    }
+
+
+
+                    sw = s3 * s3 + s4 * s4;
+
+                    sx[i] = (s1 * s3 + s2 * s4) / sw;
+
+                    sy[i] = (s2 * s3 - s1 * s4) / sw;
+
+                    sr[i] = sr[i] - sx[i];
+
+                    si[i] = si[i] - sy[i];
+
+                }
+
+
+
+                for (let i = 1; i <= n; i++) {
+
+                    if (Math.abs(sx[i]) > se || Math.abs(sy[i]) > se) {
+
+                        bContinue = true;
+
+                    }
+
+                }
+
+
+
+                if (!bContinue) {
+
+                    bSyuusoku = true;
+
+                    alert('収束しました。');
+
+                    return;
+
+                }
+
+            }
+
+
+
+            bSyuusoku = false;
+
+        }
+
+    </script>
+
+</body>
+
+</html>
