@@ -64,3 +64,7 @@ Javascript
 最後に私に算数、数学を教えてくださった恩師と数値解析関係の本の著者の方々に感謝致します！！
 
 当ソフトは試作評価版のためフリーソフトとします。
+
+このプログラムはMicrosoft社edgeのWindows copilotに私のAndroid用のJavaのソースコードをJavaScriptに変換して頂きました
+
+Microsoft社様ありがとうございます
