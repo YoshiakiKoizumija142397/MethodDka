@@ -214,9 +214,7 @@
 
             let sy = new Array(1000).fill(0);
             
-            let se1 = 1e-18;
-            
-            let se2 = 1e-325;
+            let se = 1e-325;
 
             let m = 100;
 
@@ -326,7 +324,7 @@
 
                 for (let i = 1; i <= n; i++) {
 
-                    if (Math.abs(sx[i]) > se1 || Math.abs(sy[i]) > se2) {
+                    if (Math.abs(sx[i]) > se　|| Math.abs(sy[i]) > se) {
 
                         bContinue = true;
 
