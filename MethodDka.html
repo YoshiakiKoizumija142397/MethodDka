@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>MethodDka - High Precision</title>
+  <title>MethodDka - High Precision (Integer Rounded)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; }
@@ -35,7 +35,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>MethodDka (50桁版)</h1>
+    <h1>MethodDka（整数丸め版）</h1>
     <div class="input-field">
       <label for="maxDegree">最高次数:</label>
       <input type="number" id="maxDegree" />
@@ -54,6 +54,12 @@ let sa = [];
 let sr = [];
 let si = [];
 let bSyuusoku = false;
+
+/* ★ 追加：整数丸め関数 */
+function roundToInteger(x) {
+  const v = Math.round(Number(x));
+  return (v === -0 ? 0 : v);
+}
 
 function createFields() {
   const maxDegree = document.getElementById('maxDegree').value;
@@ -84,9 +90,23 @@ function calculate() {
     alert('収束しませんでした。');
   } else {
     for (let i = 1; i <= n; i++) {
+
+      /* ★ 追加：整数丸め処理 */
+      const reInt = roundToInteger(sr[i]);
+      const imInt = roundToInteger(si[i]);
+
+      let text = `解${i}: `;
+      if (imInt === 0) {
+        text += `${reInt}`;
+      } else if (imInt > 0) {
+        text += `${reInt} + ${imInt}i`;
+      } else {
+        text += `${reInt} - ${-imInt}i`;
+      }
+
       const result = document.createElement('div');
       result.className = 'result';
-      result.innerText = `解${i}: 実数部 ${sr[i].toString()}, 虚数部 ${si[i].toString()}`;
+      result.innerText = text;
       resultsDiv.appendChild(result);
     }
   }
