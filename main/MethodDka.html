@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MethodDka - High Precision</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .input-field { margin-bottom: 10px; }
+    .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
+    .button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .button:hover { background-color: #0056b3; }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MethodDka (50桁版)</h1>
+    <div class="input-field">
+      <label for="maxDegree">最高次数:</label>
+      <input type="number" id="maxDegree" />
+    </div>
+    <button class="button" onclick="createFields()">最高次数を設定</button>
+    <div id="coefficients"></div>
+    <button class="button" onclick="calculate()">計算開始</button>
+    <div id="results"></div>
+  </div>
+
+<script>
+Decimal.set({ precision: 50 })
+
+let n;
+let sa = [];
+let sr = [];
+let si = [];
+let bSyuusoku = false;
+
+function createFields() {
+  const maxDegree = document.getElementById('maxDegree').value;
+  n = parseInt(maxDegree);
+  const coefficientsDiv = document.getElementById('coefficients');
+  coefficientsDiv.innerHTML = '';
+  for (let i = 0; i <= n; i++) {
+    const inputField = document.createElement('div');
+    inputField.className = 'input-field';
+    inputField.innerHTML = `<label for="coefficient${i}">${n - i}次の係数:</label><input type="text" id="coefficient${i}" />`;
+    coefficientsDiv.appendChild(inputField);
+  }
+}
+
+function calculate() {
+  for (let i = 0; i <= n; i++) {
+    const coefficient = document.getElementById(`coefficient${i}`).value;
+    sa[i] = new Decimal(coefficient || "0");
+  }
+  if (n === 0) {
+    alert('0次の係数を設定してください。');
+    return;
+  }
+  subroutine();
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = '';
+  if (!bSyuusoku) {
+    alert('収束しませんでした。');
+  } else {
+    for (let i = 1; i <= n; i++) {
+      const result = document.createElement('div');
+      result.className = 'result';
+      result.innerText = `解${i}: 実数部 ${sr[i].toString()}, 虚数部 ${si[i].toString()}`;
+      resultsDiv.appendChild(result);
+    }
+  }
+}
+
+function subroutine() {
+  let sx = Array(n+1).fill(new Decimal(0));
+  let sy = Array(n+1).fill(new Decimal(0));
+  let se = new Decimal("1e-50");
+  let m = 100;
+  let sp = Decimal.acos(-1);
+  let sw = new Decimal(0);
+
+  for (let i = 0; i <= n; i++) {
+    sa[i] = sa[i].div(sa[0]);
+  }
+
+  for (let i = 2; i <= n; i++) {
+    let sq = new Decimal(n).mul(sa[i].abs().pow(new Decimal(1).div(i)));
+    if (sw.lt(sq)) sw = sq;
+  }
+
+  let sb = sp.mul(2).div(n);
+  let sc = sp.div(2 * n);
+
+  for (let j = 1; j <= n; j++) {
+    let st = sb.mul(j - 1).add(sc);
+    sr[j] = sw.mul(Decimal.cos(st));
+    si[j] = sw.mul(Decimal.sin(st));
+  }
+
+  for (let k = 1; k <= m; k++) {
+    let bContinue = false;
+
+    for (let i = 1; i <= n; i++) {
+      let s1 = new Decimal(1);
+      let s2 = new Decimal(0);
+      let s3 = new Decimal(1);
+      let s4 = new Decimal(0);
+
+      sb = sr[i];
+      sc = si[i];
+
+      for (let j = 1; j <= n; j++) {
+        let s5 = s1.mul(sb).sub(s2.mul(sc));
+        s2 = s1.mul(sc).add(s2.mul(sb));
+        s1 = s5.add(sa[j]);
+
+        if (j !== i) {
+          s5 = s3.mul(sb.sub(sr[j])).sub(s4.mul(sc.sub(si[j])));
+          s4 = s3.mul(sc.sub(si[j])).add(s4.mul(sb.sub(sr[j])));
+          s3 = s5;
+        }
+      }
+
+      sw = s3.pow(2).add(s4.pow(2));
+      sx[i] = s1.mul(s3).add(s2.mul(s4)).div(sw);
+      sy[i] = s2.mul(s3).sub(s1.mul(s4)).div(sw);
+      sr[i] = sr[i].sub(sx[i]);
+      si[i] = si[i].sub(sy[i]);
+
+      if (sx[i].abs().gt(se) || sy[i].abs().gt(se)) {
+        bContinue = true;
+      }
+    }
+
+    if (!bContinue) {
+      bSyuusoku = true;
+      alert('収束しました。');
+      return;
+    }
+  }
+
+  bSyuusoku = false;
+}
+</script>
+</body>
+</html>
