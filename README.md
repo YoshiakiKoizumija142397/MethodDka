@@ -6,7 +6,7 @@ MethodDka.html
 
 Javascript
 
-対応ＯＳ（Windows 11 home 25H2対応, Android15対応)
+対応全ＯＳ（Windows 11 home 25H2対応, Android16,iOS,Mac,Amazon device,Linux対応)
 
 MIT ライセンス
 
@@ -14,11 +14,13 @@ MIT ライセンス
 
 メールアドレス　ja142397@s6.dion.ne.jp
 
-試作評価版バージョン6.00
+試作評価版バージョン7.00
 
 1次方程式は中学１年生で解を知り、
 
 ２次方程式は中学３年生で解を知り、
+
+因数分解バージョンを公開しました
 
 ３次方程式以上はカルダノの公式で求めるか、
 
