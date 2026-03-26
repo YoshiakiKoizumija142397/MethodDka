@@ -7,8 +7,8 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
-      text-align: center;
-      padding: 50px;
+      padding: 40px;
+      line-height: 1.6;
     }
     .container {
       background: white;
@@ -16,6 +16,8 @@
       border-radius: 10px;
       display: inline-block;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      text-align: center;
     }
     h1 {
       margin-bottom: 20px;
@@ -33,9 +35,22 @@
     a:hover {
       background-color: #0056b3;
     }
+    .readme {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    h2, h3 {
+      margin-top: 25px;
+    }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h1>MethodDka メニュー</h1>
 
@@ -46,7 +61,83 @@
     <a href="main/MethodDka.html">
       高精度版（50桁 DKA 法）
     </a>
+  </div>
+
+  <div class="readme">
+    <h2>README</h2>
+
+    <h3>MethodDka</h3>
+    <p>因数分解したり、高次代数方程式を解くプログラム 高精度バージョン（50桁）</p>
+
+    <h3>概要</h3>
+    <p>MethodDka.html（JavaScript）</p>
+    <p>対応OS：Windows 11 Home 25H2、Android 15</p>
+    <p>MIT ライセンス</p>
+
+    <h3>作者情報</h3>
+    <p>作者：小泉 嘉章</p>
+    <p>メールアドレス：ja142397@s6.dion.ne.jp</p>
+    <p>試作評価版バージョン：6.00</p>
+
+    <h3>数学的背景</h3>
+    <p>1次方程式は中学1年生、2次方程式は中学3年生で解を学びます。</p>
+    <p>3次方程式以上はカルダノの公式や数値解析（ラグランジュ法・ニュートン法）で求められますが、4次以上の一般方程式は数値解析によらなければ解けません。</p>
+
+    <h3>MethodDka の特徴</h3>
+    <ul>
+      <li>実数係数の高次（最大1000次）多項式に対応</li>
+      <li>複素数を含む全ての解を求められる</li>
+      <li>初期値なしで収束（DKA法：Durand–Kerner–Aberth 法）</li>
+      <li>ブラウザだけで動作（Edge / Chrome）</li>
+      <li>スマホ（Android）でも動作</li>
+    </ul>
+
+    <h3>使い方</h3>
+    <ol>
+      <li>最高次数を入力する</li>
+      <li>表示された入力ボックスに、次数の高い順から係数を入力</li>
+      <li>次数が存在しない場合は必ず「0」を入力（省略不可）</li>
+      <li>係数が +1 の場合は「1」、-1 の場合は「-1」を入力</li>
+      <li>計算開始ボタンを押すと、全ての解が表示される</li>
+    </ol>
+
+    <p>解の有効数字は約50桁です。</p>
+
+    <h3>注意事項</h3>
+    <p>本プログラムを使用して発生した問題について、作者は一切責任を負いません。</p>
+    <p>必ず自己責任で使用し、必要に応じて検算してください。</p>
+
+    <h3>作者からのメッセージ</h3>
+    <p>最後までヘルプファイルをお読みいただきありがとうございます。</p>
+    <p>このプログラムが皆様のお役に立てれば幸いです。</p>
+    <p>完全日本語版にバージョンアップしました。</p>
+    <p>算数・数学を教えてくださった恩師、数値解析の書籍の著者の方々に深く感謝いたします。</p>
+
+    <h3>ライセンス</h3>
+    <p>試作評価版のためフリーソフトとします。</p>
+
+    <h3>技術的背景</h3>
+    <p>このプログラムは、Microsoft Edge の Windows Copilot により、Android 用 Java ソースコードを JavaScript に変換して作成されました。</p>
+    <p>さらに、50桁の高精度バージョンも Windows Copilot により生成されました。</p>
+    <p>Microsoft 社様に感謝いたします。</p>
+
+    <h3>DKA 法が収束しない場合の要因</h3>
+    <ul>
+      <li>初期値の選定が不適切</li>
+      <li>重根や近接する根が存在する</li>
+      <li>係数のスケールが極端に異なる</li>
+      <li>反復回数や許容誤差の設定が不十分</li>
+      <li>複素数演算での丸め誤差の蓄積</li>
+    </ul>
+
+    <h3>改善のヒント</h3>
+    <ul>
+      <li>Aberth の初期値を用いると収束性が向上</li>
+      <li>近接する根がある場合は Jenkins–Traub 法などの併用も有効</li>
+      <li>係数のスケーリング・正規化で安定性が向上</li>
+    </ul>
 
   </div>
+
 </body>
 </html>
