@@ -1,6 +1,9 @@
-MethodDka
+♯MethodDka
 因数分解・高次代数方程式を解くプログラム
 高精度バージョン（50桁）対応
+
+🔗 GitHub Pages（オンライン版はこちら）  
+https://yoshiakikoizumija142397.github.io/MethodDka/
 
 📌 MethodDka の 5 種類のバージョン
 MethodDka は用途に応じて、以下の 5 種類の形態で提供しています。
