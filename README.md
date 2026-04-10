@@ -57,11 +57,11 @@ Windows 11 Home 25H2 対応
 概要
 MethodDka.html（JavaScript）
 
-対応OS：Windows 11 Home 25H2、Android 15
+オンライン版は全対応OS：Windows 11 Home 25H2、Android 16,iOs,Mac,Linux,chromebook,chromeOSflexなど）
 
 MIT ライセンス
 
-試作評価版バージョン：6.00
+試作評価版バージョン：7.00
 
 作者：小泉 嘉章
 
@@ -119,7 +119,7 @@ Android スマホでも動作
 このプログラムは、Microsoft Edge の Windows Copilot により、
 Android 用 Java ソースコードを JavaScript に変換して作成されました。
 
-さらに、50桁の高精度バージョンも Windows Copilot により生成されました。
+さらに、50桁の高精度バージョンも、git hub pagesのオンライン版も Windows Copilot により生成されました。
 Microsoft 社様に深く感謝いたします。
 
 DKA 法が収束しない場合の要因
