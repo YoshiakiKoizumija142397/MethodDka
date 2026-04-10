@@ -57,7 +57,7 @@ Windows 11 Home 25H2 対応
 概要
 MethodDka.html（JavaScript）
 
-オンライン版は全対応OS：Windows 11 Home 25H2、Android 16,iOs,Mac,Linux,chromebook,chromeOSflexなど）
+特に、オンライン版は全対応OS：Windows 11 Home 25H2、Android 16,iOs,Mac,Amazon　device、Linux,chromebook,chromeOSflexなど）
 
 MIT ライセンス
 
@@ -85,7 +85,7 @@ MethodDka の特徴
 
 ブラウザだけで動作（Edge / Chrome）
 
-Android スマホでも動作
+Android iPhoneのスマホでもタブレットでもandroidスマートテレビでも動作
 
 高精度版は 約50桁の有効数字
 
