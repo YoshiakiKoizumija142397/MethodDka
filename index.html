@@ -2,74 +2,151 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>MethodDka 公式ページ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MethodDka – 公式ページ（README 完全同期版）</title>
+
 <style>
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f7fa;
+  color: #333;
 }
-h1 {
-    margin-bottom: 30px;
+
+/* ヘッダー */
+header {
+  background: #0078D4;
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
 }
-.button {
-    display: block;
-    width: 320px;
-    margin: 12px auto;
-    padding: 15px;
-    background: #0078D4;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 8px;
-    font-weight: bold;
+
+/* カードレイアウト */
+.section {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-.button:hover {
-    background: #005A9E;
+
+.section h2 {
+  margin-top: 0;
+  color: #0078D4;
 }
-.section-title {
-    margin-top: 40px;
-    font-size: 22px;
-    font-weight: bold;
+
+/* ボタン */
+.btn {
+  display: block;
+  padding: 14px 20px;
+  background: #0078D4;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.btn:hover {
+  background: #005A9E;
+}
+
+/* 小ボタン */
+.btn-small {
+  font-size: 15px;
+  padding: 10px 16px;
+}
+
+/* リスト */
+ul {
+  padding-left: 20px;
 }
 </style>
 </head>
+
 <body>
 
-<h1>MethodDka 公式ページ</h1>
+<header>
+  <h1>MethodDka – 公式ページ</h1>
+  <p>（README 完全同期版 / 高精度版・因数分解専用版・MSI 対応）</p>
+</header>
 
-<div class="section-title">🔷 高精度版</div>
+<!-- 5 種類のバージョン -->
+<div class="section">
+  <h2>📌 ダウンロード / オンライン版</h2>
 
-<a class="button" href="MethodDka.html">高精度版（オンライン実行）</a>
+  <h3>🌐 オンライン版（GitHub Pages）</h3>
+  <a class="btn" href="https://yoshiakikoizumija142397.github.io/MethodDka" target="_blank">
+    高精度版（オンライン）
+  </a>
 
-<a class="button" href="https://raw.githubusercontent.com/YoshiakiKoizumija142397/MethodDka/main/MethodDka.html" download>
-高精度版（Raw ダウンロード）
-</a>
+  <a class="btn" href="https://yoshiakikoizumija142397.github.io/MethodDka/factorization-only/factorization" target="_blank">
+    因数分解専用版（オンライン）
+  </a>
 
+  <h3>💾 オフライン版（HTML）</h3>
+  <a class="btn btn-small" href="high-precision/MethodDka.html" download>
+    高精度版（HTML / オフライン）
+  </a>
 
-<div class="section-title">🔶 因数分解専用版</div>
+  <a class="btn btn-small" href="factorization-only/factorization.html" download>
+    因数分解専用版（HTML / オフライン）
+  </a>
 
-<a class="button" href="factorization/MethodDka.html">因数分解専用版（オンライン実行）</a>
+  <h3>🟣 Windows 11 版（MSI インストーラ）</h3>
+  <a class="btn" href="installer/MethodDkaInstaller.msi" download>
+    高精度版（MSI インストーラ）
+  </a>
+</div>
 
-<a class="button" href="https://raw.githubusercontent.com/YoshiakiKoizumija142397/MethodDka/factorization-only/factorization/MethodDka.html" download>
-因数分解専用版（Raw ダウンロード）
-</a>
+<!-- 特徴 -->
+<div class="section">
+  <h2>✨ 特徴</h2>
+  <ul>
+    <li>1000 次方程式まで対応</li>
+    <li>複素数解に対応</li>
+    <li>ブラウザだけで動作（インストール不要）</li>
+    <li>高速・高精度な DKA 法を採用</li>
+  </ul>
+</div>
 
+<!-- 数学的背景 -->
+<div class="section">
+  <h2>📘 数学的背景</h2>
+  <p>
+    MethodDka は DKA 法を用いた高精度の多項式方程式ソルバーです。
+    1 次〜高次方程式まで幅広く対応し、複素数解も正確に求められます。
+  </p>
+</div>
 
-<div class="section-title">🟩 Windows 11 専用</div>
+<!-- 使い方 -->
+<div class="section">
+  <h2>🛠 使い方</h2>
+  <ul>
+    <li>係数を入力し「計算」ボタンを押すだけ</li>
+    <li>複素数解は自動で表示</li>
+    <li>因数分解専用版では因数分解のみを高速処理</li>
+  </ul>
+</div>
 
-<a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDka/releases/download/v1.0/MethodDkaInstaller.msi">
-Windows11 MSI インストーラ
-</a>
+<!-- 注意事項 -->
+<div class="section">
+  <h2>⚠ 注意事項</h2>
+  <ul>
+    <li>ブラウザによっては計算速度が異なります</li>
+    <li>1000 次付近では計算時間が長くなる場合があります</li>
+  </ul>
+</div>
 
-
-<div class="section-title">📘 GitHub リポジトリ</div>
-
-<a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDka">
-GitHub（ソースコード）
-</a>
+<!-- 作者情報 -->
+<div class="section">
+  <h2>👤 作者</h2>
+  <p>Created by 嘉章</p>
+  <p>MIT License</p>
+</div>
 
 </body>
 </html>
