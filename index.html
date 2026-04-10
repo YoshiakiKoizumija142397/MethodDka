@@ -3,77 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MethodDka – 因数分解・高次方程式ソルバー</title>
+<title>MethodDka – README 完全同期版</title>
 <style>
 body {
-    font-family: "Segoe UI", sans-serif;
-    line-height: 1.7;
-    margin: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.8;
+    padding: 20px;
     max-width: 900px;
+    margin: auto;
 }
 h1, h2, h3 {
-    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
 }
-a {
-    color: #0066cc;
+pre {
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
 }
-.section {
-    margin-bottom: 40px;
+code {
+    background: #eee;
+    padding: 2px 4px;
+    border-radius: 4px;
 }
+a { color: #0366d6; }
 </style>
 </head>
 <body>
 
 <h1>MethodDka</h1>
-<p>因数分解・高次代数方程式を解くプログラム（高精度 50 桁対応）</p>
+<p>因数分解・高次代数方程式を解くプログラム 高精度バージョン（50桁）対応</p>
 
-<p>🔗 <a href="https://github.com/YoshiakiKoizumija142397/MethodDka/blob/main/README.md">
-README（GitHub 上の説明はこちら）
-</a></p>
+<h2>🔗 GitHub Pages（オンライン版はこちら）</h2>
+<p><a href="https://yoshiakikoizumija142397.github.io/MethodDka">https://yoshiakikoizumija142397.github.io/MethodDka</a></p>
 
-<hr>
+<h2>📌 MethodDka の 5 種類のバージョン</h2>
+<ol>
+<li><b>因数分解専用版（HTML / オフライン動作）</b><br>
+ダウンロードして使用可能 / オフライン動作 / インストール不要<br>
+👉 <a href="#">因数分解専用版（HTML）をダウンロード</a></li>
 
-<div class="section">
-<h2>MethodDka の 5 種類のバージョン</h2>
+<li><b>高精度版（HTML / 50桁 / オフライン動作）</b><br>
+👉 <a href="#">高精度版（HTML）をダウンロード</a></li>
 
-<h3>1. 因数分解専用版（HTML / オフライン動作）</h3>
-<ul>
-<li>ダウンロードして使用可能</li>
-<li>オフライン動作</li>
-<li>インストール不要（HTML を開くだけ）</li>
-</ul>
+<li><b>GitHub Pages 版：因数分解専用版（オンライン専用）</b><br>
+👉 <a href="#">因数分解専用版（オンライン）</a></li>
 
-<h3>2. 高精度版（HTML / 50桁 / オフライン動作）</h3>
-<ul>
-<li>ダウンロードして使用可能</li>
-<li>オフライン動作</li>
-<li>インストール不要</li>
-</ul>
+<li><b>GitHub Pages 版：高精度版（オンライン専用）</b><br>
+👉 <a href="#">高精度版（オンライン）</a></li>
 
-<h3>3. GitHub Pages 版：因数分解専用版（オンライン専用）</h3>
-<ul>
-<li>ブラウザで即動作</li>
-<li>ダウンロード不要</li>
-</ul>
+<li><b>Windows 11 高精度版（インストーラ版 / オフライン動作）</b><br>
+👉 <a href="#">MSI インストーラ（Windows 11）</a><br>
+👉 <a href="#">APPX パッケージ（Microsoft Store 互換）</a></li>
+</ol>
 
-<h3>4. GitHub Pages 版：高精度版（オンライン専用）</h3>
-<ul>
-<li>ブラウザで即動作</li>
-<li>ダウンロード不要</li>
-</ul>
+<h2>📘 MethodDka とは</h2>
+<p>因数分解したり、高次代数方程式を解くプログラム。高精度バージョン（50桁）にも対応。</p>
 
-<h3>5. Windows 11 高精度版（インストーラ版 / オフライン動作）</h3>
-<ul>
-<li>Windows 11 Home 25H2 対応</li>
-<li>インストールして使用</li>
-<li>オフライン動作可能</li>
-</ul>
-</div>
-
-<hr>
-
-<div class="section">
-<h2>概要</h2>
+<h3>概要</h3>
 <ul>
 <li>MethodDka.html（JavaScript）</li>
 <li>対応OS：Windows 11 Home 25H2、Android 15</li>
@@ -82,87 +70,55 @@ README（GitHub 上の説明はこちら）
 <li>作者：小泉 嘉章</li>
 <li>メール：ja142397@s6.dion.ne.jp</li>
 </ul>
-</div>
 
-<hr>
-
-<div class="section">
 <h2>数学的背景</h2>
-<p>
-1次方程式は中学1年生、2次方程式は中学3年生で学びます。  
-3次方程式以上はカルダノの公式や数値解析（ラグランジュ法・ニュートン法）で求められますが、  
-4次以上の一般方程式は数値解析によらなければ解けません。
-</p>
-</div>
+<ul>
+<li>1次方程式 → 中学1年</li>
+<li>2次方程式 → 中学3年</li>
+<li>3次以上 → カルダノの公式・数値解析（ラグランジュ法・ニュートン法）</li>
+<li>4次以上の一般方程式 → 数値解析が必須</li>
+</ul>
 
-<hr>
-
-<div class="section">
 <h2>MethodDka の特徴</h2>
 <ul>
-<li>実数係数の高次（最大 1000 次）多項式に対応</li>
-<li>複素数を含むすべての解を求められる</li>
-<li>初期値なしで収束（DKA 法：Durand–Kerner–Aberth 法）</li>
+<li>実数係数の高次（最大 1000次）多項式に対応</li>
+<li>複素数を含む <b>すべての解</b> を求められる</li>
+<li>初期値なしで収束（DKA法：Durand–Kerner–Aberth 法）</li>
 <li>ブラウザだけで動作（Edge / Chrome）</li>
 <li>Android スマホでも動作</li>
-<li>高精度版は約 50 桁の有効数字</li>
+<li>高精度版は 約50桁の有効数字</li>
 </ul>
-</div>
 
-<hr>
-
-<div class="section">
 <h2>使い方</h2>
 <ol>
 <li>最高次数を入力</li>
 <li>表示された入力ボックスに、次数の高い順から係数を入力</li>
-<li>次数が存在しない場合は必ず「0」を入力（省略不可）</li>
+<li>次数が存在しない場合は必ず 0 を入力（省略不可）</li>
 <li>係数が +1 の場合は「1」、-1 の場合は「-1」を入力</li>
-<li>計算開始ボタンを押すと、全ての解が表示される</li>
+<li><b>計算開始ボタン</b> を押すと、全ての解が表示される</li>
 </ol>
-</div>
 
-<hr>
-
-<div class="section">
 <h2>注意事項</h2>
-<p>
-本プログラムを使用して発生した問題について、作者は一切責任を負いません。  
-必ず自己責任で使用し、必要に応じて検算してください。
-</p>
-</div>
+<p>本プログラムを使用して発生した問題について、作者は一切責任を負いません。  
+必ず自己責任で使用し、必要に応じて検算してください。</p>
 
-<hr>
-
-<div class="section">
 <h2>作者からのメッセージ</h2>
-<p>
-最後までヘルプファイルをお読みいただきありがとうございます。  
-このプログラムが皆様のお役に立てれば幸いです。
-</p>
-<p>
-完全日本語版にバージョンアップしました。  
-算数・数学を教えてくださった恩師、数値解析の書籍の著者の方々に深く感謝いたします。
-</p>
-</div>
+<p>最後までヘルプファイルをお読みいただきありがとうございます。  
+このプログラムが皆様のお役に立てれば幸いです。</p>
 
-<hr>
+<p>完全日本語版にバージョンアップしました。  
+算数・数学を教えてくださった恩師、数値解析の書籍の著者の方々に深く感謝いたします。</p>
 
-<div class="section">
+<h2>ライセンス</h2>
+<p>試作評価版のため <b>フリーソフト</b> とします。</p>
+
 <h2>技術的背景</h2>
-<p>
-このプログラムは、Microsoft Edge の Windows Copilot により、  
-Android 用 Java ソースコードを JavaScript に変換して作成されました。
-</p>
-<p>
-さらに、50桁の高精度バージョンも Windows Copilot により生成されました。  
-Microsoft 社様に深く感謝いたします。
-</p>
-</div>
+<p>このプログラムは、Microsoft Edge の Windows Copilot により、  
+Android 用 Java ソースコードを JavaScript に変換して作成されました。</p>
 
-<hr>
+<p>さらに、50桁の高精度バージョンも Windows Copilot により生成されました。  
+Microsoft 社様に深く感謝いたします。</p>
 
-<div class="section">
 <h2>DKA 法が収束しない場合の要因</h2>
 <ul>
 <li>初期値の選定が不適切</li>
@@ -171,7 +127,15 @@ Microsoft 社様に深く感謝いたします。
 <li>反復回数や許容誤差の設定が不十分</li>
 <li>複素数演算での丸め誤差の蓄積</li>
 </ul>
-</div>
+
+<h2>✔ README 完成版について</h2>
+<p>この README は：</p>
+<ul>
+<li>index.html の内容を完全同期</li>
+<li>Markdown として最適化</li>
+<li>GitHub 上で読みやすい構造</li>
+<li>5種類のバージョン構成にも完全準拠</li>
+</ul>
 
 </body>
 </html>
