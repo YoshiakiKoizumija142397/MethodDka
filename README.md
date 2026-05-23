@@ -1,147 +1,206 @@
-MethodDka
-因数分解・高次代数方程式を解くプログラム
-高精度バージョン（50桁）対応
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>MethodDka 公式ページ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    font-family: "Segoe UI", sans-serif;
+    line-height: 1.7;
+    margin: 20px;
+    max-width: 900px;
+}
+h1, h2, h3 {
+    color: #004080;
+}
+.button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    margin: 6px 0;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.button:hover {
+    background-color: #0056b3;
+}
+.section {
+    margin-bottom: 40px;
+}
+code {
+    white-space: pre-wrap;
+    display: block;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+hr {
+    margin: 30px 0;
+}
+</style>
+</head>
+<body>
 
-🔗 GitHub Pages（オンライン版はこちら）  
-https://yoshiakikoizumija142397.github.io/MethodDka/
+<h1>MethodDka<br>因数分解・高次代数方程式を解くプログラム（高精度 50桁対応）</h1>
 
-📌 MethodDka の 5 種類のバージョン
-MethodDka は用途に応じて、以下の 5 種類の形態で提供しています。
+<div class="section">
+  <h2>📌 MethodDka の 5 種類のバージョン</h2>
 
-1. 因数分解専用版（HTML / オフライン動作）
-ダウンロードして使用可能
+  <h3>1. 因数分解専用版（HTML / オフライン）</h3>
+  <ul>
+    <li>ダウンロード不要</li>
+    <li>ブラウザで即動作</li>
+    <li>Windows / Android / iOS / Mac / Linux / ChromeOS 対応</li>
+  </ul>
+  <a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/factorization/MethodDka.html">
+    👉 因数分解専用版（HTML / オフライン）を開く
+  </a>
 
-オフライン動作
+  <h3>2. 高精度版（HTML / 50桁 / オフライン）</h3>
+  <ul>
+    <li>50桁の高精度計算に対応</li>
+    <li>ブラウザで動作</li>
+    <li>インストール不要</li>
+  </ul>
+  <a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/main/MethodDka.html">
+    👉 高精度版（HTML / 50桁 / オフライン）を開く
+  </a>
 
-インストール不要（HTML を開くだけ）
+  <h3>3. GitHub Pages 版：因数分解専用版（オンライン）</h3>
+  <ul>
+    <li>オンラインで即動作</li>
+    <li>追加インストール不要</li>
+  </ul>
+  <a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/">
+    👉 オンライン版（因数分解専用）
+  </a>
 
-👉 因数分解専用版（HTML）をダウンロード
+  <h3>4. GitHub Pages 版：高精度版（オンライン）</h3>
+  <ul>
+    <li>オンラインで 50桁計算</li>
+    <li>追加インストール不要</li>
+  </ul>
+  <a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/">
+    👉 オンライン版（高精度）
+  </a>
 
-2. 高精度版（HTML / 50桁 / オフライン動作）
-ダウンロードして使用可能
+  <h3>5. Windows 11 高精度版（インストーラ版 / オフライン）</h3>
+  <ul>
+    <li>Windows 11 Home 25H2 対応</li>
+    <li>インストールして使用</li>
+    <li>オフライン動作可能</li>
+  </ul>
+  <a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.msi">
+    👉 MSI インストーラ（Windows 11）
+  </a>
+  <br>
+  <a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.appx">
+    👉 APPX パッケージ（Microsoft Store 互換）
+  </a>
+</div>
 
-オフライン動作
+<hr>
 
-インストール不要
+<div class="section">
+  <h2>📘 MethodDka とは</h2>
+  <p>
+    MethodDka は、<strong>因数分解</strong>および
+    <strong>高次代数方程式の全解（複素数を含む）を求めるプログラム</strong>です。
+  </p>
+  <ul>
+    <li>HTML / JavaScript で動作</li>
+    <li>オフライン版はダウンロードして使用可能</li>
+    <li>オンライン版はブラウザだけで動作</li>
+    <li>高精度版は約 50 桁の計算に対応</li>
+  </ul>
+</div>
 
-👉 高精度版（HTML）をダウンロード
+<hr>
 
-3. GitHub Pages 版：因数分解専用版（オンライン専用）
-ブラウザで即動作
+<div class="section">
+  <h2>🔢 MethodDka の特徴</h2>
+  <ul>
+    <li>最大 <strong>1000 次</strong>の多項式に対応</li>
+    <li><strong>複素数の全解</strong>を求められる</li>
+    <li><strong>初期値不要</strong>で収束（DKA 法）</li>
+    <li>ブラウザで動作（HTML / JavaScript）</li>
+    <li>高精度版は <strong>50 桁</strong>の計算に対応</li>
+    <li>Windows 版は MSI / APPX によるインストール形式</li>
+  </ul>
+</div>
 
-ダウンロード不要
+<hr>
 
-👉 因数分解専用版（オンライン）
+<div class="section">
+  <h2>🧮 使い方（概要）</h2>
+  <ol>
+    <li>次数を入力</li>
+    <li>係数を入力</li>
+    <li>「計算開始」ボタンを押す</li>
+    <li>結果が画面に表示されます</li>
+  </ol>
+</div>
 
-4. GitHub Pages 版：高精度版（オンライン専用）
-ブラウザで即動作
+<hr>
 
-ダウンロード不要
+<div class="section">
+  <h2>⚠ 注意事項</h2>
+  <ul>
+    <li>本プログラムは試作評価版です。</li>
+    <li>計算結果の正確性を保証するものではありません。</li>
+    <li>自己責任で使用してください。</li>
+  </ul>
+</div>
 
-👉 高精度版（オンライン）
+<hr>
 
-5. Windows 11 高精度版（インストーラ版 / オフライン動作）
-Windows 11 Home 25H2 対応
+<div class="section">
+  <h2>👤 作者情報</h2>
+  <p>作者：小泉 嘉章</p>
+  <p>メール：ja142397@s6.dion.ne.jp</p>
+</div>
 
-インストールして使用
+<hr>
 
-オフライン動作可能
+<div class="section">
+  <h2>📄 ライセンス（MIT License）</h2>
+  <code>
+MIT License
 
-👉 MSI インストーラ（Windows 11）  
-👉 APPX パッケージ（Microsoft Store 互換）
+Copyright (c) 2024 小泉 嘉章
 
-📘 MethodDka とは
-因数分解したり、高次代数方程式を解くプログラム  
-高精度バージョン（50桁）にも対応。
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-概要
-MethodDka.html（JavaScript）
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-特に、オンライン版は全対応OS：Windows 11 Home 25H2、Android 16,iOs,Mac,Amazon　device、Linux,chromebook,chromeOSflexなど）
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+  </code>
+</div>
 
-MIT ライセンス
+<hr>
 
-試作評価版バージョン：7.00
+<div class="section">
+  <h2>🌐 公式ページ（GitHub Pages）</h2>
+  <a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/">
+    👉 MethodDka 公式ページ（トップ）
+  </a>
+</div>
 
-作者：小泉 嘉章
-
-メール：ja142397@s6.dion.ne.jp
-
-数学的背景
-1次方程式 → 中学1年
-
-2次方程式 → 中学3年
-
-3次以上 → カルダノの公式・数値解析（ラグランジュ法・ニュートン法）
-
-4次以上の一般方程式 → 数値解析が必須
-
-MethodDka の特徴
-実数係数の高次（最大 1000次）多項式に対応
-
-複素数を含む すべての解 を求められる
-
-初期値なしで収束（DKA法：Durand–Kerner–Aberth 法）
-
-ブラウザだけで動作（Edge / Chrome）
-
-Android iPhoneのスマホでもタブレットでもandroidスマートテレビでも動作
-
-高精度版は 約50桁の有効数字
-
-使い方
-最高次数を入力
-
-表示された入力ボックスに、次数の高い順から係数を入力
-
-次数が存在しない場合は必ず 0 を入力（省略不可）
-
-係数が +1 の場合は「1」、-1 の場合は「-1」を入力
-
-計算開始ボタン を押すと、全ての解が表示される
-
-注意事項
-本プログラムを使用して発生した問題について、作者は一切責任を負いません
-
-必ず自己責任で使用し、必要に応じて検算してください
-
-作者からのメッセージ
-最後までヘルプファイルをお読みいただきありがとうございます。
-このプログラムが皆様のお役に立てれば幸いです。
-
-完全日本語版にバージョンアップしました。
-算数・数学を教えてくださった恩師、数値解析の書籍の著者の方々に深く感謝いたします。
-
-ライセンス
-試作評価版のため フリーソフト とします。
-
-技術的背景
-このプログラムは、Microsoft Edge の Windows Copilot により、
-Android 用 Java ソースコードを JavaScript に変換して作成されました。
-
-さらに、50桁の高精度バージョンも、git hub pagesのオンライン版も Windows Copilot により生成されました。
-Microsoft 社様に深く感謝いたします。
-
-DKA 法が収束しない場合の要因
-初期値の選定が不適切
-
-重根や近接する根が存在する
-
-係数のスケールが極端に異なる
-
-反復回数や許容誤差の設定が不十分
-
-複素数演算での丸め誤差の蓄積
-
-✔ README 完成版について
-この README は：
-
-index.html の内容を完全同期
-
-Markdown として最適化
-
-GitHub 上で読みやすい構造
-
-5種類のバージョン構成にも完全準拠
-
-になっています。
+</body>
+</html>
