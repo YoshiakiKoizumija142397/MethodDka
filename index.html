@@ -1,156 +1,150 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>MethodDka 公式ページ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {
-    font-family: "Segoe UI", sans-serif;
-    line-height: 1.7;
-    margin: 20px;
-    max-width: 900px;
-}
-h1, h2, h3 {
-    color: #004080;
-}
-.button {
-    display: inline-block;
-    background-color: #007bff;
-    color: white;
-    padding: 10px 18px;
-    margin: 6px 0;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-}
-.button:hover {
-    background-color: #0056b3;
-}
-.section {
-    margin-bottom: 40px;
-}
-</style>
-</head>
-<body>
+# 🧩 MethodDka
+### 因数分解・高次代数方程式ソルバー（高精度 50 桁対応）
 
-<h1>MethodDka<br>因数分解・高次代数方程式を解くプログラム（高精度 50桁対応）</h1>
+---
 
-<p>
-🔗 <strong>GitHub Pages（オンライン版トップ）</strong><br>
-<a href="https://yoshiakikoizumija142397.github.io/MethodDka/" class="button">オンライン版トップを開く</a>
-</p>
+## 🌐 概要
+**MethodDka** は、因数分解および高次代数方程式の全解（複素数を含む）を求めるためのプログラムです。  
+HTML / JavaScript で動作し、オフライン版はダウンロードしてすぐ利用できます。
 
-<hr>
+- 最大 **1000 次** の多項式に対応  
+- **初期値不要**（DKA 法）  
+- 高精度版は **約 50 桁**  
+- Windows 版（MSI / APPX）も提供  
+- Python GUI 版あり  
+- 英語版あり  
+- **C# 版は現在移植中**
 
-<div class="section">
-<h2>📌 MethodDka の 5 種類のバージョン</h2>
+---
 
-<h3>1. 因数分解専用版（HTML / オフライン動作）</h3>
-<a class="button" href="factorization/MethodDka.html">👉 因数分解専用版（HTML / オフライン）</a>
+## 📘 数学的背景
 
-<h3>2. 高精度版（HTML / 50桁 / オフライン動作）</h3>
-<a class="button" href="main/MethodDka.html">👉 高精度版（HTML / 50桁 / オフライン）</a>
+- **1次方程式** … 中学1年で学習  
+- **2次方程式** … 中学3年で学習  
+- **3次以上** … カルダノの公式や数値解析（ラグランジュ法・ニュートン法）  
+- **4次以上** … 特殊な場合を除き、数値解析が必須  
 
-<h3>3. GitHub Pages 版：因数分解専用版（オンライン専用）</h3>
-<a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/factorization/MethodDka.html">
-    👉 因数分解専用版（オンライン）
-</a>
+一般的な数値解析プログラムは  
+- 初期値が必要  
+- 実数解しか求められない  
 
-<h3>4. GitHub Pages 版：高精度版（オンライン専用）</h3>
-<a class="button" href="https://yoshiakikoizumija142397.github.io/MethodDka/main/MethodDka.html">
-    👉 高精度版（オンライン）
-</a>
+といった制約があります。
 
-<h3>5. Windows 11 高精度版（MSI / APPX）</h3>
-<a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.msi">
-    👉 MSI インストーラ（Windows 11）
-</a>
-<a class="button" href="https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.appx">
-    👉 APPX パッケージ（Windows 11）
-</a>
-</div>
+しかし **MethodDka は初期値なしで、実数係数の高次（最大1000次）多項式の複素数解をすべて求めることができます。**
 
-<hr>
+---
 
-<div class="section">
-<h2>🌍 英語版について</h2>
-<p>
-MethodDka の英語版（English Edition）は、別リポジトリ <strong>MethodDkaEn</strong> にて公開しています。<br>
-（メインリポジトリには英語版のファイルは含まれていません）
-</p>
-</div>
+## 📦 利用できるバージョン
 
-<hr>
+| 種類 | 精度 | 動作環境 | オフライン | リンク |
+|------|------|-----------|------------|--------|
+| 因数分解専用版（HTML） | 通常 | 全OS | ○ | （ローカルで使用） |
+| 高精度版（HTML / 50桁） | 50桁 | 全OS | ○ | （ローカルで使用） |
+| GitHub Pages（因数分解） | 通常 | ブラウザ | × | https://yoshiakikoizumija142397.github.io/MethodDka/factorization/MethodDka.html |
+| GitHub Pages（高精度） | 50桁 | ブラウザ | × | https://yoshiakikoizumija142397.github.io/MethodDka/main/MethodDka.html |
+| Windows 11 高精度版（MSI / APPX） | 50桁 | Windows 11 | ○ | MSI：https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.msi<br>APPX：https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11/releases/download/V1.0.0/MethodDka.1.0.0.appx |
 
-<div class="section">
-<h2>🛠 C# 版について（開発中）</h2>
-<p>
-MethodDka の C# 版（Windows デスクトップアプリ）は現在移植作業中です。<br>
-完成後は別リポジトリ <strong>MethodDka-CSharp</strong> にて公開予定です。<br>
-（メインリポジトリには C# 版のファイルはまだ含まれていません）
-</p>
-</div>
+---
 
-<hr>
+## 🐍 Python 版について
+MethodDka には、Python をインストールしてコマンドプロンプトから起動する  
+日本語 GUI 版（Tkinter 版）も存在します。
 
-<div class="section">
-<h2>📘 MethodDka とは</h2>
-<p>因数分解したり、高次代数方程式を解くプログラムです。高精度バージョン（50桁）にも対応しています。</p>
+Python 版は別リポジトリ **MethodDka_Python** にて公開しています。  
+（ZIP を展開し、`python MethodDkaGUI.py` で起動する仕様です）
 
-<h3>対応 OS（オンライン版）</h3>
-<p>Windows 11 / Android / iOS / Mac / Amazon デバイス / Linux / Chromebook / ChromeOS Flex</p>
+※ メインリポジトリには Python 版のファイルは含まれていません。
 
-<h3>概要（JavaScript / HTML 版）</h3>
-<p>オンライン版はブラウザのみで動作し、追加インストール不要です。</p>
-</div>
+---
 
-<hr>
+## 🌍 英語版について
+MethodDka の **英語版（English Edition）** は、  
+別リポジトリ **MethodDkaEn** にて公開しています。
 
-<div class="section">
-<h2>🔢 MethodDka の特徴</h2>
-<ul>
-<li>最大 1000 次の多項式に対応</li>
-<li>複素数の全解を求められる</li>
-<li>初期値なしで収束（DKA 法）</li>
-<li>ブラウザで動作（HTML / JavaScript）</li>
-<li>高精度版は約 50 桁の計算に対応</li>
-</ul>
-</div>
+※ メインリポジトリには英語版のファイルは含まれていません。
 
-<hr>
+---
 
-<div class="section">
-<h2>🧮 使い方（概要）</h2>
-<ol>
-<li>次数を入力</li>
-<li>係数を入力</li>
-<li>「計算開始」ボタンを押す</li>
-<li>結果が画面に表示されます</li>
-</ol>
-</div>
+## 🛠 C# 版について（開発中）
+MethodDka の **C# 版（Windows デスクトップアプリ）** は現在移植作業中です。  
+完成後は別リポジトリ **MethodDka-CSharp** にて公開予定です。
 
-<hr>
+※ 現時点では開発途中のため、メインリポジトリには C# 版のファイルは含まれていません。
 
-<div class="section">
-<h2>⚠ 注意事項</h2>
-<p>本プログラムは試作評価版です。自己責任で使用してください。</p>
-</div>
+---
 
-<hr>
+## 🧮 使い方（HTML 版）
 
-<div class="section">
-<h2>👤 作者情報</h2>
-<p>作者：小泉 嘉章</p>
-<p>メール：ja142397@s6.dion.ne.jp</p>
-</div>
+1. **最高次数を入力**  
+2. **係数入力ボックスが表示される**  
+3. **高い次数から順に実数係数を入力**  
+4. 次数が存在しない場合は **必ず 0 を入力（省略不可）**  
+5. 係数が +1 の場合は「1」、-1 の場合は「-1」  
+6. 解の有効数字は **約 50 桁**
 
-<hr>
+---
 
-<div class="section">
-<h2>📄 ライセンス</h2>
-<p>MIT ライセンス</p>
-</div>
+## 🔢 MethodDka の特徴
+- 最大 1000 次の多項式に対応  
+- 複素数の全解を求められる  
+- 初期値なしで収束（DKA 法）  
+- ブラウザで動作（HTML / JavaScript）  
+- 高精度版は約 50 桁の計算に対応  
 
-</body>
-</html>
+---
+
+## ⚠ 注意事項
+- 本プログラムを使用して生じた問題について、作者は一切責任を負いません  
+- 必ず各自の責任で使用し、必要に応じて検算を行ってください  
+- 本ソフトは試作評価版のためフリーソフトとします  
+
+---
+
+## 🧠 技術的背景（DKA 法について）
+
+DKA 法（Durand–Kerner–Aberth 法）が収束しない、または困難になる典型的要因：
+
+- 初期値の選定が不適切  
+- 重根があると分母がゼロに近づき不安定  
+- 近接する根の存在  
+- 係数のスケールが極端  
+- 反復回数・許容誤差の設定不足  
+- 丸め誤差の蓄積（複素数演算では特に顕著）
+
+### 改善のヒント
+- Aberth の初期値を用いると収束性が大幅に改善  
+- 近接根がある場合は Jenkins–Traub 法との併用も有効  
+- 係数のスケーリング・正規化で安定性向上  
+
+---
+
+## 🙏 謝辞
+算数・数学を教えてくださった恩師、  
+数値解析の書籍の著者の方々に深く感謝いたします。
+
+本プログラムは、Microsoft Edge の Windows Copilot により  
+Android 用 Java ソースコードから JavaScript へ変換され、  
+さらに 50 桁高精度版へと改良されました。  
+さらに Windows 11 の MSI / APPX 版へと発展しました。  
+さらに Python の日本語 GUI プログラムへと発展しました。  
+そして現在、**C# 版への移植作業が進行中です。**
+
+Microsoft 社様に深く感謝申し上げます。
+
+---
+
+## 🌐 公式ページ
+- GitHub Pages（トップページ）  
+  https://yoshiakikoizumija142397.github.io/MethodDka/
+
+---
+
+## 👤 作者
+- 小泉 嘉章  
+- Email: ja142397@s6.dion.ne.jp  
+
+---
+
+## 📄 ライセンス
+本プロジェクトは **MIT License** の下で公開されています。  
+詳細は `LICENSE` ファイルを参照してください。
