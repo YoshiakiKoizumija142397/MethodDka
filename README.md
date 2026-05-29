@@ -1,153 +1,103 @@
-# 🧩 MethodDka
-### 因数分解・高次代数方程式ソルバー（高精度 50 桁対応）
+# MethodDka — 高精度多項式計算 / 因数分解ツール  
+**Version: v1.0.0**  
+**License: MIT License**
+
+MethodDka は、多項式の **高精度計算** および **因数分解** を行うための軽量ツールです。  
+ブラウザだけで動作し、インストール不要。  
+Windows / Mac / Linux / iOS / Android すべてで利用できます。
 
 ---
 
-## 🌐 概要
-**MethodDka** は、因数分解および高次代数方程式の全解（複素数を含む）を求めるためのプログラムです。  
-HTML / JavaScript で動作し、オフライン版はダウンロードしてすぐ利用できます。
+# 📦 ダウンロード（Download Package v1.0.0）
 
-- 最大 **1000 次** の多項式に対応  
-- **初期値不要**（DKA 法）  
-- 高精度版は **約 50 桁**  
-- Windows 版（MSI / APPX）も提供  
-- Python GUI 版あり  
-- 英語版あり  
-- C# 版は現在移植中  
+ローカルで実行できる ZIP 版はこちら：
+
+<a href="https://github.com/YoshiakiKoizumija142397/MethodDka/releases/download/v1.0.0/MethodDka-DownloadPackage-v1.0.0.zip" 
+   style="display:inline-block;background-color:#007BFF;color:white;padding:12px 20px;border-radius:6px;text-decoration:none;font-size:18px;font-weight:bold;">
+📦 Download MethodDka v1.0.0
+</a>
 
 ---
 
-## 📘 数学的背景
+# 📁 ZIP の内容（構成）
 
-- **1次方程式** … 中学1年で学習  
-- **2次方程式** … 中学3年で学習  
-- **3次以上** … カルダノの公式や数値解析（ラグランジュ法・ニュートン法）  
-- **4次以上** … 特殊な場合を除き、数値解析が必須  
+MethodDka-DownloadPackage-v1.0.0.zip
+├─ main/
+│   └─ MethodDka.html          ← 高精度版（ローカル実行）
+├─ factorization/
+│   └─ MethodDka.html          ← 因数分解専用版（ローカル実行）
+└─ LICENSE                     ← MIT License
 
-一般的な数値解析プログラムは  
-- 初期値が必要  
-- 実数解しか求められない  
 
-といった制約があります。
-
-しかし **MethodDka は初期値なしで、実数係数の高次（最大1000次）多項式の複素数解をすべて求めることができます。**
+※ Web 版ではなく **ローカル実行版** です。  
+※ インターネット接続不要で動作します。
 
 ---
 
-## 📦 利用できるバージョン
+# 🌐 Web 版（GitHub Pages）
 
-| 種類 | 精度 | 動作環境 | オフライン | リポジトリ |
-|------|------|-----------|------------|-------------|
-| 因数分解専用版（HTML） | 通常 | 全OS | ○ | MethodDka |
-| 高精度版（HTML / 50桁） | 50桁 | 全OS | ○ | MethodDka |
-| GitHub Pages（因数分解） | 通常 | ブラウザ | × | MethodDka |
-| GitHub Pages（高精度） | 50桁 | ブラウザ | × | MethodDka |
-| Windows 11 高精度版（MSI / APPX） | 50桁 | Windows 11 | ○ | MethodDkaWIN11 |
-| Python GUI 版 | 50桁 | Windows / Mac / Linux | ○ | MethodDka_Python |
-| **英語版（English Edition）** | 50桁 | 全OS | ○ | MethodDkaEn |
-| **C# 版（開発中）** | 50桁 | Windows | ○ | MethodDka-CSharp（予定） |
+Web 版（オンライン実行版）は以下から利用できます：
+
+**https://yoshiakikoizumija142397.github.io/MethodDka/**
 
 ---
 
-## 🐍 Python 版について
-MethodDka には、Python をインストールしてコマンドプロンプトから起動する  
-日本語 GUI 版（Tkinter 版）も存在します。
+# 🧮 機能一覧
 
-Python 版は別リポジトリ **MethodDka_Python** にて公開しています。  
-（ZIP を展開し、`python MethodDkaGUI.py` で起動する仕様です）
+## ✔ 高精度版（main/）
+- 任意次数の多項式に対応  
+- 係数を入力して即時計算  
+- 収束しない場合の自動検出  
+- ブラウザのみで動作（JavaScript）
 
-※ メインリポジトリには Python 版のファイルは含まれていません。
-
----
-
-## 🌍 英語版について
-MethodDka の **英語版（English Edition）** は、  
-別リポジトリ **MethodDkaEn** にて公開しています。
-
-※ メインリポジトリには英語版のファイルは含まれていません。
+## ✔ 因数分解専用版（factorization/）
+- 中学生〜高校生向けの簡易版  
+- 因数分解に特化  
+- 軽量で高速
 
 ---
 
-## 🛠 C# 版について（開発中）
-MethodDka の **C# 版（Windows デスクトップアプリ）** は現在移植作業中です。  
-完成後は別リポジトリ **MethodDka-CSharp** にて公開予定です。
+# 🚀 使い方
 
-※ 現時点では開発途中のため、メインリポジトリには C# 版のファイルは含まれていません。
-
----
-
-## 🧮 使い方（HTML 版）
-
-1. **最高次数を入力**  
-2. **係数入力ボックスが表示される**  
-3. **高い次数から順に実数係数を入力**  
-4. 次数が存在しない場合は **必ず 0 を入力（省略不可）**  
-5. 係数が +1 の場合は「1」、-1 の場合は「-1」  
-6. 解の有効数字は **約 50 桁**
+1. ZIP をダウンロード  
+2. 解凍  
+3. `main/MethodDka.html` または `factorization/MethodDka.html` を開く  
+4. ブラウザ上でそのまま利用可能
 
 ---
 
-## 🔢 MethodDka の特徴
-- 最大 1000 次の多項式に対応  
-- 複素数の全解を求められる  
-- 初期値なしで収束（DKA 法）  
-- ブラウザで動作（HTML / JavaScript）  
-- 高精度版は約 50 桁の計算に対応  
+# 🛠 技術情報
+
+- 言語：JavaScript / HTML  
+- 変換：Java → JavaScript（Copilot による移植）  
+- 動作環境：Chrome / Edge / Safari / Firefox  
+- インストール不要  
+- 完全クライアントサイド動作（データ送信なし）
 
 ---
 
-## ⚠ 注意事項
-- 本プログラムを使用して生じた問題について、作者は一切責任を負いません  
-- 必ず各自の責任で使用し、必要に応じて検算を行ってください  
-- 本ソフトは試作評価版のためフリーソフトとします  
+# 📌 バージョン管理ポリシー（Semantic Versioning）
+
+vMAJOR.MINOR.PATCH
+
+- **MAJOR**：仕様変更・互換性のない更新  
+- **MINOR**：機能追加  
+- **PATCH**：バグ修正  
+
+本リリースは **v1.0.0（初の安定版）** です。
 
 ---
 
-## 🧠 技術的背景（DKA 法について）
+# 📄 ライセンス
 
-DKA 法（Durand–Kerner–Aberth 法）が収束しない、または困難になる典型的要因：
-
-- 初期値の選定が不適切  
-- 重根があると分母がゼロに近づき不安定  
-- 近接する根の存在  
-- 係数のスケールが極端  
-- 反復回数・許容誤差の設定不足  
-- 丸め誤差の蓄積（複素数演算では特に顕著）
-
-### 改善のヒント
-- Aberth の初期値を用いると収束性が大幅に改善  
-- 近接根がある場合は Jenkins–Traub 法との併用も有効  
-- 係数のスケーリング・正規化で安定性向上  
+本ソフトウェアは **MIT License** の下で公開されています。  
+詳細は `LICENSE` を参照してください。
 
 ---
 
-## 🙏 謝辞
-算数・数学を教えてくださった恩師、  
-数値解析の書籍の著者の方々に深く感謝いたします。
+# 👤 作者
 
-本プログラムは、Microsoft Edge の Windows Copilot により  
-Android 用 Java ソースコードから JavaScript へ変換され、  
-さらに 50 桁高精度版へと改良されました。  
-さらに Windows 11 の MSI / APPX 版へと発展しました。  
-さらに Python の日本語 GUI プログラムへと発展しました。  
-そして現在、C# 版への移植作業が進行中です。
+Yoshiaki Koizumi  
+GitHub: https://github.com/YoshiakiKoizumija142397
 
-Microsoft 社様に深く感謝申し上げます。
 
----
-
-## 🌐 公式ページ
-- GitHub Pages（トップページ）  
-  https://yoshiakikoizumija142397.github.io/MethodDka/
-
----
-
-## 👤 作者
-- 小泉 嘉章  
-- Email: ja142397@s6.dion.ne.jp  
-
----
-
-## 📄 ライセンス
-本プロジェクトは **MIT License** の下で公開されています。  
-詳細は `LICENSE` ファイルを参照してください。
