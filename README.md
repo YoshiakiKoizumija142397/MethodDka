@@ -1,4 +1,8 @@
-# MethodDka — 高速・高精度な因数分解 Web アプリ  
+# MethodDka — 高速・高精度な因数分解 Web アプリ
+
+🌐 **公式ページ（GitHub Pages）**  
+https://yoshiakikoizumija142397.github.io/MethodDka/
+
 HTML だけで動作する、軽量・高速な因数分解ツールです。  
 ブラウザ上で動作し、インストール不要で利用できます。
 
@@ -55,5 +59,3 @@ MethodDka/
 ## 🧑‍💻 開発者
 **Yoshiaki Koizumi**  
 GitHub: https://github.com/YoshiakiKoizumija142397
-
-
