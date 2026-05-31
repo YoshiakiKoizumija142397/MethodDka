@@ -103,15 +103,15 @@ footer {
         <li>URL: https://yoshiakikoizumija142397.github.io/MethodDka</li>
     </ul>
 
-    <!-- ★ ここにオンライン版リンクを追加 ★ -->
-    <a class="btn" href="MethodDka.html" target="_blank">
+    <!-- ★ 修正済み：高精度版の正しいパス ★ -->
+    <a class="btn" href="main/MethodDka.html" target="_blank">
         🎯 高精度版（オンライン）
     </a>
 
+    <!-- 因数分解専用版は正しいパスのまま -->
     <a class="btn" href="factorization/MethodDka.html" target="_blank">
         ⚡ 因数分解専用版（オンライン）
     </a>
-    <!-- ★ 追加ここまで ★ -->
 
     <h3>2. 📦 HTML オフライン版（ZIP）</h3>
     <ul>
@@ -172,10 +172,11 @@ footer {
     <h2>📁 ファイル構成</h2>
 <pre>
 MethodDka/
-├── MethodDka.html   # メイン画面
-├── style.css        # UI スタイル
-├── script.js        # 因数分解ロジック
-└── assets/          # 画像・追加リソース（必要に応じて）
+├── main/MethodDka.html   # 高精度版（オンライン）
+├── factorization/MethodDka.html   # 因数分解専用版（オンライン）
+├── style.css
+├── script.js
+└── assets/
 </pre>
 </section>
 
