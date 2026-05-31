@@ -86,9 +86,12 @@ footer {
 <section>
     <h2>📦 Download（ZIP版）</h2>
     <p>オフラインで利用できる HTML 版はこちらからダウンロードできます。</p>
-    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka/releases/download/v1.0.0/MethodDka-DownloadPackage-v1.0.0.zip" target="_blank">
+
+    <!-- ★ 正しい ZIP（Source code）URL に修正済み ★ -->
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v1.0.0.zip" target="_blank">
         📦 Download ZIP (v1.0.0)
     </a>
+
     <p>ZIP を展開し、<code>MethodDka.html</code> を開くだけで利用できます。</p>
 </section>
 
@@ -103,12 +106,12 @@ footer {
         <li>URL: https://yoshiakikoizumija142397.github.io/MethodDka</li>
     </ul>
 
-    <!-- ★ 修正済み：高精度版の正しいパス ★ -->
+    <!-- ★ 高精度版：正しいパス（main/MethodDka.html）に修正済み ★ -->
     <a class="btn" href="main/MethodDka.html" target="_blank">
         🎯 高精度版（オンライン）
     </a>
 
-    <!-- 因数分解専用版は正しいパスのまま -->
+    <!-- ★ 因数分解専用版：正しいパスのまま ★ -->
     <a class="btn" href="factorization/MethodDka.html" target="_blank">
         ⚡ 因数分解専用版（オンライン）
     </a>
@@ -118,7 +121,7 @@ footer {
         <li>ダウンロードしてすぐ使える</li>
         <li>オフライン動作</li>
         <li>軽量・高速</li>
-        <li>ZIP: MethodDka-DownloadPackage-v1.0.0.zip</li>
+        <li>ZIP: v1.0.0（Source code ZIP）</li>
     </ul>
 
     <h3>3. 🎯 高精度版（High Precision Edition）</h3>
@@ -172,11 +175,10 @@ footer {
     <h2>📁 ファイル構成</h2>
 <pre>
 MethodDka/
-├── main/MethodDka.html   # 高精度版（オンライン）
-├── factorization/MethodDka.html   # 因数分解専用版（オンライン）
-├── style.css
-├── script.js
-└── assets/
+├── main/MethodDka.html              # 高精度版（オンライン）
+├── factorization/MethodDka.html     # 因数分解専用版（オンライン）
+├── index.html                       # このページ
+└── その他のリソース
 </pre>
 </section>
 
