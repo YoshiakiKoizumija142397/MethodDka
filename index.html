@@ -3,148 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MethodDka — 因数分解・高次代数方程式（高精度 50 桁対応）</title>
+<title>MethodDka — 高速・高精度な因数分解 Web アプリ</title>
 
 <style>
 body {
-    font-family: "Segoe UI", sans-serif;
-    margin: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f7f7f7;
     line-height: 1.7;
 }
-h1 {
-    color: #007BFF;
-    font-weight: 700;
+
+header {
+    background: #0078D4;
+    color: white;
+    padding: 28px 20px;
+    text-align: center;
 }
+
+section {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
 h2 {
-    margin-top: 40px;
-    border-left: 6px solid #007BFF;
+    border-left: 6px solid #0078D4;
     padding-left: 10px;
 }
-a.button {
-    display: inline-block;
-    background-color: #007BFF;
+
+.btn {
+    display: block;
+    padding: 14px 20px;
+    background: #0078D4;
     color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
     text-decoration: none;
+    border-radius: 8px;
     font-size: 18px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 12px;
 }
-table {
-    border-collapse: collapse;
-    width: 100%;
+.btn:hover {
+    background: #005A9E;
 }
-table, th, td {
-    border: 1px solid #aaa;
+code {
+    background: #eee;
+    padding: 3px 6px;
+    border-radius: 4px;
 }
-th, td {
-    padding: 8px;
+pre {
+    background: #eee;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
 }
 </style>
 </head>
 
 <body>
 
-<h1>MethodDka — 因数分解・高次代数方程式（高精度 50 桁対応）</h1>
+<header>
+    <h1>MethodDka — 高速・高精度な因数分解 Web アプリ</h1>
+    <p>HTML だけで動作する、軽量・高速な因数分解ツール</p>
+</header>
 
-<p>
-🌐 <b>公式ページ（GitHub Pages）</b><br>
-<a href="https://yoshiakikoizumija142397.github.io/MethodDka/">
-https://yoshiakikoizumija142397.github.io/MethodDka/
-</a>
-</p>
+<section>
+    <h2>🌐 公式ページ（GitHub Pages）</h2>
+    <a class="btn" href="https://yoshiakikoizumija142397.github.io/MethodDka" target="_blank">
+        🌐 MethodDka 公式ページ（Web版）
+    </a>
+</section>
 
-<h2>概要</h2>
-<p><b>MethodDka</b> は、因数分解および高次代数方程式の全解（複素数を含む）を求めるための HTML / JavaScript ベースのプログラムです。オフライン版は ZIP を展開して <code>MethodDka.html</code> を開くだけで利用できます。</p>
+<section>
+    <h2>📦 Download（ZIP版）</h2>
+    <p>MethodDka のオフライン版はこちらからダウンロードできます：</p>
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka/releases/download/v1.0.0/MethodDka-DownloadPackage-v1.0.0.zip" target="_blank">
+        📦 Download ZIP (v1.0.0)
+    </a>
+    <p>ZIP を展開し、<code>MethodDka.html</code> を開くだけで利用できます。</p>
+</section>
 
-<ul>
-<li>最大 <b>1000 次</b> の多項式に対応</li>
-<li><b>初期値不要</b>（DKA 法）</li>
-<li>高精度版は <b>約 50 桁</b></li>
-<li>Windows 版（MSI / APPX）あり</li>
-<li>Python GUI 版あり</li>
-<li>英語版あり</li>
-<li><b>C# 版は現在移植中</b></li>
-</ul>
+<section>
+    <h2>🧮 機能</h2>
+    <ul>
+        <li>大きな整数の因数分解</li>
+        <li>高速アルゴリズムによる計算</li>
+        <li>入力値のバリデーション</li>
+        <li>結果の即時表示</li>
+        <li>オフライン動作（ZIP版）</li>
+    </ul>
+</section>
 
-<h2>ダウンロード（ZIP 版）</h2>
-<p>
-<a href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v1.0.0.zip" class="button">
-📦 Download ZIP (v1.0.0)
-</a>
-</p>
+<section>
+    <h2>📁 ファイル構成</h2>
+<pre>
+MethodDka/
+├── MethodDka.html   # メイン画面
+├── style.css        # UI スタイル
+├── script.js        # 因数分解ロジック
+└── assets/          # 画像・追加リソース（必要に応じて）
+</pre>
+</section>
 
-<h2>Web 版（GitHub Pages）</h2>
+<section>
+    <h2>🛠 使い方</h2>
+    <ol>
+        <li>Web 版または ZIP 版を開く</li>
+        <li>因数分解したい整数を入力</li>
+        <li>「計算」ボタンを押す</li>
+        <li>結果が即時に表示されます</li>
+    </ol>
+</section>
 
-<table>
-<tr><th>種類</th><th>精度</th><th>動作環境</th><th>オフライン</th><th>リンク</th></tr>
+<section>
+    <h2>📄 ライセンス</h2>
+    <p>このプロジェクトは <strong>MIT License</strong> の下で公開されています。</p>
+</section>
 
-<tr>
-<td>因数分解専用版（HTML）</td>
-<td>通常</td>
-<td>全OS</td>
-<td>×</td>
-<td>
-<a href="https://yoshiakikoizumija142397.github.io/MethodDka/factorization/MethodDka.html">
-因数分解版（Web版）
-</a>
-</td>
-</tr>
+<section>
+    <h2>🧑‍💻 開発者</h2>
+    <p>Yoshiaki Koizumi</p>
+    <p>GitHub: <a href="https://github.com/YoshiakiKoizumija142397" target="_blank">https://github.com/YoshiakiKoizumija142397</a></p>
+</section>
 
-<tr>
-<td>高精度版（HTML / 50桁）</td>
-<td>50桁</td>
-<td>全OS</td>
-<td>×</td>
-<td>
-<a href="https://yoshiakikoizumija142397.github.io/MethodDka/main/MethodDka.html">
-高精度版（Web版）
-</a>
-</td>
-</tr>
-
-</table>
-
-<h2>Python 版</h2>
-<p>Python GUI 版（Tkinter）は別リポジトリ <b>MethodDka_Python</b> にて公開しています。</p>
-
-<h2>英語版</h2>
-<p>英語版（English Edition）は別リポジトリ <b>MethodDkaEn</b> にて公開しています。</p>
-
-<h2>C# 版（開発中）</h2>
-<p>C# 版は現在移植作業中で、完成後は <b>MethodDka-CSharp</b> にて公開予定です。</p>
-
-<h2>使い方（HTML 版）</h2>
-<ol>
-<li>最高次数を入力</li>
-<li>係数入力ボックスが表示される</li>
-<li>高い次数から順に実数係数を入力</li>
-<li>次数が存在しない場合は <b>必ず 0 を入力</b></li>
-<li>係数が +1 の場合は「1」、-1 の場合は「-1」</li>
-<li>解の有効数字は <b>約 50 桁</b></li>
-</ol>
-
-<h2>注意事項</h2>
-<ul>
-<li>本プログラムを使用して生じた問題について、作者は一切責任を負いません</li>
-<li>必ず各自の責任で使用し、必要に応じて検算を行ってください</li>
-<li>本ソフトは試作評価版のためフリーソフトとします</li>
-</ul>
-
-<h2>謝辞</h2>
-<p>
-本プログラムは Microsoft Edge の Windows Copilot により  
-Android 用 Java ソースコードから JavaScript へ変換され、  
-さらに 50 桁高精度版へと発展しました。  
-Windows 11 の MSI / APPX 版、Python GUI 版、  
-そして現在は C# 版への移植作業が進行中です。
-</p>
-
-<h2>作者</h2>
-<p>小泉 嘉章<br>Email: ja142397@s6.dion.ne.jp</p>
-
-<h2>ライセンス</h2>
-<p>本プロジェクトは <b>MIT License</b> の下で公開されています。</p>
+<footer>
+    © 2026 MethodDka Project
+</footer>
 
 </body>
 </html>
