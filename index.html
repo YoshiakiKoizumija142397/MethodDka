@@ -13,14 +13,12 @@ body {
     background: #f7f7f7;
     line-height: 1.7;
 }
-
 header {
     background: #0078D4;
     color: white;
     padding: 28px 20px;
     text-align: center;
 }
-
 section {
     max-width: 900px;
     margin: 30px auto;
@@ -29,12 +27,10 @@ section {
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-
 h2 {
     border-left: 6px solid #0078D4;
     padding-left: 10px;
 }
-
 .btn {
     display: block;
     padding: 14px 20px;
@@ -50,17 +46,6 @@ h2 {
 .btn:hover {
     background: #005A9E;
 }
-code {
-    background: #eee;
-    padding: 3px 6px;
-    border-radius: 4px;
-}
-pre {
-    background: #eee;
-    padding: 12px;
-    border-radius: 6px;
-    overflow-x: auto;
-}
 footer {
     text-align: center;
     padding: 20px;
@@ -73,123 +58,90 @@ footer {
 
 <header>
     <h1>MethodDka — 高速・高精度な因数分解 Web アプリ</h1>
-    <p>HTML だけで動作する、軽量・高速な因数分解ツール</p>
+    <p>HTML と JavaScript だけで動作する軽量・高速な因数分解ツール</p>
 </header>
 
 <section>
     <h2>🌐 公式ページ（Web版）</h2>
+
     <a class="btn" href="https://yoshiakikoizumija142397.github.io/MethodDka" target="_blank">
-        🌐 MethodDka 公式ページ（Web版）
+        🌐 日本語版（Web）
+    </a>
+
+    <a class="btn" href="https://yoshiakikoizumija142397.github.io/MethodDkaEn" target="_blank">
+        🌐 English Version（Web）
+    </a>
+
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka" target="_blank">
+        📁 Repository: MethodDka（日本語版）
+    </a>
+
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDkaEn" target="_blank">
+        📁 Repository: MethodDkaEn（英語版）
     </a>
 </section>
 
 <section>
-    <h2>📦 Download（ZIP版）</h2>
-    <p>オフラインで利用できる HTML 版はこちらからダウンロードできます。</p>
+    <h2>📦 オフライン版（ZIP）</h2>
 
-    <!-- ★ 正しい ZIP（Source code）URL ★ -->
     <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v1.0.0.zip" target="_blank">
         📦 Download ZIP (v1.0.0)
     </a>
 
-    <p>ZIP を展開し、<code>MethodDka.html</code> を開くだけで利用できます。</p>
+    <p>ZIP を展開し、<code>MethodDka.html</code> を開くだけでオフライン動作します。</p>
 </section>
 
 <section>
-    <h2>🔰 バージョン一覧（公式）</h2>
+    <h2>🔰 バージョン一覧（全エディション）</h2>
 
-    <h3>1. 🌐 Web版（GitHub Pages）</h3>
-    <ul>
-        <li>インストール不要</li>
-        <li>PC / スマホ対応</li>
-        <li>常に最新バージョン</li>
-        <li>URL: https://yoshiakikoizumija142397.github.io/MethodDka</li>
-    </ul>
+    <h3>🎯 高精度版（High Precision Edition）</h3>
+    <a class="btn" href="main/MethodDka.html" target="_blank">🎯 高精度版（Web）</a>
+    <p>Repository: <a href="https://github.com/YoshiakiKoizumija142397/MethodDka" target="_blank">MethodDka</a></p>
 
-    <!-- 高精度版 -->
-    <a class="btn" href="main/MethodDka.html" target="_blank">
-        🎯 高精度版（オンライン）
+    <h3>⚡ 因数分解専用版（Factorization Only Edition）</h3>
+    <a class="btn" href="factorization/MethodDka.html" target="_blank">⚡ 因数分解専用版（Web）</a>
+    <p>Repository: <a href="https://github.com/YoshiakiKoizumija142397/MethodDka" target="_blank">MethodDka</a></p>
+
+    <h3>🪟 Windows 11 インストーラ版（MSI / APPX）</h3>
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11" target="_blank">
+        🪟 Windows 11 Installer（MSI / APPX）
     </a>
+    <p>Repository: MethodDkaWIN11</p>
 
-    <!-- 因数分解専用版 -->
-    <a class="btn" href="factorization/MethodDka.html" target="_blank">
-        ⚡ 因数分解専用版（オンライン）
+    <h3>🐍 Python GUI 版（Tkinter）</h3>
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka_Python" target="_blank">
+        🐍 Python GUI Edition（Tkinter）
     </a>
+    <p>Repository: MethodDka_Python</p>
 
-    <h3>2. 📦 HTML オフライン版（ZIP）</h3>
-    <ul>
-        <li>ダウンロードしてすぐ使える</li>
-        <li>オフライン動作</li>
-        <li>軽量・高速</li>
-        <li>ZIP: v1.0.0（Source code ZIP）</li>
-    </ul>
-
-    <h3>3. 🎯 高精度版（High Precision Edition）</h3>
-    <ul>
-        <li>大きな整数に強い</li>
-        <li>計算精度を優先</li>
-        <li>研究用途向け</li>
-    </ul>
-
-    <h3>4. ⚡ 因数分解専用版（Factorization Only Edition）</h3>
-    <ul>
-        <li>因数分解機能に特化</li>
-        <li>最軽量・最速</li>
-        <li>スマホでも快適</li>
-    </ul>
-
-    <h3>5. 🪟 Windows 11 インストーラ版（MSI / APPX）</h3>
-    <ul>
-        <li>Windows に正式インストール</li>
-        <li>スタートメニューから起動可能</li>
-        <li>MSI版 / APPX版 の2種類を提供</li>
-    </ul>
-
-    <h3>6. 🐍 Python GUI 版</h3>
-    <ul>
-        <li>Python + Tkinter</li>
-        <li>ローカルアプリとして動作</li>
-        <li>オープンソース</li>
-    </ul>
-
-    <h3>7. 🖥 C# WPF 版（開発中）</h3>
-    <ul>
-        <li>Windows ネイティブアプリ</li>
-        <li>最も高い操作性</li>
-        <li>現在開発中</li>
-    </ul>
+    <h3>🖥 C# WPF 版（開発中）</h3>
+    <a class="btn" href="https://github.com/YoshiakiKoizumija142397/MethodDka-CSharp" target="_blank">
+        🖥 C# WPF Edition（開発中）
+    </a>
+    <p>Repository: MethodDka-CSharp</p>
 </section>
 
 <section>
-    <h2>🧮 機能</h2>
+    <h2>🧮 主な機能</h2>
     <ul>
-        <li>大きな整数の因数分解</li>
-        <li>高速アルゴリズムによる計算</li>
+        <li>大きな整数の高速因数分解</li>
+        <li>高精度計算に対応</li>
         <li>入力値のバリデーション</li>
         <li>結果の即時表示</li>
         <li>オフライン動作（ZIP版）</li>
+        <li>複数エディションによる幅広い用途対応</li>
     </ul>
 </section>
 
 <section>
-    <h2>📁 ファイル構成</h2>
+    <h2>📁 メインリポジトリ構成</h2>
 <pre>
 MethodDka/
-├── main/MethodDka.html              # 高精度版（オンライン）
-├── factorization/MethodDka.html     # 因数分解専用版（オンライン）
+├── main/MethodDka.html              # 高精度版
+├── factorization/MethodDka.html     # 因数分解専用版
 ├── index.html                       # このページ
-└── その他のリソース
+└── assets / scripts / styles        # 各種リソース
 </pre>
-</section>
-
-<section>
-    <h2>🛠 使い方</h2>
-    <ol>
-        <li>Web 版または ZIP 版を開く</li>
-        <li>因数分解したい整数を入力</li>
-        <li>「計算」ボタンを押す</li>
-        <li>結果が即時に表示されます</li>
-    </ol>
 </section>
 
 <section>
@@ -198,7 +150,7 @@ MethodDka/
 </section>
 
 <section>
-    <h2>🧑‍💻 開発者</h2>
+    <h2>👤 開発者</h2>
     <p><strong>Yoshiaki Koizumi</strong></p>
     <p>GitHub: <a href="https://github.com/YoshiakiKoizumija142397" target="_blank">https://github.com/YoshiakiKoizumija142397</a></p>
 </section>
