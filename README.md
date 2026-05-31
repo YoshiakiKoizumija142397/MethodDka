@@ -1,116 +1,106 @@
 # MethodDka — 高速・高精度な因数分解 Web アプリ
 
-HTML だけで動作する、軽量・高速な因数分解ツールです。  
-Web 版・オフライン版・高精度版・Windows インストーラ版など、複数のバージョンを提供しています。
+MethodDka は、HTML と JavaScript だけで動作する  
+**軽量・高速・高精度な因数分解ツール**です。
+
+Web 版（日本語 / 英語）、オフライン ZIP 版、  
+高精度版・因数分解専用版、Windows インストーラ版、Python GUI 版、  
+C# WPF 版（開発中）など、複数のエディションを提供しています。
 
 ---
 
 ## 🌐 公式ページ（Web版）
-MethodDka はインストール不要でブラウザから利用できます。
 
-👉 **https://yoshiakikoizumija142397.github.io/MethodDka**
+### 日本語版（メイン）
+- **Web:** https://yoshiakikoizumija142397.github.io/MethodDka  
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka
 
----
-
-## 📦 Download（ZIP版）
-オフラインで利用できる HTML 版はこちらからダウンロードできます。
-
-📦 **MethodDka-DownloadPackage-v1.0.0.zip**  
-https://github.com/YoshiakiKoizumija142397/MethodDka/releases/download/v1.0.0/MethodDka-DownloadPackage-v1.0.0.zip
-
-ZIP を展開し、`MethodDka.html` を開くだけで利用できます。
+### 英語版（English Version）
+- **Web:** https://yoshiakikoizumija142397.github.io/MethodDkaEn  
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDkaEn
 
 ---
 
-# 🔰 バージョン一覧（公式）
+## 📦 オフライン版（ZIP）
 
-MethodDka には複数のエディションがあります。用途に応じて選択してください。
+GitHub が自動生成する **Source code ZIP** を利用できます。
 
----
+- **Download ZIP (v1.0.0):**  
+  https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v1.0.0.zip  
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka
 
-## 1. 🌐 Web版（GitHub Pages）
-- インストール不要
-- PC / スマホ対応
-- 常に最新バージョン
-- URL: https://yoshiakikoizumija142397.github.io/MethodDka
+ZIP を展開し、`MethodDka.html` を開くだけでオフライン動作します。
 
 ---
 
-## 2. 📦 HTML オフライン版（ZIP）
-- ダウンロードしてすぐ使える
-- オフライン動作
-- 軽量・高速
-- ZIP: MethodDka-DownloadPackage-v1.0.0.zip
+## 🔰 バージョン一覧（全エディション）
 
----
+### 🎯 高精度版（High Precision Edition）
+- **Web:** `main/MethodDka.html`
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka
 
-## 3. 🎯 高精度版（High Precision Edition）
-- 大きな整数に強い
-- 計算精度を優先
-- 研究用途向け
+### ⚡ 因数分解専用版（Factorization Only Edition）
+- **Web:** `factorization/MethodDka.html`
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka
 
----
-
-## 4. ⚡ 因数分解専用版（Factorization Only Edition）
-- 因数分解機能に特化
-- 最軽量・最速
-- スマホでも快適
-
----
-
-## 5. 🪟 Windows 11 インストーラ版（MSI / APPX）
-- Windows に正式インストール
+### 🪟 Windows 11 インストーラ版（MSI / APPX）
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDkaWIN11
+- Windows に正式インストール可能  
+- MSI / APPX の 2 種類を提供  
 - スタートメニューから起動可能
-- MSI版 / APPX版 の2種類を提供
 
----
-
-## 6. 🐍 Python GUI 版
-- Python + Tkinter
-- ローカルアプリとして動作
+### 🐍 Python GUI 版（Tkinter）
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka_Python
+- Python + Tkinter  
+- ローカルアプリとして動作  
 - オープンソース
 
----
-
-## 7. 🖥 C# WPF 版（開発中）
-- Windows ネイティブアプリ
-- 最も高い操作性
+### 🖥 C# WPF 版（開発中）
+- **Repository:** https://github.com/YoshiakiKoizumija142397/MethodDka-CSharp
+- Windows ネイティブアプリ  
+- 最も高い操作性  
 - 現在開発中
 
 ---
 
-# 🧮 機能
-- 大きな整数の因数分解
-- 高速アルゴリズムによる計算
-- 入力値のバリデーション
-- 結果の即時表示
-- オフライン動作（ZIP版）
+## 🧮 主な機能
+
+- 大きな整数の高速因数分解  
+- 高精度計算に対応  
+- 入力値のバリデーション  
+- 結果の即時表示  
+- オフライン動作（ZIP版）  
+- 複数エディションによる幅広い用途対応  
 
 ---
 
-# 📁 ファイル構成
+## 📁 メインリポジトリ（MethodDka）の構成
+
 MethodDka/
-├── MethodDka.html   # メイン画面
-├── style.css        # UI スタイル
-├── script.js        # 因数分解ロジック
-└── assets/          # 画像・追加リソース（必要に応じて）
+├── main/MethodDka.html              # 高精度版
+├── factorization/MethodDka.html     # 因数分解専用版
+├── index.html                       # 公式ランディングページ
+└── assets / scripts / styles        # 各種リソース
 
 
 ---
 
-# 🛠 使い方
-1. Web 版または ZIP 版を開く  
+## 🚀 使い方
+
+1. Web 版を開く、または ZIP をダウンロード  
 2. 因数分解したい整数を入力  
 3. 「計算」ボタンを押す  
 4. 結果が即時に表示されます  
 
 ---
 
-# 📄 ライセンス
+## 📄 ライセンス
+
 このプロジェクトは **MIT License** の下で公開されています。
 
 ---
 
-# 🧑‍💻 開発者
+## 👤 開発者
+
 **Yoshiaki Koizumi**  
 GitHub: https://github.com/YoshiakiKoizumija142397
