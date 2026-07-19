@@ -5,46 +5,13 @@
     <title>MethodDka - Factorization Final Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            background: #f4f4f9;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        #progress {
-            font-family: monospace;
-            font-weight: bold;
-            color: #007bff;
-            margin: 15px 0;
-        }
-
-        .result {
-            margin-top: 15px;
-            padding: 12px;
-            background: #fff;
-            border-left: 5px solid #007bff;
-            font-family: monospace;
-        }
-
-        .err-warn {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        /* 誤差大：赤 */
-        .err-ok {
-            color: #28a745;
-            font-weight: bold;
-        }
-        /* 誤差小：緑 */
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        #progress { font-family: monospace; font-weight: bold; color: #007bff; margin: 15px 0; }
+        .result { margin-top: 15px; padding: 12px; background: #fff; border-left: 5px solid #007bff; font-family: monospace; }
+        .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; border-left: 5px solid #0f5132; color: #0f5132; font-family: monospace; }
+        .err-warn { color: #dc3545; font-weight: bold; }
+        .err-ok { color: #28a745; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -59,7 +26,7 @@
 
     <script>
         Decimal.set({ precision: 50 });
-        let n = null, sa = [], sr = [], si = [], sErr = [];
+        let n = null, sa = [], sr = [], si = [], sErr = [], sIter = [];
 
         function gen() {
             n = parseInt(document.getElementById('deg').value);
@@ -68,7 +35,6 @@
         }
 
         async function startCalc() {
-            // エラー制御
             if (n === null || document.getElementById('fields').innerHTML === '') {
                 alert('生成ボタンを押してください');
                 return;
@@ -78,22 +44,25 @@
             let a0 = sa[0];
             for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
 
-            // 初期値配置
+            // 初期化
             for (let i = 1; i <= n; i++) {
                 let ang = 2 * Math.PI * i / n;
                 sr[i] = new Decimal(2).mul(Math.cos(ang));
                 si[i] = new Decimal(2).mul(Math.sin(ang));
+                sIter[i] = 0;
             }
 
             const maxIter = 1000;
-            for (let k = 0; k < maxIter; k++) {
-                // ループ回数の視覚的フィードバック（非同期更新でフリーズ防止）
+            for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
                     document.getElementById('progress').innerText = `計算中... ループ回数: ${k}/${maxIter}`;
                     await new Promise(r => setTimeout(r, 0));
                 }
 
+                let bContinue = false;
                 for (let i = 1; i <= n; i++) {
+                    if (sErr[i] && sErr[i].lte("1e-45")) continue;
+
                     let pr = sa[0], pi = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
@@ -112,27 +81,32 @@
                     sr[i] = sr[i].sub((pr.mul(dr).add(pi.mul(di))).div(mag));
                     si[i] = si[i].sub((pi.mul(dr).sub(pr.mul(di))).div(mag));
                     sErr[i] = pr.abs().add(pi.abs());
+                    sIter[i] = k;
+
+                    if (sErr[i].gt("1e-45")) bContinue = true;
                 }
+                if (!bContinue) break;
             }
 
             document.getElementById('progress').innerText = "計算完了";
             let resDiv = document.getElementById('res');
             resDiv.innerHTML = '<h3>因数分解結果:</h3>';
-
+            
+            let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
                 let re = Math.round(Number(sr[i]));
                 let im = Math.round(Number(si[i]));
                 let isBad = sErr[i].gte("1e-44");
+                totalIterations += sIter[i];
 
-                // 不要なカッコを除去した整数表記
                 let term = im === 0 ? `${re}` : (re + (im > 0 ? ' + ' + im + 'i' : ' - ' + Math.abs(im) + 'i'));
-                let factor = `(x - ${term})`;
-
                 resDiv.innerHTML += `<div class="result">
-          因数${i}: ${factor}<br>
-          <span class="${isBad ? 'err-warn' : 'err-ok'}">収束誤差: ${sErr[i].toExponential(4)}</span>
-        </div>`;
+                    因数${i}: (x - ${term})<br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">収束誤差: ${sErr[i].toExponential(4)}</span><br>
+                    <strong>収束反復回数: ${sIter[i]}回</strong>
+                </div>`;
             }
+            resDiv.innerHTML += `<div class="summary"><strong>全合計反復回数: ${totalIterations}回</strong></div>`;
         }
     </script>
 </body>
