@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodDka — 高速・高精度な因数分解 Web アプリ</title>
+    <title>MethodDka — 普遍的数学世界共通基盤技術リファレンス</title>
     <style>
         body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
         h1 { color: #2c3e50; }
         h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; }
+        .update-box { background: #e7f3ff; padding: 15px; border-left: 5px solid #007bff; margin: 20px 0; border-radius: 4px; }
         .button { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0; }
         ul { list-style: none; padding: 0; }
         li { margin: 12px 0; }
@@ -17,10 +18,15 @@
 <body>
 
     <header>
-        <h1>MethodDka (v2.0.0)</h1>
+        <h1>MethodDka (v2.1.0)</h1>
         <p>DKA法とホーナー法を統合した、世界基準の高精度数値解析リファレンスです。</p>
         <a href="main/MethodDka.html" class="button">高精度版（Main）を起動</a>
     </header>
+
+    <section class="update-box">
+        <h3>最新アップデート (v2.1.0)</h3>
+        <p>各解ごとの<strong>収束反復回数</strong>および<strong>全合計反復回数</strong>の表示機能を実装しました。計算プロセスの可視化により、アルゴリズムの挙動を定量的に把握でき、数値解析における診断バロメーターとしてご活用いただけます。</p>
+    </section>
 
     <section id="about">
         <h2>MethodDka について</h2>
@@ -36,7 +42,7 @@
             <li><strong>メインリポジトリ:</strong> <a href="https://github.com/YoshiakiKoizumija142397/MethodDka">GitHub — MethodDka</a></li>
             <li><strong>高精度版 (Main):</strong> <a href="main/MethodDka.html">起動する</a></li>
             <li><strong>因数分解専用版:</strong> <a href="factorization/MethodDka.html">起動する</a></li>
-            <li><strong>オフライン版 (ZIP v2.0.0):</strong> <a href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v2.0.0.zip">直接ダウンロード</a></li>
+            <li><strong>オフライン版 (ZIP v2.1.0):</strong> <a href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/heads/main.zip">最新版をダウンロード</a></li>
         </ul>
     </section>
 
