@@ -15,7 +15,6 @@
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
-        .residual { font-size: 0.9em; color: #666; }
     </style>
 </head>
 <body>
@@ -36,7 +35,6 @@
         let n = null;
         let sa = [], sr = [], si = [], sErr = [], sIter = [];
 
-        // ホーナー法による多項式評価関数（検算用）
         function evaluateHorner(xR, xI) {
             let pr = sa[0], pi = new Decimal(0);
             for (let i = 1; i <= n; i++) {
@@ -45,7 +43,7 @@
                 pr = nextR;
                 pi = nextI;
             }
-            return pr.abs().add(pi.abs()); // 多項式の絶対値（残差）を返す
+            return pr.abs().add(pi.abs());
         }
 
         function createFields() {
@@ -88,7 +86,6 @@
                 for (let i = 1; i <= n; i++) {
                     if (sErr[i] && sErr[i].lte("1e-45")) continue;
 
-                    // DKA法による更新
                     let pr = sa[0], pi = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
@@ -119,13 +116,12 @@
             prog.innerText = "計算完了";
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
-                // ホーナー法で検算
                 let residual = evaluateHorner(sr[i], si[i]);
-                let isBad = residual.gt("1e-20"); // 残差が大きければ警告
+                let isBad = residual.gt("1e-20");
                 totalIterations += sIter[i];
                 resDiv.innerHTML += `<div class="result">
                     解${i}: ${sr[i].toFixed(20)} + (${si[i].toFixed(20)})i<br>
-                    <span class="${isBad ? 'err-warn' : 'err-ok'}">残差: ${residual.toExponential(4)}</span><br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">検算残差: ${residual.toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
