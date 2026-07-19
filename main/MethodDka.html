@@ -52,7 +52,6 @@
             const resDiv = document.getElementById('results');
             resDiv.innerHTML = '';
             
-            // 各解の反復回数初期化
             for (let i = 1; i <= n; i++) sIter[i] = 0;
 
             let a0 = sa[0];
@@ -65,7 +64,8 @@
                 si[j] = new Decimal(2).mul(Decimal.sin(ang));
             }
 
-            const maxIter = 1000;
+            // セイフティロックを10,000回に修正
+            const maxIter = 10000;
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
                     prog.innerText = `計算中... ループ回数: ${k} / ${maxIter}`;
@@ -74,7 +74,6 @@
 
                 let bContinue = false;
                 for (let i = 1; i <= n; i++) {
-                    // すでに収束している解はスキップ
                     if (sErr[i] && sErr[i].lte("1e-45")) continue;
 
                     let pr = sa[0], pi = new Decimal(0);
@@ -99,7 +98,7 @@
                     si[i] = si[i].sub(ui);
 
                     sErr[i] = ur.abs().add(ui.abs());
-                    sIter[i] = k; // 現在のループ回数を記録
+                    sIter[i] = k;
 
                     if (sErr[i].gt("1e-45")) bContinue = true;
                 }
