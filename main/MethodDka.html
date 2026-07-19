@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - High Precision (Error/Iteration Display)</title>
+    <title>MethodDka - High Precision (Verified)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
@@ -15,11 +15,12 @@
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
+        .residual { font-size: 0.9em; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>MethodDka (50桁・誤差/回数表示版)</h1>
+        <h1>MethodDka (50桁・ホーナー検算付)</h1>
         <div class="input-field">
             <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
         </div>
@@ -34,6 +35,18 @@
         Decimal.set({ precision: 50 });
         let n = null;
         let sa = [], sr = [], si = [], sErr = [], sIter = [];
+
+        // ホーナー法による多項式評価関数（検算用）
+        function evaluateHorner(xR, xI) {
+            let pr = sa[0], pi = new Decimal(0);
+            for (let i = 1; i <= n; i++) {
+                let nextR = pr.mul(xR).sub(pi.mul(xI)).add(sa[i]);
+                let nextI = pr.mul(xI).add(pi.mul(xR));
+                pr = nextR;
+                pi = nextI;
+            }
+            return pr.abs().add(pi.abs()); // 多項式の絶対値（残差）を返す
+        }
 
         function createFields() {
             n = parseInt(document.getElementById('maxDegree').value);
@@ -64,7 +77,6 @@
                 si[j] = new Decimal(2).mul(Decimal.sin(ang));
             }
 
-            // セイフティロックを10,000回に修正
             const maxIter = 10000;
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
@@ -76,6 +88,7 @@
                 for (let i = 1; i <= n; i++) {
                     if (sErr[i] && sErr[i].lte("1e-45")) continue;
 
+                    // DKA法による更新
                     let pr = sa[0], pi = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
@@ -96,10 +109,8 @@
 
                     sr[i] = sr[i].sub(ur);
                     si[i] = si[i].sub(ui);
-
                     sErr[i] = ur.abs().add(ui.abs());
                     sIter[i] = k;
-
                     if (sErr[i].gt("1e-45")) bContinue = true;
                 }
                 if (!bContinue) break;
@@ -108,11 +119,13 @@
             prog.innerText = "計算完了";
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
-                let isBad = sErr[i].gte("1e-44");
+                // ホーナー法で検算
+                let residual = evaluateHorner(sr[i], si[i]);
+                let isBad = residual.gt("1e-20"); // 残差が大きければ警告
                 totalIterations += sIter[i];
                 resDiv.innerHTML += `<div class="result">
-                    解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
-                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
+                    解${i}: ${sr[i].toFixed(20)} + (${si[i].toFixed(20)})i<br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">残差: ${residual.toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
