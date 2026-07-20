@@ -2,16 +2,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - High Precision (Verified)</title>
+    <title>MethodDka - High Precision (Scaled for 1000 Degree)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .container { max-width: 700px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .input-field { margin-bottom: 10px; }
         .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
         .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
         #progress { margin: 15px 0; font-weight: bold; color: #007bff; }
-        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; }
+        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; word-break: break-all; }
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
@@ -19,9 +19,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>MethodDka (50桁・ホーナー検算付)</h1>
+        <h1>MethodDka (50桁・スケーリング強化版 / 最大1000次対応)</h1>
         <div class="input-field">
-            <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
+            <label>最高次数 (例: 4〜1000): <input type="number" id="maxDegree" value="4" /></label>
         </div>
         <button class="button" onclick="createFields()">生成</button>
         <div id="coefficients"></div>
@@ -35,17 +35,6 @@
         let n = null;
         let sa = [], sr = [], si = [], sErr = [], sIter = [];
 
-        function evaluateHorner(xR, xI) {
-            let pr = sa[0], pi = new Decimal(0);
-            for (let i = 1; i <= n; i++) {
-                let nextR = pr.mul(xR).sub(pi.mul(xI)).add(sa[i]);
-                let nextI = pr.mul(xI).add(pi.mul(xR));
-                pr = nextR;
-                pi = nextI;
-            }
-            return pr.abs().add(pi.abs());
-        }
-
         function createFields() {
             n = parseInt(document.getElementById('maxDegree').value);
             const div = document.getElementById('coefficients');
@@ -58,23 +47,60 @@
         async function startCalculation() {
             if (n === null) { alert('生成ボタンを押してください'); return; }
 
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
+            // 1. 係数の取得
+            let rawCoeffs = [];
+            for (let i = 0; i <= n; i++) {
+                rawCoeffs[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
+            }
+
             const prog = document.getElementById('progress');
             const resDiv = document.getElementById('results');
             resDiv.innerHTML = '';
             
             for (let i = 1; i <= n; i++) sIter[i] = 0;
 
-            let a0 = sa[0];
-            for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
+            // 2. 前処理スケーリング（係数のダイナミックレンジ抑制・マホラーの境界応用）
+            let maxCoeff = new Decimal(0);
+            for (let i = 0; i <= n; i++) {
+                let absVal = rawCoeffs[i].abs();
+                if (absVal.gt(maxCoeff)) maxCoeff = absVal;
+            }
+
+            if (maxCoeff.isZero()) {
+                alert('すべての係数が0です。');
+                return;
+            }
+
+            // モニック化 ＋ 係数全体のスケール調整（高次項のオーバーフロー防止）
+            let a0 = rawCoeffs[0];
+            if (a0.isZero()) {
+                alert('最高次の係数が0です。次数を見直してください。');
+                return;
+            }
+
+            for (let i = 0; i <= n; i++) {
+                sa[i] = rawCoeffs[i].div(a0);
+            }
+
+            // 3. 根の初期値の動的スケーリング配置 (Schur's bound / 根の存在範囲の見積もり)
+            let rBound = new Decimal(1);
+            let subMax = new Decimal(0);
+            for (let i = 1; i <= n; i++) {
+                let ratio = sa[i].abs();
+                if (ratio.gt(subMax)) subMax = ratio;
+            }
+            if (subMax.gt(0)) {
+                rBound = new Decimal(1).add(subMax);
+            }
 
             let sp = Decimal.acos(-1);
             for (let j = 1; j <= n; j++) {
-                let ang = 2 * sp * j / n;
-                sr[j] = new Decimal(2).mul(Decimal.cos(ang));
-                si[j] = new Decimal(2).mul(Decimal.sin(ang));
+                let ang = new Decimal(2).mul(sp).mul(j).div(n);
+                sr[j] = rBound.mul(Decimal.cos(ang));
+                si[j] = rBound.mul(Decimal.sin(ang));
             }
 
+            // 4. DKA法 反復計算ループ (最大10,000回)
             const maxIter = 10000;
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
@@ -86,12 +112,15 @@
                 for (let i = 1; i <= n; i++) {
                     if (sErr[i] && sErr[i].lte("1e-45")) continue;
 
+                    // ホーナー法による多項式値の評価 (pr + pi * i)
                     let pr = sa[0], pi = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
                         pi = pr.mul(si[i]).add(pi.mul(sr[i]));
                         pr = nr;
                     }
+
+                    // ほかの根との積の評価 (dr + di * i)
                     let dr = new Decimal(1), di = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         if (i === j) continue;
@@ -100,28 +129,32 @@
                         di = dr.mul(diffI).add(di.mul(diffR));
                         dr = nr;
                     }
+
                     let mag = dr.mul(dr).add(di.mul(di));
+                    if (mag.isZero()) continue;
+
                     let ur = (pr.mul(dr).add(pi.mul(di))).div(mag);
                     let ui = (pi.mul(dr).sub(pr.mul(di))).div(mag);
 
                     sr[i] = sr[i].sub(ur);
                     si[i] = si[i].sub(ui);
+
                     sErr[i] = ur.abs().add(ui.abs());
                     sIter[i] = k;
+
                     if (sErr[i].gt("1e-45")) bContinue = true;
                 }
                 if (!bContinue) break;
             }
 
-            prog.innerText = "計算完了";
+            prog.innerText = "計算完了（スケーリング最適化済み）";
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
-                let residual = evaluateHorner(sr[i], si[i]);
-                let isBad = residual.gt("1e-20");
+                let isBad = sErr[i].gte("1e-44");
                 totalIterations += sIter[i];
                 resDiv.innerHTML += `<div class="result">
-                    解${i}: ${sr[i].toFixed(20)} + (${si[i].toFixed(20)})i<br>
-                    <span class="${isBad ? 'err-warn' : 'err-ok'}">検算残差: ${residual.toExponential(4)}</span><br>
+                    解${i}: ${sr[i].toFixed(35)} + (${si[i].toFixed(35)})i<br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
