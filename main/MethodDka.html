@@ -150,30 +150,49 @@
                 }
             }
 
-            // UIロック解除（入力値はそのまま維持）
-            calcButton.disabled = false;
-            genButton.disabled = false;
-
-            // ⭕ 【ご指定のエラーメッセージ・クリア処理を適用】
+            // ⭕ 【最重要】収束しなかった場合の「一時停止・はい／いいえ」の判定処理
             if (!isConvergedGlobal) {
-                resDiv.innerHTML = ""; // 過去の古い結果がある場合は完全にクリア
+                resDiv.innerHTML = ""; // 結果表示エリアを完全にクリア
                 prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
-                
-                alert("収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。");
-                return; // 係数入力欄をリセットせずそのまま戻る
+
+                // メッセージを出しつつ、ユーザーがどちらを選ぶか待つ
+                const userChoice = confirm(
+                    "収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。\n\n" +
+                    "【はい(OK)】を押すとそのまま最初に戻ります。\n" +
+                    "【いいえ(キャンセル)】を押すと正常終了（画面ロック）します。"
+                );
+
+                if (userChoice) {
+                    // 「はい（OK）」：入力欄を残してコントロールだけ復帰
+                    calcButton.disabled = false;
+                    genButton.disabled = false;
+                    prog.innerText = "プログラムの最初に戻りました。係数を修正して再試行してください。";
+                } else {
+                    // 「いいえ（キャンセル）」：ボタンをすべて無効化して終了状態にする
+                    calcButton.disabled = true;
+                    genButton.disabled = true;
+                    prog.innerHTML = "<span class='err-warn'>プログラムを正常終了しました。</span>";
+                }
+                return; 
             }
 
-            // 正常収束時のみ出力
+            // 正常収束時のみコントロールを復帰して出力
+            calcButton.disabled = false;
+            genButton.disabled = false;
             prog.innerText = "計算完了";
+            let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
                 let isBad = sErr[i].gte("1e-44");
-                totalIterations = (totalIterations || 0) + sIter[i];
+                totalIterations += sIter[i];
                 resDiv.innerHTML += `<div class="result">
                     解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
                     <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
+            resDiv.innerHTML += `<div class="summary">
+                <strong>全合計反復回数: ${totalIterations}回</strong>
+            </div>`;
         }
     </script>
 </body>
