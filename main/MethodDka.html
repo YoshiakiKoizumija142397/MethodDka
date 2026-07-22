@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MethodDka - High Precision (Error/Iteration Display) Fixed</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+    <script src="https://cloudflare.com"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -45,7 +45,6 @@
             for (let i = 0; i <= n; i++) {
                 div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" class="coeff-input" value="0" /></div>`;
             }
-            // テスト用デフォルト（x^4 + 5x^2 + 4 = 0）
             if (n === 4) {
                 document.getElementById('coeff0').value = "1";
                 document.getElementById('coeff1').value = "0";
@@ -66,7 +65,6 @@
             const prog = document.getElementById('progress');
             const resDiv = document.getElementById('results');
 
-            // ❌ 二重クリックバグ防止のためにUIをロック
             calcButton.disabled = true;
             genButton.disabled = true;
             resDiv.innerHTML = '';
@@ -86,7 +84,7 @@
 
             for (let i = 1; i <= n; i++) {
                 sIter[i] = 0;
-                sErr[i] = new Decimal(1); // 初期誤差を大きめにセット
+                sErr[i] = new Decimal(1);
             }
 
             let a0 = sa[0];
@@ -152,32 +150,30 @@
                 }
             }
 
-            // ⭕ UIロック解除（最初に入力待ち状態へ戻る準備）
+            // UIロック解除（入力値はそのまま維持）
             calcButton.disabled = false;
             genButton.disabled = false;
 
-            // ⭕ 【最重要バグ修正】収束しなかった場合のエラー検知と最初への復帰
+            // ⭕ 【ご指定のエラーメッセージ・クリア処理を適用】
             if (!isConvergedGlobal) {
-                prog.innerHTML = "<span class='err-warn'>【警告】セーフティロック（10,000回）までに収束しませんでした。</span>";
-                alert("【計算失敗】最大反復回数（10,000回）以内にすべての解が収束しませんでした。\n係数データ（ウィルキンソン係数など）を見直してください。");
-                return; // ここで安全に処理を打ち切り、最初の状態を維持して戻る
+                resDiv.innerHTML = ""; // 過去の古い結果がある場合は完全にクリア
+                prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
+                
+                alert("収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。");
+                return; // 係数入力欄をリセットせずそのまま戻る
             }
 
-            // 正常収束時のみ以下を出力
+            // 正常収束時のみ出力
             prog.innerText = "計算完了";
-            let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
                 let isBad = sErr[i].gte("1e-44");
-                totalIterations += sIter[i];
+                totalIterations = (totalIterations || 0) + sIter[i];
                 resDiv.innerHTML += `<div class="result">
                     解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
                     <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
-            resDiv.innerHTML += `<div class="summary">
-                <strong>全合計反復回数: ${totalIterations}回</strong>
-            </div>`;
         }
     </script>
 </body>
