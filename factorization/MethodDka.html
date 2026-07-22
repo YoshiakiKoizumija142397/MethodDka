@@ -146,19 +146,32 @@
                 }
             }
 
-            calcButton.disabled = false;
-            genButton.disabled = false;
-
-            // ⭕ 【ご指定のエラーメッセージ・クリア処理を適用】
+            // ⭕ 【最重要】収束しなかった場合の「一時停止・はい／いいえ」の判定処理
             if (!isConvergedGlobal) {
-                resDiv.innerHTML = ""; // 前回の古い結果を綺麗にクリア
+                resDiv.innerHTML = ""; // 前回の結果を綺麗にクリア
                 prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
-                
-                alert("収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。");
-                return; // 入力値は残したまま安全に終了
+
+                const userChoice = confirm(
+                    "収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。\n\n" +
+                    "【はい(OK)】を押すとそのまま最初に戻ります。\n" +
+                    "【いいえ(キャンセル)】を押すと正常終了（画面ロック）します。"
+                );
+
+                if (userChoice) {
+                    calcButton.disabled = false;
+                    genButton.disabled = false;
+                    prog.innerText = "プログラムの最初に戻りました。係数を修正して再試行してください。";
+                } else {
+                    calcButton.disabled = true;
+                    genButton.disabled = true;
+                    prog.innerHTML = "<span class='err-warn'>プログラムを正常終了しました。</span>";
+                }
+                return;
             }
 
-            // 正常収束時のみ以下を出力
+            // 正常収束時
+            calcButton.disabled = false;
+            genButton.disabled = false;
             prog.innerText = "計算完了";
             resDiv.innerHTML = '<h3>因数分解結果:</h3>';
             let totalIterations = 0;
