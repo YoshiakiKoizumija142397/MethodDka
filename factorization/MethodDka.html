@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - Factorization Final Edition (10000 limit)</title>
+    <title>MethodDka - Factorization Final Edition (10000 limit) Fixed</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .input-field { margin-bottom: 10px; }
+        .input-field input { padding: 6px; box-sizing: border-box; background-color: #fcfcfc; border: 1px solid #d0d0d0; }
+        .button { padding: 10px 20px; background:#28a745; color:white; border:none; cursor:pointer; font-size: 14px; border-radius: 4px; }
+        .button:disabled { background: #a6a6a6; cursor: not-allowed; }
         #progress { font-family: monospace; font-weight: bold; color: #007bff; margin: 15px 0; }
-        .result { margin-top: 15px; padding: 12px; background: #fff; border-left: 5px solid #007bff; font-family: monospace; }
+        .result { margin-top: 15px; padding: 12px; background: #f8f9fa; border-left: 5px solid #007bff; font-family: monospace; white-space: pre-wrap; word-break: break-all; }
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; border-left: 5px solid #0f5132; color: #0f5132; font-family: monospace; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
@@ -16,10 +20,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>因数分解専用：MethodDka</h1>
-        <div>最高次数: <input type="number" id="deg" value="4"> <button onclick="gen()">生成</button></div>
+        <h1>因数分解専用：MethodDka（バグ修正済）</h1>
+        <div class="input-field">
+            最高次数: <input type="number" id="deg" value="4" min="1"> 
+            <button id="genButton" class="button" style="background:#007bff;" onclick="gen()">生成</button>
+        </div>
         <div id="fields" style="margin:15px 0;"></div>
-        <button onclick="startCalc()" style="padding:10px 20px; background:#28a745; color:white; border:none; cursor:pointer;">因数分解開始</button>
+        <button id="calcButton" class="button" onclick="startCalc()" disabled>因数分解開始</button>
         <div id="progress"></div>
         <div id="res"></div>
     </div>
@@ -30,8 +37,25 @@
 
         function gen() {
             n = parseInt(document.getElementById('deg').value);
-            let h = ''; for (let i = 0; i <= n; i++) h += `${n - i}次係数: <input type="text" id="c${i}" value="0"><br>`;
+            if (isNaN(n) || n <= 0) { alert('次数を正の整数で入力してください'); return; }
+
+            let h = ''; 
+            for (let i = 0; i <= n; i++) {
+                h += `<div class="input-field">${n - i}次係数: <input type="text" id="c${i}" class="coeff-input" value="0"></div>`;
+            }
             document.getElementById('fields').innerHTML = h;
+
+            // テスト用デフォルト（x^4 + 5x^2 + 4 = 0）
+            if (n === 4) {
+                document.getElementById('c0').value = "1";
+                document.getElementById('c1').value = "0";
+                document.getElementById('c2').value = "5";
+                document.getElementById('c3').value = "0";
+                document.getElementById('c4').value = "4";
+            }
+            document.getElementById('calcButton').disabled = false;
+            document.getElementById('progress').innerText = "係数を入力して「因数分解開始」を押してください。";
+            document.getElementById('res').innerHTML = "";
         }
 
         async function startCalc() {
@@ -40,23 +64,54 @@
                 return;
             }
 
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('c' + i).value || "0");
+            const calcButton = document.getElementById('calcButton');
+            const genButton = document.getElementById('genButton');
+            const prog = document.getElementById('progress');
+            const resDiv = document.getElementById('res');
+
+            // ❌ 多重実行（フリーズ原因）を防ぐため、ボタンをロック
+            calcButton.disabled = true;
+            genButton.disabled = true;
+            resDiv.innerHTML = '';
+
+            try {
+                for (let i = 0; i <= n; i++) {
+                    const val = document.getElementById('c' + i).value;
+                    if (val.trim() === "") throw new Error();
+                    sa[i] = new Decimal(val);
+                }
+            } catch(e) {
+                alert('係数はすべて数値で入力してください。');
+                calcButton.disabled = false;
+                genButton.disabled = false;
+                return;
+            }
+
             let a0 = sa[0];
+            if (a0.isZero()) {
+                alert("最高次の係数が0です。次数を再設定してください。");
+                calcButton.disabled = false;
+                genButton.disabled = false;
+                return;
+            }
             for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
 
             // 初期化
+            let sp = Decimal.acos(-1);
             for (let i = 1; i <= n; i++) {
-                let ang = 2 * Math.PI * i / n;
-                sr[i] = new Decimal(2).mul(Math.cos(ang));
-                si[i] = new Decimal(2).mul(Math.sin(ang));
+                let ang = new Decimal(2).mul(sp).mul(i).div(n);
+                sr[i] = new Decimal(2).mul(Decimal.cos(ang));
+                si[i] = new Decimal(2).mul(Decimal.sin(ang));
                 sIter[i] = 0;
+                sErr[i] = new Decimal(1); // 初期誤差
             }
 
-            // セイフティロックを10,000回に修正
             const maxIter = 10000;
+            let isConvergedGlobal = false;
+
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
-                    document.getElementById('progress').innerText = `計算中... ループ回数: ${k}/${maxIter}`;
+                    prog.innerText = `計算中... ループ回数: ${k}/${maxIter}`;
                     await new Promise(r => setTimeout(r, 0));
                 }
 
@@ -79,6 +134,8 @@
                         dr = nr;
                     }
                     let mag = dr.mul(dr).add(di.mul(di));
+                    if (mag.isZero()) mag = new Decimal("1e-100");
+
                     sr[i] = sr[i].sub((pr.mul(dr).add(pi.mul(di))).div(mag));
                     si[i] = si[i].sub((pi.mul(dr).sub(pr.mul(di))).div(mag));
                     sErr[i] = pr.abs().add(pi.abs());
@@ -86,11 +143,25 @@
 
                     if (sErr[i].gt("1e-45")) bContinue = true;
                 }
-                if (!bContinue) break;
+                if (!bContinue) {
+                    isConvergedGlobal = true;
+                    break;
+                }
             }
 
-            document.getElementById('progress').innerText = "計算完了";
-            let resDiv = document.getElementById('res');
+            // ⭕ ボタンのロックを解除（最初に戻れる状態へ復帰）
+            calcButton.disabled = false;
+            genButton.disabled = false;
+
+            // ⭕ 【重要バグ修正】1万回ループで収束しなかった場合の処理
+            if (!isConvergedGlobal) {
+                prog.innerHTML = "<span class='err-warn'>【警告】セーフティロック（10,000回）までに収束しませんでした。</span>";
+                alert("【因数分解失敗】最大反復回数（10,000回）以内に解が収束しませんでした。\n係数の設定（ウィルキンソン多項式など）を見直してください。");
+                return; // ここで安全に処理を打ち切り、最初の状態を維持して戻る
+            }
+
+            // 正常収束時のみ以下を出力
+            prog.innerText = "計算完了";
             resDiv.innerHTML = '<h3>因数分解結果:</h3>';
             
             let totalIterations = 0;
