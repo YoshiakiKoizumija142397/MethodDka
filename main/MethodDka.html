@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - High Precision (Error/Iteration Display)</title>
+    <title>MethodDka - High Precision (Error/Iteration Display) Fixed</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .input-field { margin-bottom: 10px; }
-        .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
-        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .input-field input { width: 100%; padding: 8px; box-sizing: border-box; background-color: #f3f3f3; border: 1px solid #d0d0d0; }
+        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        .button:disabled { background-color: #a6a6a6; cursor: not-allowed; }
         #progress { margin: 15px 0; font-weight: bold; color: #007bff; }
-        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; }
+        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; white-space: pre-wrap; word-break: break-all; }
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
@@ -19,13 +20,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>MethodDka (50桁・誤差/回数表示版)</h1>
+        <h1>MethodDka (50桁・誤差/回数表示版・バグ修正済)</h1>
         <div class="input-field">
-            <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
+            <label>最高次数: <input type="number" id="maxDegree" value="4" min="1" /></label>
         </div>
-        <button class="button" onclick="createFields()">生成</button>
+        <button id="genButton" class="button" onclick="createFields()">生成</button>
         <div id="coefficients"></div>
-        <button class="button" onclick="startCalculation()">計算開始</button>
+        <button id="calcButton" class="button" onclick="startCalculation()" disabled>計算開始</button>
         <div id="progress"></div>
         <div id="results"></div>
     </div>
@@ -37,35 +38,76 @@
 
         function createFields() {
             n = parseInt(document.getElementById('maxDegree').value);
+            if (isNaN(n) || n <= 0) { alert('次数を正の整数で入力してください'); return; }
+            
             const div = document.getElementById('coefficients');
             div.innerHTML = '';
             for (let i = 0; i <= n; i++) {
-                div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" value="0" /></div>`;
+                div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" class="coeff-input" value="0" /></div>`;
             }
+            // テスト用デフォルト（x^4 + 5x^2 + 4 = 0）
+            if (n === 4) {
+                document.getElementById('coeff0').value = "1";
+                document.getElementById('coeff1').value = "0";
+                document.getElementById('coeff2').value = "5";
+                document.getElementById('coeff3').value = "0";
+                document.getElementById('coeff4').value = "4";
+            }
+            document.getElementById('calcButton').disabled = false;
+            document.getElementById('progress').innerText = "係数を入力して「計算開始」を押してください。";
+            document.getElementById('results').innerHTML = "";
         }
 
         async function startCalculation() {
             if (n === null) { alert('生成ボタンを押してください'); return; }
 
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
+            const calcButton = document.getElementById('calcButton');
+            const genButton = document.getElementById('genButton');
             const prog = document.getElementById('progress');
             const resDiv = document.getElementById('results');
+
+            // ❌ 二重クリックバグ防止のためにUIをロック
+            calcButton.disabled = true;
+            genButton.disabled = true;
             resDiv.innerHTML = '';
             
-            for (let i = 1; i <= n; i++) sIter[i] = 0;
+            try {
+                for (let i = 0; i <= n; i++) {
+                    const val = document.getElementById('coeff' + i).value;
+                    if(val.trim() === "") throw new Error();
+                    sa[i] = new Decimal(val);
+                }
+            } catch(e) {
+                alert('係数はすべて数値で入力してください。');
+                calcButton.disabled = false;
+                genButton.disabled = false;
+                return;
+            }
+
+            for (let i = 1; i <= n; i++) {
+                sIter[i] = 0;
+                sErr[i] = new Decimal(1); // 初期誤差を大きめにセット
+            }
 
             let a0 = sa[0];
+            if (a0.isZero()) {
+                alert("最高次の係数が0です。次数を下げてください。");
+                calcButton.disabled = false;
+                genButton.disabled = false;
+                return;
+            }
             for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
 
             let sp = Decimal.acos(-1);
             for (let j = 1; j <= n; j++) {
-                let ang = 2 * sp * j / n;
+                let ang = new Decimal(2).mul(sp).mul(j).div(n);
                 sr[j] = new Decimal(2).mul(Decimal.cos(ang));
                 si[j] = new Decimal(2).mul(Decimal.sin(ang));
             }
 
-            // セイフティロックを10,000回に修正
             const maxIter = 10000;
+            let isConvergedGlobal = false;
+
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
                     prog.innerText = `計算中... ループ回数: ${k} / ${maxIter}`;
@@ -91,6 +133,8 @@
                         dr = nr;
                     }
                     let mag = dr.mul(dr).add(di.mul(di));
+                    if (mag.isZero()) mag = new Decimal("1e-100");
+
                     let ur = (pr.mul(dr).add(pi.mul(di))).div(mag);
                     let ui = (pi.mul(dr).sub(pr.mul(di))).div(mag);
 
@@ -102,9 +146,24 @@
 
                     if (sErr[i].gt("1e-45")) bContinue = true;
                 }
-                if (!bContinue) break;
+                if (!bContinue) {
+                    isConvergedGlobal = true;
+                    break;
+                }
             }
 
+            // ⭕ UIロック解除（最初に入力待ち状態へ戻る準備）
+            calcButton.disabled = false;
+            genButton.disabled = false;
+
+            // ⭕ 【最重要バグ修正】収束しなかった場合のエラー検知と最初への復帰
+            if (!isConvergedGlobal) {
+                prog.innerHTML = "<span class='err-warn'>【警告】セーフティロック（10,000回）までに収束しませんでした。</span>";
+                alert("【計算失敗】最大反復回数（10,000回）以内にすべての解が収束しませんでした。\n係数データ（ウィルキンソン係数など）を見直してください。");
+                return; // ここで安全に処理を打ち切り、最初の状態を維持して戻る
+            }
+
+            // 正常収束時のみ以下を出力
             prog.innerText = "計算完了";
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
