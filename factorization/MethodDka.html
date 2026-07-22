@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MethodDka - Factorization Final Edition (10000 limit) Fixed</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+    <script src="https://cloudflare.com"></script>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -45,7 +45,6 @@
             }
             document.getElementById('fields').innerHTML = h;
 
-            // テスト用デフォルト（x^4 + 5x^2 + 4 = 0）
             if (n === 4) {
                 document.getElementById('c0').value = "1";
                 document.getElementById('c1').value = "0";
@@ -69,7 +68,6 @@
             const prog = document.getElementById('progress');
             const resDiv = document.getElementById('res');
 
-            // ❌ 多重実行（フリーズ原因）を防ぐため、ボタンをロック
             calcButton.disabled = true;
             genButton.disabled = true;
             resDiv.innerHTML = '';
@@ -96,14 +94,13 @@
             }
             for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
 
-            // 初期化
             let sp = Decimal.acos(-1);
             for (let i = 1; i <= n; i++) {
                 let ang = new Decimal(2).mul(sp).mul(i).div(n);
                 sr[i] = new Decimal(2).mul(Decimal.cos(ang));
                 si[i] = new Decimal(2).mul(Decimal.sin(ang));
                 sIter[i] = 0;
-                sErr[i] = new Decimal(1); // 初期誤差
+                sErr[i] = new Decimal(1);
             }
 
             const maxIter = 10000;
@@ -149,21 +146,21 @@
                 }
             }
 
-            // ⭕ ボタンのロックを解除（最初に戻れる状態へ復帰）
             calcButton.disabled = false;
             genButton.disabled = false;
 
-            // ⭕ 【重要バグ修正】1万回ループで収束しなかった場合の処理
+            // ⭕ 【ご指定のエラーメッセージ・クリア処理を適用】
             if (!isConvergedGlobal) {
-                prog.innerHTML = "<span class='err-warn'>【警告】セーフティロック（10,000回）までに収束しませんでした。</span>";
-                alert("【因数分解失敗】最大反復回数（10,000回）以内に解が収束しませんでした。\n係数の設定（ウィルキンソン多項式など）を見直してください。");
-                return; // ここで安全に処理を打ち切り、最初の状態を維持して戻る
+                resDiv.innerHTML = ""; // 前回の古い結果を綺麗にクリア
+                prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
+                
+                alert("収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。");
+                return; // 入力値は残したまま安全に終了
             }
 
             // 正常収束時のみ以下を出力
             prog.innerText = "計算完了";
             resDiv.innerHTML = '<h3>因数分解結果:</h3>';
-            
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
                 let re = Math.round(Number(sr[i]));
