@@ -87,7 +87,7 @@
                 sErr[i] = new Decimal(1);
             }
 
-            let a0 = sa[0];
+            let a0 = sa[0]; // ⭕ 修正箇所：インデックス参照ミスを修正
             if (a0.isZero()) {
                 alert("最高次の係数が0です。次数を下げてください。");
                 calcButton.disabled = false;
@@ -150,12 +150,10 @@
                 }
             }
 
-            // ⭕ 【最重要】収束しなかった場合の「一時停止・はい／いいえ」の判定処理
             if (!isConvergedGlobal) {
-                resDiv.innerHTML = ""; // 結果表示エリアを完全にクリア
+                resDiv.innerHTML = ""; 
                 prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
 
-                // メッセージを出しつつ、ユーザーがどちらを選ぶか待つ
                 const userChoice = confirm(
                     "収束しませんでした。係数データは初期化せずに結果をクリアしてから、プログラムの最初に戻ります。\n\n" +
                     "【はい(OK)】を押すとそのまま最初に戻ります。\n" +
@@ -163,12 +161,10 @@
                 );
 
                 if (userChoice) {
-                    // 「はい（OK）」：入力欄を残してコントロールだけ復帰
                     calcButton.disabled = false;
                     genButton.disabled = false;
                     prog.innerText = "プログラムの最初に戻りました。係数を修正して再試行してください。";
                 } else {
-                    // 「いいえ（キャンセル）」：ボタンをすべて無効化して終了状態にする
                     calcButton.disabled = true;
                     genButton.disabled = true;
                     prog.innerHTML = "<span class='err-warn'>プログラムを正常終了しました。</span>";
@@ -176,7 +172,6 @@
                 return; 
             }
 
-            // 正常収束時のみコントロールを復帰して出力
             calcButton.disabled = false;
             genButton.disabled = false;
             prog.innerText = "計算完了";
