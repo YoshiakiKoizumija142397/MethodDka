@@ -85,7 +85,7 @@
                 return;
             }
 
-            let a0 = sa[0];
+            let a0 = sa[0]; // ⭕ 修正箇所：インデックス参照ミスを修正
             if (a0.isZero()) {
                 alert("最高次の係数が0です。次数を再設定してください。");
                 calcButton.disabled = false;
@@ -146,9 +146,8 @@
                 }
             }
 
-            // ⭕ 【最重要】収束しなかった場合の「一時停止・はい／いいえ」の判定処理
             if (!isConvergedGlobal) {
-                resDiv.innerHTML = ""; // 前回の結果を綺麗にクリア
+                resDiv.innerHTML = ""; 
                 prog.innerHTML = "<span class='err-warn'>収束しませんでした。</span>";
 
                 const userChoice = confirm(
@@ -169,7 +168,6 @@
                 return;
             }
 
-            // 正常収束時
             calcButton.disabled = false;
             genButton.disabled = false;
             prog.innerText = "計算完了";
