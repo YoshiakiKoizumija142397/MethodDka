@@ -2,37 +2,56 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - Factorization Final Edition (10000 limit)</title>
+    <title>MethodDka - High Precision (Error/Iteration Display)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: Arial, sans-serif;
             padding: 20px;
-            background: #f4f4f9;
+            background-color: #f9f9f9;
         }
 
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
             padding: 20px;
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .input-field {
+            margin-bottom: 10px;
+        }
+
+            .input-field input {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         #progress {
-            font-family: monospace;
+            margin: 15px 0;
             font-weight: bold;
             color: #007bff;
-            margin: 15px 0;
         }
 
         .result {
-            margin-top: 15px;
-            padding: 12px;
-            background: #fff;
-            border-left: 5px solid #007bff;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
             font-family: monospace;
+            border-left: 5px solid #007bff;
         }
 
         .summary {
@@ -40,9 +59,9 @@
             padding: 15px;
             background-color: #d1e7dd;
             border-radius: 4px;
+            font-family: monospace;
             border-left: 5px solid #0f5132;
             color: #0f5132;
-            font-family: monospace;
         }
 
         .err-warn {
@@ -58,47 +77,56 @@
 </head>
 <body>
     <div class="container">
-        <h1>因数分解専用：MethodDka</h1>
-        <div>最高次数: <input type="number" id="deg" value="4"> <button onclick="gen()">生成</button></div>
-        <div id="fields" style="margin:15px 0;"></div>
-        <button onclick="startCalc()" style="padding:10px 20px; background:#28a745; color:white; border:none; cursor:pointer;">因数分解開始</button>
+        <h1>MethodDka (50桁・誤差/回数表示版)</h1>
+        <div class="input-field">
+            <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
+        </div>
+        <button class="button" onclick="createFields()">生成</button>
+        <div id="coefficients"></div>
+        <button class="button" onclick="startCalculation()">計算開始</button>
         <div id="progress"></div>
-        <div id="res"></div>
+        <div id="results"></div>
     </div>
 
     <script>
         Decimal.set({ precision: 50 });
-        let n = null, sa = [], sr = [], si = [], sErr = [], sIter = [];
+        let n = null;
+        let sa = [], sr = [], si = [], sErr = [], sIter = [];
 
-        function gen() {
-            n = parseInt(document.getElementById('deg').value);
-            let h = ''; for (let i = 0; i <= n; i++) h += `${n - i}次係数: <input type="text" id="c${i}" value="0"><br>`;
-            document.getElementById('fields').innerHTML = h;
+        function createFields() {
+            n = parseInt(document.getElementById('maxDegree').value);
+            const div = document.getElementById('coefficients');
+            div.innerHTML = '';
+            for (let i = 0; i <= n; i++) {
+                div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" value="0" /></div>`;
+            }
         }
 
-        async function startCalc() {
-            if (n === null || document.getElementById('fields').innerHTML === '') {
-                alert('生成ボタンを押してください');
-                return;
-            }
+        async function startCalculation() {
+            if (n === null) { alert('生成ボタンを押してください'); return; }
 
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('c' + i).value || "0");
+            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
+            const prog = document.getElementById('progress');
+            const resDiv = document.getElementById('results');
+            resDiv.innerHTML = '';
+
+            for (let i = 1; i <= n; i++) sIter[i] = 0;
+
             let a0 = sa[0];
             for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
 
-            // 初期化
-            for (let i = 1; i <= n; i++) {
-                let ang = 2 * Math.PI * i / n;
-                sr[i] = new Decimal(2).mul(Math.cos(ang));
-                si[i] = new Decimal(2).mul(Math.sin(ang));
-                sIter[i] = 0;
+            let sp = Decimal.acos(-1);
+            for (let j = 1; j <= n; j++) {
+                let ang = 2 * sp * j / n;
+                sr[j] = new Decimal(2).mul(Decimal.cos(ang));
+                si[j] = new Decimal(2).mul(Decimal.sin(ang));
             }
 
             // セイフティロックを10,000回に修正
             const maxIter = 10000;
             for (let k = 1; k <= maxIter; k++) {
                 if (k % 20 === 0) {
-                    document.getElementById('progress').innerText = `計算中... ループ回数: ${k}/${maxIter}`;
+                    prog.innerText = `計算中... ループ回数: ${k} / ${maxIter}`;
                     await new Promise(r => setTimeout(r, 0));
                 }
 
@@ -121,9 +149,13 @@
                         dr = nr;
                     }
                     let mag = dr.mul(dr).add(di.mul(di));
-                    sr[i] = sr[i].sub((pr.mul(dr).add(pi.mul(di))).div(mag));
-                    si[i] = si[i].sub((pi.mul(dr).sub(pr.mul(di))).div(mag));
-                    sErr[i] = pr.abs().add(pi.abs());
+                    let ur = (pr.mul(dr).add(pi.mul(di))).div(mag);
+                    let ui = (pi.mul(dr).sub(pr.mul(di))).div(mag);
+
+                    sr[i] = sr[i].sub(ur);
+                    si[i] = si[i].sub(ui);
+
+                    sErr[i] = ur.abs().add(ui.abs());
                     sIter[i] = k;
 
                     if (sErr[i].gt("1e-45")) bContinue = true;
@@ -131,26 +163,21 @@
                 if (!bContinue) break;
             }
 
-            document.getElementById('progress').innerText = "計算完了";
-            let resDiv = document.getElementById('res');
-            resDiv.innerHTML = '<h3>因数分解結果:</h3>';
-
+            prog.innerText = "計算完了";
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
-                let re = Math.round(Number(sr[i]));
-                let im = Math.round(Number(si[i]));
                 let isBad = sErr[i].gte("1e-44");
                 totalIterations += sIter[i];
-
-                let term = im === 0 ? `${re}` : (re + (im > 0 ? ' + ' + im + 'i' : ' - ' + Math.abs(im) + 'i'));
                 resDiv.innerHTML += `<div class="result">
-                        因数${i}: (x - ${term})<br>
-                        <span class="${isBad ? 'err-warn' : 'err-ok'}">収束誤差: ${sErr[i].toExponential(4)}</span><br>
-                        <strong>収束反復回数: ${sIter[i]}回</strong>
-                    </div>`;
+                            解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
+                            <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
+                            <strong>収束反復回数: ${sIter[i]}回</strong>
+                        </div>`;
             }
-            resDiv.innerHTML += `<div class="summary"><strong>全合計反復回数: ${totalIterations}回</strong></div>`;
+            resDiv.innerHTML += `<div class="summary">
+                        <strong>全合計反復回数: ${totalIterations}回</strong>
+                    </div>`;
         }
     </script>
 </body>
-</html>
+</html>　元のバージョンこれから修正しなおししてください？
