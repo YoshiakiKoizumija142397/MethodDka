@@ -5,74 +5,16 @@
     <title>MethodDka - High Precision (Error/Iteration Display)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .input-field {
-            margin-bottom: 10px;
-        }
-
-            .input-field input {
-                width: 100%;
-                padding: 8px;
-                box-sizing: border-box;
-            }
-
-        .button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        #progress {
-            margin: 15px 0;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .result {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            font-family: monospace;
-            border-left: 5px solid #007bff;
-        }
-
-        .summary {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #d1e7dd;
-            border-radius: 4px;
-            font-family: monospace;
-            border-left: 5px solid #0f5132;
-            color: #0f5132;
-        }
-
-        .err-warn {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        .err-ok {
-            color: #28a745;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .input-field { margin-bottom: 10px; }
+        .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #progress { margin: 15px 0; font-weight: bold; color: #007bff; }
+        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; }
+        .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
+        .err-warn { color: #dc3545; font-weight: bold; }
+        .err-ok { color: #28a745; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -109,7 +51,7 @@
             const prog = document.getElementById('progress');
             const resDiv = document.getElementById('results');
             resDiv.innerHTML = '';
-
+            
             for (let i = 1; i <= n; i++) sIter[i] = 0;
 
             let a0 = sa[0];
@@ -169,15 +111,15 @@
                 let isBad = sErr[i].gte("1e-44");
                 totalIterations += sIter[i];
                 resDiv.innerHTML += `<div class="result">
-                            解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
-                            <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
-                            <strong>収束反復回数: ${sIter[i]}回</strong>
-                        </div>`;
+                    解${i}: ${sr[i].toFixed(40)} + (${si[i].toFixed(40)})i<br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
+                    <strong>収束反復回数: ${sIter[i]}回</strong>
+                </div>`;
             }
             resDiv.innerHTML += `<div class="summary">
-                        <strong>全合計反復回数: ${totalIterations}回</strong>
-                    </div>`;
+                <strong>全合計反復回数: ${totalIterations}回</strong>
+            </div>`;
         }
     </script>
 </body>
-</html>　元のバージョンこれから修正しなおししてください？
+</html>
