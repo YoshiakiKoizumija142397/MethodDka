@@ -1,202 +1,79 @@
-<!--
-================================================================================
-  MethodDka — 高速・高精度な多項式解法 & 因数分解 Web アプリ
-================================================================================
-
-  【概要】
-  MethodDka は、HTML と JavaScript だけで動作する軽量・高速・高精度な
-  多項式解法・因数分解ツールです。
-  DKA法（Durand-Kerner法）を採用し、50桁高精度演算とリアルタイム表示切替
-  （トグルスイッチ）を統合したマスター版として設計されています。
-
-  【主な機能・特徴】
-  - 50桁高精度 ＆ 因数分解表示の完全統合:
-    単一画面上で「50桁高精度解表示」と「因数分解表示（小数第1位四捨五入）」を
-    トグルスイッチ一つで即座に切り替え可能です。
-  - 1ファイル構造化（単一マスターコード）:
-    高精度版と因数分解専用版を統合し、ルート直下の MethodDka.html 1ファイルに
-    コードを一元化しています。
-  - 完全マルチプラットフォーム & オフライン対応:
-    Windows, Mac, Linux, Chromebook, iOS, Android 等、Webブラウザが開く
-    すべての環境でインストール不要・オフライン動作します。
-
-  【技術仕様】
-  - アルゴリズム: DKA法（Durand-Kerner法）による並列収束探索
-  - 高精度計算エンジン: Decimal.js ( precision: 50 )
-  - レンダリング: 動的DOM描画（計算再実行なしのモード切り替え）
-
-  【ライセンス】 MIT License
-  【開発者】 Yoshiaki Koizumi
-================================================================================
--->
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - High Precision & Factorization</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MethodDka - 高精度多項式解法 & 因数分解ツール</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .input-field { margin-bottom: 10px; }
-        .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
-        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; }
-        #progress { margin: 15px 0; font-weight: bold; color: #007bff; }
-        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; word-break: break-all; }
-        .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
-        .err-warn { color: #dc3545; font-weight: bold; }
-        .err-ok { color: #28a745; font-weight: bold; }
-
-        /* トグルスイッチ用デザイン */
-        .toggle-box { margin: 15px 0; padding: 12px; background: #f1f3f5; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ced4da; }
-        .switch { position: relative; display: inline-block; width: 48px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #adb5bd; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #007bff; }
-        input:checked + .slider:before { transform: translateX(24px); }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        p {
+            line-height: 1.6;
+            color: #6c757d;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 28px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .features {
+            text-align: left;
+            margin-top: 25px;
+            background: #e9ecef;
+            padding: 15px 20px;
+            border-radius: 6px;
+        }
+        .features li {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>MethodDka (50桁高精度 & 因数分解統合版)</h1>
-        <div class="input-field">
-            <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
-        </div>
-        <button class="button" onclick="createFields()">生成</button>
-        <div id="coefficients" style="margin-top: 10px;"></div>
-
-        <!-- 表示モード切替トグル -->
-        <div class="toggle-box">
-            <span id="toggleText" style="font-weight: bold; color: #333;">モード: 50桁高精度解表示</span>
-            <label class="switch">
-                <input type="checkbox" id="modeToggle" onchange="renderResults()">
-                <span class="slider"></span>
-            </label>
+        <h1>MethodDka</h1>
+        <p>DKA法（Durand-Kerner法）を用いた高精度な多項式解法 & 因数分解 Web アプリ</p>
+        
+        <div class="features">
+            <h3>✨ 主な機能・特徴</h3>
+            <ul>
+                <li><strong>50桁高精度演算:</strong> Decimal.js による超高精度計算。</li>
+                <li><strong>リアルタイムモード切替:</strong> 「50桁解表示」と「因数分解表示（四捨五入）」をトグルで即座に変更。</li>
+                <li><strong>完全ブラウザ完結:</strong> インストール不要。オフラインでも動作可能。</li>
+            </ul>
         </div>
 
-        <button class="button" onclick="startCalculation()">計算開始</button>
-        <div id="progress"></div>
-        <div id="results"></div>
+        <a href="MethodDka.html" class="btn">アプリを起動する</a>
     </div>
-
-    <script>
-        Decimal.set({ precision: 50 });
-        let n = null;
-        let sa = [], sr = [], si = [], sErr = [], sIter = [];
-
-        function createFields() {
-            n = parseInt(document.getElementById('maxDegree').value);
-            const div = document.getElementById('coefficients');
-            div.innerHTML = '';
-            for (let i = 0; i <= n; i++) {
-                div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" value="0" /></div>`;
-            }
-        }
-
-        async function startCalculation() {
-            if (n === null) {
-                alert('生成ボタンを押してください');
-                return;
-            }
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
-            const prog = document.getElementById('progress');
-            prog.innerText = '';
-            
-            for (let i = 1; i <= n; i++) sIter[i] = 0;
-            let a0 = sa[0];
-            for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
-
-            let sp = Decimal.acos(-1);
-            for (let j = 1; j <= n; j++) {
-                let ang = 2 * sp * j / n;
-                sr[j] = new Decimal(2).mul(Decimal.cos(ang));
-                si[j] = new Decimal(2).mul(Decimal.sin(ang));
-            }
-
-            const maxIter = 10000;
-            for (let k = 1; k <= maxIter; k++) {
-                if (k % 20 === 0) {
-                    prog.innerText = `計算中... ループ回数: ${k} / ${maxIter}`;
-                    await new Promise(r => setTimeout(r, 0));
-                }
-                let bContinue = false;
-                for (let i = 1; i <= n; i++) {
-                    if (sErr[i] && sErr[i].lte("1e-45")) continue;
-
-                    let pr = sa[0], pi = new Decimal(0);
-                    for (let j = 1; j <= n; j++) {
-                        let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
-                        pi = pr.mul(si[i]).add(pi.mul(sr[i]));
-                        pr = nr;
-                    }
-
-                    let dr = new Decimal(1), di = new Decimal(0);
-                    for (let j = 1; j <= n; j++) {
-                        if (i === j) continue;
-                        let diffR = sr[i].sub(sr[j]), diffI = si[i].sub(si[j]);
-                        let nr = dr.mul(diffR).sub(di.mul(diffI));
-                        di = dr.mul(diffI).add(di.mul(diffR));
-                        dr = nr;
-                    }
-
-                    let mag = dr.mul(dr).add(di.mul(di));
-                    let ur = (pr.mul(dr).add(pi.mul(di))).div(mag);
-                    let ui = (pi.mul(dr).sub(pr.mul(di))).div(mag);
-
-                    sr[i] = sr[i].sub(ur);
-                    si[i] = si[i].sub(ui);
-                    sErr[i] = ur.abs().add(ui.abs());
-                    sIter[i] = k;
-
-                    if (sErr[i].gt("1e-45")) bContinue = true;
-                }
-                if (!bContinue) break;
-            }
-
-            prog.innerText = "計算完了";
-            renderResults();
-        }
-
-        // 表示のレンダリング関数（トグルで即時切替可能）
-        function renderResults() {
-            if (sr.length <= 1) return;
-
-            const isFactorMode = document.getElementById('modeToggle').checked;
-            document.getElementById('toggleText').innerText = isFactorMode ? 
-                "モード: 因数分解表示（小数第1位で四捨五入）" : "モード: 50桁高精度解表示";
-
-            const resDiv = document.getElementById('results');
-            resDiv.innerHTML = '';
-
-            let totalIterations = 0;
-            for (let i = 1; i <= n; i++) {
-                let isBad = sErr[i].gte("1e-44");
-                totalIterations += sIter[i];
-
-                let outputStr = "";
-                if (isFactorMode) {
-                    // 因数分解表示（四捨五入）
-                    let re = Math.round(Number(sr[i]));
-                    let im = Math.round(Number(si[i]));
-                    let term = im === 0 ? `${re}` : (re + (im > 0 ? ' + ' + im + 'i' : ' - ' + Math.abs(im) + 'i'));
-                    outputStr = `因数${i}: (x - ${term})`;
-                } else {
-                    // 50桁高精度表示（＋の後ろで改行）
-                    outputStr = `解${i}: ${sr[i].toFixed(40)} + <br>(${si[i].toFixed(40)})i`;
-                }
-
-                resDiv.innerHTML += `<div class="result">
-                    ${outputStr}<br>
-                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
-                    <strong>収束反復回数: ${sIter[i]}回</strong>
-                </div>`;
-            }
-
-            resDiv.innerHTML += `<div class="summary">
-                <strong>全合計反復回数: ${totalIterations}回</strong>
-            </div>`;
-        }
-    </script>
 </body>
 </html>
