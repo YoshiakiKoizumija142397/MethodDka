@@ -1,39 +1,52 @@
 <!--
 ================================================================================
-  MethodDka — 高速・高精度な多項式解法 & 因数分解 Web アプリ
+  MethodDka — 高速・高精度な多項式解法 & 因数分解 Web アプリ (200次対応マスター版)
 ================================================================================
 
   【概要】
-  MethodDka は、HTML と JavaScript だけで動作する軽量・高速・高精度な
-  多項式解法・因数分解ツールです。
-  DKA法（Durand-Kerner法）を採用し、50桁高精度演算とリアルタイム表示切替
-  （トグルスイッチ）を統合したマスター版として設計されています。
+  MethodDka は、HTML と JavaScript だけで動作する軽量・高速・超高精度な
+  多項式解法・因数分解 Web アプリケーションです。
+  DKA法（Durand-Kerner法）を採用し、Decimal.js による 50桁高精度演算、
+  最大200次対応オートスケーリング処理、および係数一括ペースト機能を統合しています。
 
   【主な機能・特徴】
-  - 50桁高精度 ＆ 因数分解表示の完全統合:
+  - 📋 係数データの一括ペースト機能:
+    スペース、改行、カンマ区切りのテキスト（例: 1 -55 1320 -18150 ...）を
+    一括で貼り付けるだけで、全係数を各入力欄へ一発セットできます。
+  - ⚡ 最大 200 次高次多項式 ＆ オートスケーリング（規格化）対応:
+    高次計算時や巨大・極小な係数が混在する場合でも、自動スケーリング処理によって
+    オーバーフロー・アンダーフローを防止し、安定して計算を実行します。
+  - 🎯 50 桁高精度解表示 ＆ 因数分解モードの即時切替:
     単一画面上で「50桁高精度解表示」と「因数分解表示（小数第1位四捨五入）」を
-    トグルスイッチ一つで即座に切り替え可能です。
-  - 1ファイル構造化（単一マスターコード）:
-    高精度版と因数分解専用版を統合し、ルート直下の MethodDka.html 1ファイルに
-    コードを一元化しています。
-  - 完全マルチプラットフォーム & オフライン対応:
-    Windows, Mac, Linux, Chromebook, iOS, Android 等、Webブラウザが開く
-    すべての環境でインストール不要・オフライン動作します。
+    トグルスイッチ一つで即座に切り替え可能です（再計算なし）。
+  - 🌐 完全マルチプラットフォーム ＆ オフライン対応:
+    サーバー不要で単一の HTML ファイルとして動作するため、Windows, Mac, Linux,
+    iOS, Android, ChromeOS 等のあらゆるブラウザでローカル・オフライン動作します。
 
-  【技術仕様】
-  - アルゴリズム: DKA法（Durand-Kerner法）による並列収束探索
+  【技術仕様 ＆ 学術注記】
+  - アルゴリズム: DKA法（Durand-Kerner 法）による並列収束探索
   - 高精度計算エンジン: Decimal.js ( precision: 50 )
-  - レンダリング: 動的DOM描画（計算再実行なしのモード切り替え）
+  - スケーリング手法: 係数の幾何平均スケール因子 S = |a_n / a_0|^(1/n) による規格化処理
 
-  【ライセンス】 MIT License
-  【開発者】 Yoshiaki Koizumi
+  💡 補足（悪条件多項式について）:
+  本アプリはオートスケーリング処理により最大200次までの計算に対応していますが、
+  ウィルキンソン多項式のように「根が実軸上に極めて密集して並ぶ悪条件多項式
+  （Ill-conditioned polynomials）」では、並列円周初期値を用いる DKA 法の性質上、
+  高次（15次以上）で複素数領域の鞍点へ引き込まれる（偽収束する）場合があります。
+  通常分散された多項式では高次まで正常に動作します。
+
+  【公式情報】
+  - Web アプリ: https://YoshiakiKoizumija142397.github.io/MethodDka/MethodDka.html
+  - リポジトリ: https://github.com/YoshiakiKoizumija142397/MethodDka
+  - ライセンス: MIT License
+  - 開発者: Yoshiaki Koizumi (YoshiakiKoizumija142397)
 ================================================================================
 -->
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MethodDka - High Precision & Factorization</title>
+    <title>MethodDka - High Precision & Factorization (Max 200 Degree)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
@@ -41,11 +54,16 @@
         .input-field { margin-bottom: 10px; }
         .input-field input { width: 100%; padding: 8px; box-sizing: border-box; }
         .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; }
+        .button-secondary { background-color: #6c757d; }
         #progress { margin: 15px 0; font-weight: bold; color: #007bff; }
         .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; font-family: monospace; border-left: 5px solid #007bff; word-break: break-all; }
         .summary { margin-top: 15px; padding: 15px; background-color: #d1e7dd; border-radius: 4px; font-family: monospace; border-left: 5px solid #0f5132; color: #0f5132; }
         .err-warn { color: #dc3545; font-weight: bold; }
         .err-ok { color: #28a745; font-weight: bold; }
+
+        /* 一括貼り付けエリアのデザイン */
+        .paste-box { margin-top: 15px; padding: 12px; background: #e9ecef; border-radius: 6px; border: 1px solid #ced4da; }
+        .paste-box textarea { width: 100%; height: 80px; margin-top: 5px; margin-bottom: 8px; box-sizing: border-box; font-family: monospace; font-size: 13px; }
 
         /* トグルスイッチ用デザイン */
         .toggle-box { margin: 15px 0; padding: 12px; background: #f1f3f5; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ced4da; }
@@ -59,11 +77,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>MethodDka (50桁高精度 & 因数分解統合版)</h1>
+        <h1>MethodDka (200次対応 & 50桁高精度)</h1>
         <div class="input-field">
-            <label>最高次数: <input type="number" id="maxDegree" value="4" /></label>
+            <label>最高次数 (最大200): <input type="number" id="maxDegree" value="4" min="1" max="200" /></label>
         </div>
         <button class="button" onclick="createFields()">生成</button>
+
+        <!-- 係数一括貼り付けエリア -->
+        <div id="pasteSection" class="paste-box" style="display: none;">
+            <label style="font-weight: bold; font-size: 14px;">📋 係数データの一括ペースト (スペース/改行/カンマ区切り):</label>
+            <textarea id="bulkCoeffs" placeholder="例: 1 -55 1320 -18150 ..."></textarea>
+            <button class="button button-secondary" style="padding: 6px 15px; font-size: 13px;" onclick="applyBulkCoefficients()">一括反映</button>
+        </div>
+
         <div id="coefficients" style="margin-top: 10px;"></div>
 
         <!-- 表示モード切替トグル -->
@@ -84,14 +110,39 @@
         Decimal.set({ precision: 50 });
         let n = null;
         let sa = [], sr = [], si = [], sErr = [], sIter = [];
+        let scaleFactor = new Decimal(1);
 
         function createFields() {
             n = parseInt(document.getElementById('maxDegree').value);
+            if (isNaN(n) || n < 1 || n > 200) {
+                alert('次数は1から200の範囲で指定してください');
+                return;
+            }
             const div = document.getElementById('coefficients');
             div.innerHTML = '';
             for (let i = 0; i <= n; i++) {
                 div.innerHTML += `<div class="input-field"><label>${n - i}次の係数:</label><input type="text" id="coeff${i}" value="0" /></div>`;
             }
+            document.getElementById('pasteSection').style.display = 'block';
+        }
+
+        function applyBulkCoefficients() {
+            const rawText = document.getElementById('bulkCoeffs').value.trim();
+            if (!rawText) {
+                alert('係数データテキストを入力してください');
+                return;
+            }
+            const values = rawText.split(/[\s,]+/).filter(v => v.length > 0);
+            
+            if (values.length < n + 1) {
+                alert(`入力されたデータ件数 (${values.length}件) が、必要な係数の数 (${n + 1}件) より少なくなっています。`);
+                return;
+            }
+
+            for (let i = 0; i <= n; i++) {
+                document.getElementById('coeff' + i).value = values[i];
+            }
+            alert(`${n + 1} 件の係数を一括セットしました！`);
         }
 
         async function startCalculation() {
@@ -99,30 +150,59 @@
                 alert('生成ボタンを押してください');
                 return;
             }
-            for (let i = 0; i <= n; i++) sa[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
-            const prog = document.getElementById('progress');
-            prog.innerText = '';
             
-            for (let i = 1; i <= n; i++) sIter[i] = 0;
-            let a0 = sa[0];
-            for (let i = 0; i <= n; i++) sa[i] = sa[i].div(a0);
-
-            let sp = Decimal.acos(-1);
-            for (let j = 1; j <= n; j++) {
-                let ang = 2 * sp * j / n;
-                sr[j] = new Decimal(2).mul(Decimal.cos(ang));
-                si[j] = new Decimal(2).mul(Decimal.sin(ang));
+            let origA = [];
+            for (let i = 0; i <= n; i++) {
+                origA[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
             }
 
-            const maxIter = 10000;
+            if (origA[0].isZero()) {
+                alert('最高次の係数は0以外を入力してください');
+                return;
+            }
+
+            const prog = document.getElementById('progress');
+            prog.innerText = 'スケーリング計算中...';
+
+            // --- 1. オートスケーリング（規格化）処理 ---
+            if (!origA[n].isZero()) {
+                scaleFactor = origA[n].abs().div(origA[0].abs()).pow(new Decimal(1).div(n));
+            } else {
+                scaleFactor = new Decimal(1);
+            }
+
+            sa = [];
+            let a0 = origA[0];
+            for (let i = 0; i <= n; i++) {
+                let sPow = scaleFactor.pow(i);
+                sa[i] = origA[i].div(a0.mul(sPow));
+            }
+
+            // --- 2. 初期値の設定 ---
+            sErr = [];
+            for (let i = 1; i <= n; i++) sIter[i] = 0;
+            let sp = Decimal.acos(-1);
+            let initR = new Decimal(1.5);
+
+            for (let j = 1; j <= n; j++) {
+                let ang = new Decimal(2).mul(sp).mul(j).div(n);
+                let perturbation = new Decimal(1).add(new Decimal(j).mul("0.01"));
+                sr[j] = initR.mul(perturbation).mul(Decimal.cos(ang));
+                si[j] = initR.mul(perturbation).mul(Decimal.sin(ang));
+            }
+
+            // --- 3. DKA法 反復計算 ---
+            const maxIter = 20000;
+            const targetTolerance = new Decimal("1e-40");
+
             for (let k = 1; k <= maxIter; k++) {
-                if (k % 20 === 0) {
-                    prog.innerText = `計算中... ループ回数: ${k} / ${maxIter}`;
+                if (k % 25 === 0) {
+                    prog.innerText = `計算中... ループ回数: ${k} / ${maxIter} (次数: ${n})`;
                     await new Promise(r => setTimeout(r, 0));
                 }
                 let bContinue = false;
                 for (let i = 1; i <= n; i++) {
-                    if (sErr[i] && sErr[i].lte("1e-45")) continue;
+                    if (sErr[i] && sErr[i].lte(targetTolerance)) continue;
 
                     let pr = sa[0], pi = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
@@ -149,16 +229,22 @@
                     sErr[i] = ur.abs().add(ui.abs());
                     sIter[i] = k;
 
-                    if (sErr[i].gt("1e-45")) bContinue = true;
+                    if (sErr[i].gt(targetTolerance)) bContinue = true;
                 }
                 if (!bContinue) break;
+            }
+
+            // --- 4. 元のスケールへの逆変換 ---
+            for (let i = 1; i <= n; i++) {
+                sr[i] = sr[i].mul(scaleFactor);
+                si[i] = si[i].mul(scaleFactor);
+                if (sErr[i]) sErr[i] = sErr[i].mul(scaleFactor);
             }
 
             prog.innerText = "計算完了";
             renderResults();
         }
 
-        // 表示のレンダリング関数（トグルで即時切替可能）
         function renderResults() {
             if (sr.length <= 1) return;
 
@@ -171,30 +257,43 @@
 
             let totalIterations = 0;
             for (let i = 1; i <= n; i++) {
-                let isBad = sErr[i].gte("1e-44");
+                let errVal = sErr[i] || new Decimal(1);
+                let isBad = errVal.gte("1e-35");
                 totalIterations += sIter[i];
 
                 let outputStr = "";
                 if (isFactorMode) {
-                    // 因数分解表示（四捨五入）
                     let re = Math.round(Number(sr[i]));
                     let im = Math.round(Number(si[i]));
-                    let term = im === 0 ? `${re}` : (re + (im > 0 ? ' + ' + im + 'i' : ' - ' + Math.abs(im) + 'i'));
-                    outputStr = `因数${i}: (x - ${term})`;
+
+                    let rootStr = "";
+                    if (im === 0) {
+                        rootStr = `${re}`;
+                    } else {
+                        let imAbs = Math.abs(im);
+                        let imStr = imAbs === 1 ? "i" : `${imAbs}i`;
+                        if (re === 0) {
+                            rootStr = im > 0 ? `${imStr}` : `-${imStr}`;
+                        } else {
+                            rootStr = im > 0 ? `${re} + ${imStr}` : `${re} - ${imStr}`;
+                        }
+                    }
+
+                    outputStr = `因数${i}: (x - (${rootStr}))`;
                 } else {
-                    // 50桁高精度表示（＋の後ろに改行を追加）
                     outputStr = `解${i}: ${sr[i].toFixed(40)} + <br>(${si[i].toFixed(40)})i`;
                 }
 
                 resDiv.innerHTML += `<div class="result">
                     ${outputStr}<br>
-                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${sErr[i].toExponential(4)}</span><br>
+                    <span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${errVal.toExponential(4)}</span><br>
                     <strong>収束反復回数: ${sIter[i]}回</strong>
                 </div>`;
             }
 
             resDiv.innerHTML += `<div class="summary">
-                <strong>全合計反復回数: ${totalIterations}回</strong>
+                <strong>全合計反復回数: ${totalIterations}回</strong><br>
+                <span>（適用スケール因子 S: ${scaleFactor.toFixed(10)}）</span>
             </div>`;
         }
     </script>
