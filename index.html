@@ -3,53 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodDka — 普遍的数学世界共通基盤技術リファレンス</title>
+    <title>MethodDka - 高精度多項式解法 & 因数分解ツール</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
-        h1 { color: #2c3e50; }
-        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; }
-        .update-box { background: #e7f3ff; padding: 15px; border-left: 5px solid #007bff; margin: 20px 0; border-radius: 4px; }
-        .button { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0; }
-        ul { list-style: none; padding: 0; }
-        li { margin: 12px 0; }
-        .note { font-size: 0.9em; color: #666; margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        p {
+            line-height: 1.6;
+            color: #6c757d;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 28px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .features {
+            text-align: left;
+            margin-top: 25px;
+            background: #e9ecef;
+            padding: 15px 20px;
+            border-radius: 6px;
+        }
+        .features li {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>MethodDka</h1>
+        <p>DKA法（Durand-Kerner法）を用いた高精度な多項式解法 & 因数分解 Web アプリ</p>
+        
+        <div class="features">
+            <h3>✨ 主な機能・特徴</h3>
+            <ul>
+                <li><strong>50桁高精度演算:</strong> Decimal.js による超高精度計算。</li>
+                <li><strong>リアルタイムモード切替:</strong> 「50桁解表示」と「因数分解表示（四捨五入）」をトグルで即座に変更。</li>
+                <li><strong>完全ブラウザ完結:</strong> インストール不要。オフラインでも動作可能。</li>
+            </ul>
+        </div>
 
-    <header>
-        <h1>MethodDka (v2.1.0)</h1>
-        <p>DKA法とホーナー法を統合した、世界基準の高精度数値解析リファレンスです。</p>
-        <a href="main/MethodDka.html" class="button">高精度版（Main）を起動</a>
-    </header>
-
-    <section class="update-box">
-        <h3>最新アップデート (v2.1.0)</h3>
-        <p>各解ごとの<strong>収束反復回数</strong>および<strong>全合計反復回数</strong>の表示機能を実装しました。計算プロセスの可視化により、アルゴリズムの挙動を定量的に把握でき、数値解析における診断バロメーターとしてご活用いただけます。</p>
-    </section>
-
-    <section id="about">
-        <h2>MethodDka について</h2>
-        <p>
-            MethodDka は、HTML と JavaScript だけで動作する軽量・高速・高精度な因数分解ツールです。<br>
-            インストール不要で、ブラウザから即座に動作する設計となっています。
-        </p>
-    </section>
-
-    <section id="links">
-        <h2>関連エディション・リソース</h2>
-        <ul>
-            <li><strong>メインリポジトリ:</strong> <a href="https://github.com/YoshiakiKoizumija142397/MethodDka">GitHub — MethodDka</a></li>
-            <li><strong>高精度版 (Main):</strong> <a href="main/MethodDka.html">起動する</a></li>
-            <li><strong>因数分解専用版:</strong> <a href="factorization/MethodDka.html">起動する</a></li>
-            <li><strong>オフライン版 (ZIP v2.1.0):</strong> <a href="https://github.com/YoshiakiKoizumija142397/MethodDka/archive/refs/tags/v2.1.0.zip">v2.1.0 をダウンロード</a></li>
-        </ul>
-    </section>
-
-    <footer class="note">
-        <p>※詳細な技術仕様や動作環境については、<a href="https://github.com/YoshiakiKoizumija142397/MethodDka#readme">リポジトリの README</a> をご参照ください。</p>
-        <p>&copy; Yoshiaki Koizumi</p>
-    </footer>
-
+        <a href="MethodDka.html" class="btn">アプリを起動する</a>
+    </div>
 </body>
 </html>
