@@ -3,77 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodDka - 高精度多項式解法 & 因数分解ツール</title>
+    <title>MethodDka — 高速・高精度な多項式解法 & 因数分解 Web アプリ</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e9ecef;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
-        .container {
-            max-width: 600px;
-            padding: 30px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+        header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 60px 20px;
             text-align: center;
         }
-        h1 {
-            color: #007bff;
-            margin-bottom: 10px;
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
         }
-        p {
-            line-height: 1.6;
-            color: #6c757d;
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 0 0 25px 0;
         }
-        .btn {
+
+        .btn-launch {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 28px;
             background-color: #28a745;
             color: white;
-            text-decoration: none;
+            font-size: 1.2rem;
             font-weight: bold;
-            font-size: 16px;
-            border-radius: 6px;
-            transition: background-color 0.2s;
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            transition: all 0.2s ease-in-out;
         }
-        .btn:hover {
+
+        .btn-launch:hover {
             background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
         }
-        .features {
-            text-align: left;
-            margin-top: 25px;
-            background: #e9ecef;
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 1.4rem;
+            margin-right: 12px;
+        }
+
+        .note-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
             padding: 15px 20px;
-            border-radius: 6px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #856404;
         }
-        .features li {
-            margin-bottom: 8px;
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <header>
         <h1>MethodDka</h1>
-        <p>DKA法（Durand-Kerner法）を用いた高精度な多項式解法 & 因数分解 Web アプリ</p>
+        <p>最大200次対応 ＆ 50桁高精度 多項式解法・因数分解 Web アプリ</p>
+        <a href="MethodDka.html" class="btn-launch">🚀 Web アプリを起動する</a>
+    </header>
+
+    <div class="container">
         
-        <div class="features">
-            <h3>✨ 主な機能・特徴</h3>
-            <ul>
-                <li><strong>50桁高精度演算:</strong> Decimal.js による超高精度計算。</li>
-                <li><strong>リアルタイムモード切替:</strong> 「50桁解表示」と「因数分解表示（四捨五入）」をトグルで即座に変更。</li>
-                <li><strong>完全ブラウザ完結:</strong> インストール不要。オフラインでも動作可能。</li>
+        <div class="card">
+            <h2>✨ 主な機能と特徴</h2>
+            <ul class="feature-list">
+                <li>
+                    <span class="feature-icon">📋</span>
+                    <div>
+                        <strong>係数データの一括ペースト機能</strong><br>
+                        スペース・改行・カンマ区切りのテキストデータを一括で貼り付けるだけで、すべての入力欄へ一発セットできます。
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-icon">⚡</span>
+                    <div>
+                        <strong>最大 200 次対応 ＆ オートスケーリング（規格化）処理</strong><br>
+                        高次計算時や巨大・極小係数の混在時にも、自動スケーリング処理によりオーバーフローやアンダーフローを防止します。
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-icon">🎯</span>
+                    <div>
+                        <strong>50 桁高精度解 ＆ 因数分解表示の即時切替</strong><br>
+                        トグルスイッチ一つで「50桁高精度解表示」と「因数分解表示（四捨五入）」を再計算なしで即座に切替可能です。
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-icon">🌐</span>
+                    <div>
+                        <strong>完全マルチプラットフォーム ＆ オフライン対応</strong><br>
+                        ブラウザ（Chrome, Edge, Safari等）上で単一ファイルとして完全にローカル動作するため、オフライン環境でも安全にご利用いただけます。
+                    </div>
+                </li>
             </ul>
         </div>
 
-        <a href="MethodDka.html" class="btn">アプリを起動する</a>
+        <div class="card">
+            <h2>🛠️ 使い方</h2>
+            <ol>
+                <li>上のボタンから <strong>`MethodDka.html`</strong> を開きます。</li>
+                <li>最高次数（例: <code>10</code>）を入力し、<strong>「生成」</strong> を押します。</li>
+                <li>係数を手入力するか、<strong>「📋 係数データの一括ペースト」</strong> エリアに貼り付けて <strong>「一括反映」</strong> を押します。</li>
+                <li><strong>「計算開始」</strong> を押すと、瞬時に全複素数解および誤差半径・反復回数が出力されます。</li>
+                <li>モード切替トグルで、必要に応じていつでも因数分解表示に切り替えられます。</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h2>💡 技術仕様 ＆ 学術注記</h2>
+            <ul>
+                <li><strong>アルゴリズム:</strong> DKA法（Durand-Kerner 法）による並列収束探索</li>
+                <li><strong>高精度演算エンジン:</strong> <code>Decimal.js</code> (precision: 50)</li>
+                <li><strong>スケーリング手法:</strong> 係数の幾何平均スケール因子 $S = |a_n / a_0|^{1/n}$ による規格化処理</li>
+            </ul>
+
+            <div class="note-box">
+                💡 <strong>補足（悪条件多項式について）:</strong><br>
+                本アプリはオートスケーリング処理により最大200次までの計算に対応していますが、ウィルキンソン多項式のように「根が実軸上に極めて密集して並ぶ悪条件多項式（Ill-conditioned polynomials）」では、並列円周初期値を用いる DKA 法の性質上、高次（15次以上）で複素数領域の鞍点へ引き込まれる（偽収束する）場合があります。通常分散された多項式では高次まで正常に動作します。
+            </div>
+        </div>
+
     </div>
+
+    <footer>
+        <p>&copy; Yoshiaki Koizumi (YoshiakiKoizumija142397) | <a href="https://github.com/YoshiakiKoizumija142397/MethodDka" target="_blank">GitHub Repository</a></p>
+    </footer>
+
 </body>
 </html>
