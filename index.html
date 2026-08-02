@@ -3,232 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodDka - High Precision Polynomial Solver & Factorization Web App</title>
-    <!-- Favicon / Meta -->
-    <meta name="description" content="MethodDka is a lightweight, high-precision web application for solving polynomials up to degree 200 with Decimal.js and auto-scaling normalization.">
+    <title>MethodDka - Multilingual Polynomial Solver</title>
     <style>
         :root {
-            --bg-color: #f8f9fa;
+            --primary-color: #2563eb;
+            --hover-color: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
             --card-bg: #ffffff;
-            --text-color: #212529;
-            --primary-color: #0d6efd;
-            --primary-hover: #0b5ed7;
-            --border-color: #dee2e6;
-            --accent-bg: #e9ecef;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-        }
-        header {
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .logo {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #000;
-            text-decoration: none;
-        }
-        .lang-switch-btn {
-            background-color: var(--accent-bg);
-            color: #495057;
-            border: 1px solid #ced4da;
-            padding: 6px 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        .lang-switch-btn:hover {
-            background-color: #dee2e6;
-        }
-        .hero {
-            text-align: center;
-            padding: 50px 20px 30px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            color: #111;
-        }
-        .hero p {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 30px;
-        }
-        .cta-btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 14px 32px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 6px;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
-            transition: all 0.2s;
-        }
-        .cta-btn:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(13, 110, 253, 0.3);
         }
         .container {
-            max-width: 850px;
-            margin: 0 auto;
+            max-width: 800px;
+            margin: 40px auto;
             padding: 20px;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
         }
         .card {
-            background: var(--card-bg);
-            padding: 25px;
+            background-color: var(--card-bg);
             border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
         }
-        .card h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 50px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        footer a {
-            color: var(--primary-color);
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 10px 20px;
             text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
         }
-        footer a:hover {
-            text-decoration: underline;
+        .btn:hover {
+            background-color: var(--hover-color);
+        }
+        .benchmark-box {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-left: 4px solid var(--primary-color);
+            margin-top: 15px;
+            font-family: monospace;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <a href="#" class="logo">MethodDka</a>
-        <button type="button" class="lang-switch-btn" onclick="toggleLanguage()" id="langBtn">🌐 English</button>
-    </header>
-
-    <section class="hero">
-        <h1 id="heroTitle">MethodDka 多項式解法 & 因数分解</h1>
-        <p id="heroDesc">HTML / JavaScript だけで完結する超高速・50桁高精度な多項式ソルバー。最大200次までの複素数解計算・オートスケーリング規格化・一括入力に対応。</p>
-        <a href="MethodDka.html" class="cta-btn" id="ctaBtn">🚀 アプリを起動する (Live App)</a>
-    </section>
-
     <div class="container">
-        <div class="grid">
-            <div class="card">
-                <h3 id="feature1Title">🌐 2か国語対応 (JA / EN)</h3>
-                <p id="feature1Desc">日本語と英語の即時切り替えに対応。UIや結果表示をワンクリックで言語変更できます。</p>
-            </div>
-            <div class="card">
-                <h3 id="feature2Title">🎯 50桁超高精度演算</h3>
-                <p id="feature2Desc">Decimal.js エンジンを搭載。数値のオーバーフローや情報落ちを極力防ぎ、正確な解を導出します。</p>
-            </div>
-            <div class="card">
-                <h3 id="feature3Title">⚡ 最大200次 & スケーリング</h3>
-                <p id="feature3Desc">幾何平均スケール因子による自動スケーリング処理により、高次や巨大・極小係数多項式も数値的に安定計算します。</p>
-            </div>
-            <div class="card">
-                <h3 id="feature4Title">📋 係数データ一括反映</h3>
-                <p id="feature4Desc">スペースやカンマ、改行区切りの係数データをテキストエリアに貼り付けるだけで、一括で各入力欄にセットできます。</p>
-            </div>
+        <div class="lang-switch">
+            <button class="btn" onclick="toggleLanguage()" id="langBtn">Switch to English</button>
+        </div>
+
+        <div class="header">
+            <h1>MethodDka</h1>
+            <p id="descText">HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ</p>
+            <a href="MethodDka.html" class="btn" id="launchBtn">アプリを起動 / Launch App</a>
+        </div>
+
+        <div class="card">
+            <h2 id="featuresTitle">🌟 主な特徴</h2>
+            <ul id="featuresList">
+                <li>最大200次までのオートスケーリング対応</li>
+                <li>Decimal.jsによる50桁高精度演算</li>
+                <li>因数分解表示への瞬時切り替え</li>
+                <li>日本語・英語のリアルタイム切替</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2 id="benchTitle">🧪 ベンチマーク: 15次ウィルキンソン多項式</h2>
+            <p id="benchDesc">
+                DKA法における悪条件多項式のテストとして、$W_{15}(x) = (x-1)(x-2)...(x-15)$ の係数を生成します。<br>
+                アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。
+            </p>
+            <button class="btn" onclick="generateWilkinson(15)">係数を生成 / Generate Coefficients</button>
+            <div id="coeffOutput" class="benchmark-box"></div>
         </div>
     </div>
 
-    <footer>
-        <p>© Yoshiaki Koizumi (YoshiakiKoizumija142397) | <a href="https://github.com/YoshiakiKoizumija142397/MethodDka" target="_blank" rel="noopener">GitHub Repository</a> | MIT License</p>
-    </footer>
-
     <script>
-        let currentLang = 'ja';
-
-        const i18n = {
-            ja: {
-                langBtn: "🌐 English",
-                heroTitle: "MethodDka 多項式解法 & 因数分解",
-                heroDesc: "HTML / JavaScript だけで完結する超高速・50桁高精度な多項式ソルバー。最大200次までの複素数解計算・オートスケーリング規格化・一括入力に対応。",
-                ctaBtn: "🚀 アプリを起動する (Live App)",
-                feature1Title: "🌐 2か国語対応 (JA / EN)",
-                feature1Desc: "日本語と英語の即時切り替えに対応。UIや結果表示をワンクリックで言語変更できます。",
-                feature2Title: "🎯 50桁超高精度演算",
-                feature2Desc: "Decimal.js エンジンを搭載。数値のオーバーフローや情報落ちを極力防ぎ、正確な解を導出します。",
-                feature3Title: "⚡ 最大200次 & スケーリング",
-                feature3Desc: "幾何平均スケール因子による自動スケーリング処理により、高次や巨大・極小係数多項式も数値的に安定計算します。",
-                feature4Title: "📋 係数データ一括反映",
-                feature4Desc: "スペースやカンマ、改行区切りの係数データをテキストエリアに貼り付けるだけで、一括で各入力欄にセットできます。"
-            },
-            en: {
-                langBtn: "🌐 日本語",
-                heroTitle: "MethodDka - Polynomial Solver & Factorization",
-                heroDesc: "A lightweight, 50-digit ultra-high-precision polynomial solver using pure HTML/JS. Supports degree up to 200, auto-scaling normalization, and bulk coefficient input.",
-                ctaBtn: "🚀 Launch App (Live App)",
-                feature1Title: "🌐 Multilingual (EN / JA)",
-                feature1Desc: "Seamlessly switch between English and Japanese dynamically with a single click.",
-                feature2Title: "🎯 50-Digit Precision",
-                feature2Desc: "Powered by Decimal.js to prevent numerical underflow, overflow, and precision loss.",
-                feature3Title: "⚡ Auto-Scaling (Up to Deg 200)",
-                feature3Desc: "Polynomial normalization prevents divergence across extreme variations in coefficient magnitudes.",
-                feature4Title: "📋 Bulk Coefficient Input",
-                feature4Desc: "Paste space, comma, or line-separated text to fill all input fields instantaneously."
-            }
-        };
+        let isEnglish = false;
 
         function toggleLanguage() {
-            currentLang = (currentLang === 'ja') ? 'en' : 'ja';
-            document.documentElement.lang = currentLang;
-            updateUI();
+            isEnglish = !isEnglish;
+            
+            document.getElementById('langBtn').innerText = isEnglish ? "日本語に切り替え" : "Switch to English";
+            document.getElementById('descText').innerText = isEnglish 
+                ? "Lightweight, ultra-fast, high-precision polynomial solver & factorization web app using pure HTML+JS." 
+                : "HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ";
+            document.getElementById('launchBtn').innerText = isEnglish ? "Launch App" : "アプリを起動 / Launch App";
+            
+            document.getElementById('featuresTitle').innerText = isEnglish ? "🌟 Key Features" : "🌟 主な特徴";
+            document.getElementById('featuresList').innerHTML = isEnglish 
+                ? "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Instant toggle to factored form</li><li>Real-time English/Japanese switching</li>"
+                : "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>因数分解表示への瞬時切り替え</li><li>日本語・英語のリアルタイム切替</li>";
+            
+            document.getElementById('benchTitle').innerText = isEnglish ? "🧪 Benchmark: 15th-Degree Wilkinson Polynomial" : "🧪 ベンチマーク: 15次ウィルキンソン多項式";
+            document.getElementById('benchDesc').innerHTML = isEnglish 
+                ? "Generates coefficients for W₁₅(x) = (x-1)(x-2)...(x-15) to test ill-conditioned polynomials in the DKA method.<br>Paste the result into the app's Bulk Input to observe false convergence at saddle points."
+                : "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の係数を生成します。<br>アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。";
         }
 
-        function updateUI() {
-            const t = i18n[currentLang];
-            document.getElementById('langBtn').innerText = t.langBtn;
-            document.getElementById('heroTitle').innerText = t.heroTitle;
-            document.getElementById('heroDesc').innerText = t.heroDesc;
-            document.getElementById('ctaBtn').innerText = t.ctaBtn;
-            document.getElementById('feature1Title').innerText = t.feature1Title;
-            document.getElementById('feature1Desc').innerText = t.feature1Desc;
-            document.getElementById('feature2Title').innerText = t.feature2Title;
-            document.getElementById('feature2Desc').innerText = t.feature2Desc;
-            document.getElementById('feature3Title').innerText = t.feature3Title;
-            document.getElementById('feature3Desc').innerText = t.feature3Desc;
-            document.getElementById('feature4Title').innerText = t.feature4Title;
-            document.getElementById('feature4Desc').innerText = t.feature4Desc;
-        }
-
-        // 初回ロード時にブラウザの言語設定をチェック
-        window.onload = () => {
-            const userLang = navigator.language || navigator.userLanguage;
-            if (userLang && !userLang.startsWith('ja')) {
-                currentLang = 'en';
+        // ウィルキンソン多項式の係数展開 (W_n(x) = (x-1)(x-2)...(x-n))
+        function generateWilkinson(n) {
+            // BigIntを使用して巨大な係数オーバーフローを防止
+            let coeffs = [1n]; 
+            for (let i = 1; i <= n; i++) {
+                let nextCoeffs = new Array(coeffs.length + 1).fill(0n);
+                for (let j = 0; j < coeffs.length; j++) {
+                    nextCoeffs[j] += coeffs[j];
+                    nextCoeffs[j + 1] -= coeffs[j] * BigInt(i);
+                }
+                coeffs = nextCoeffs;
             }
-            updateUI();
-        };
+            
+            const outputBox = document.getElementById('coeffOutput');
+            outputBox.style.display = 'block';
+            outputBox.innerText = coeffs.join(' ');
+        }
     </script>
 </body>
 </html>
