@@ -1,5 +1,7 @@
 # MethodDka (200次対応 & 50桁高精度多項式解法・因数分解 Web アプリ / Multilingual Polynomial Solver)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21753228.svg)](https://doi.org/10.5281/zenodo.21753228)
+
 [日本語](#-日本語概要) | [English](#-english-overview)
 
 ## 🇯🇵 日本語概要
