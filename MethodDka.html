@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">MethodDka - 高精度多項式解法 & 因数分解</title>
+    <title id="pageTitle">MethodDka - 複素数一括読み込み & ウィルキンソン生成対応</title>
     <!-- Decimal.js (50桁高精度演算ライブラリ) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
@@ -13,6 +13,8 @@
             --text-color: #212529;
             --primary-color: #0d6efd;
             --primary-hover: #0b5ed7;
+            --success-color: #198754;
+            --success-hover: #157347;
             --border-color: #dee2e6;
         }
         body {
@@ -87,7 +89,7 @@
             font-size: 0.95rem;
         }
         textarea {
-            height: 140px;
+            height: 130px;
             font-family: monospace;
             resize: vertical;
         }
@@ -106,6 +108,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         button {
             background-color: var(--primary-color);
@@ -126,6 +129,12 @@
         }
         button.secondary:hover {
             background-color: #5c636a;
+        }
+        button.success {
+            background-color: var(--success-color);
+        }
+        button.success:hover {
+            background-color: var(--success-hover);
         }
         #progress {
             margin: 15px 0;
@@ -199,8 +208,6 @@
             border-left: 5px solid #0f5132;
             color: #0f5132;
         }
-        .err-warn { color: #dc3545; font-weight: bold; }
-        .err-ok { color: #198754; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -216,36 +223,21 @@
             <!-- JSで動的に設定 -->
         </div>
 
-        <!-- 次数入力 -->
+        <!-- 次数入力 & ウィルキンソン生成ボタン -->
         <div class="form-group">
             <label for="maxDegree" id="lblDegree">最高次数 (n ≤ 200):</label>
-            <div style="display: flex; gap: 10px;">
-                <!-- 15次ウィルキンソン係数テストのためデフォルトを15に設定 -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="number" id="maxDegree" value="15" min="1" max="200" style="max-width: 150px;">
-                <button type="button" class="secondary" onclick="createFields()" id="btnGenerate">生成</button>
+                <button type="button" class="secondary" onclick="createFields()" id="btnGenerate">入力欄生成</button>
+                <button type="button" class="success" onclick="generateWilkinson15()" id="btnWilkinson">🧪 15次ウィルキンソン係数を生成</button>
             </div>
         </div>
 
-        <!-- 係数一括ペースト (15次ウィルキンソン係数を初期セット) -->
+        <!-- 係数一括ペースト (i, j 複素数対応) -->
         <div id="pasteSection" class="form-group">
-            <label for="bulkCoeffs" id="lblBulk">📋 係数データの一括ペースト (スペース/改行/カンマ区切り):</label>
-            <textarea id="bulkCoeffs">1
--120
-6440
--206140
-4363680
--64335072
-676646560
--5147814080
-28359288160
--113400587520
-324103138816
--646274431488
-856515582720
--687258950400
-300445555200
--1307674368000</textarea>
-            <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients()" id="btnApplyBulk">一括反映</button>
+            <label for="bulkCoeffs" id="lblBulk">📋 係数データの一括ペースト (i, j 複素数対応 / スペース・改行・カンマ区切り):</label>
+            <textarea id="bulkCoeffs" placeholder="例: 1, -120, 3+4i, 5-2j ..."></textarea>
+            <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients(true)" id="btnApplyBulk">一括反映</button>
         </div>
 
         <!-- 個別係数入力欄 -->
@@ -282,18 +274,19 @@
 
         const i18n = {
             ja: {
-                pageTitle: "MethodDka - 高精度多項式解法 & 因数分解",
+                pageTitle: "MethodDka - 複素数一括読み込み & ウィルキンソン生成対応",
                 appTitle: "MethodDka (200次対応 & 50桁高精度)",
                 langBtn: "🌐 English",
                 desc: `<strong>概要と主な特徴:</strong> <p style="margin: 5px 0;">DKA法とDecimal.jsを用い、最大200次までの多項式の全根を高精度に計算します。</p>
                        <ul>
                          <li><strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持。</li>
-                         <li><strong>自動スケーリング (規格化):</strong> 巨大/極小係数が混在する多項式でも数値的に安定化。</li>
-                         <li><strong>実数・複素数係数の一括入力:</strong> 「1+2i」や「3-4j」などの複素数係数入力にも完全対応。</li>
+                         <li><strong>複素数一括読み込み ('i'/'j' 完全対応):</strong> 「1+2i」や「3-4j」等の複素数係数を一括ペースト可能。</li>
+                         <li><strong>15次ウィルキンソン係数生成:</strong> ボタン一つで検証用データを自動生成・セット。</li>
                        </ul>`,
                 lblDegree: "最高次数 (n ≤ 200):",
                 btnGenerate: "入力欄生成",
-                lblBulk: "📋 係数データの一括ペースト (スペース/改行/カンマ区切り):",
+                btnWilkinson: "🧪 15次ウィルキンソン係数を生成",
+                lblBulk: "📋 係数データの一括ペースト (i, j 複素数対応 / スペース・改行・カンマ区切り):",
                 btnApplyBulk: "一括反映",
                 lblCoeffs: "各項の係数入力 (a_n * x^n + ... + a_0):",
                 modeRoots: "モード: 50桁高精度解表示",
@@ -309,25 +302,24 @@
                 totalIter: "全合計反復回数",
                 appliedScale: "適用スケール因子 S",
                 alertDegree: "次数は1から200の範囲で指定してください",
-                alertNoText: "係数データテキストを入力してください",
-                alertLackData: (input, req) => `入力されたデータ件数 (${input}件) が、必要な係数の数 (${req}件) より少なくなっています。`,
                 alertBulkDone: (count) => `${count} 件の係数を一括セットしました！`,
                 alertZeroLead: "最高次の係数は0以外を入力してください",
                 alertInvalidCoeff: (idx) => `${idx}次の係数に不正な値が含まれています`
             },
             en: {
-                pageTitle: "MethodDka - High Precision Polynomial Solver",
+                pageTitle: "MethodDka - Complex Bulk Input & Wilkinson Generator",
                 appTitle: "MethodDka (Max Degree 200 & 50-Digit Precision)",
                 langBtn: "🌐 日本語",
                 desc: `<strong>Overview & Features:</strong> <p style="margin: 5px 0;">Calculates all real and complex roots of polynomials up to degree 200 with ultra-high precision.</p>
                        <ul>
                          <li><strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical issues.</li>
-                         <li><strong>Auto-Scaling Normalization:</strong> Stablizes extremes in coefficient magnitudes.</li>
-                         <li><strong>Complex Coefficient Input:</strong> Fully supports 'i' and 'j' inputs like 1+2i or 3-4j.</li>
+                         <li><strong>Complex Bulk Input ('i'/'j' supported):</strong> Paste complex coefficients like 1+2i or 3-4j seamlessly.</li>
+                         <li><strong>Wilkinson Generator:</strong> Automatically generate and set 15th-degree Wilkinson benchmark data.</li>
                        </ul>`,
                 lblDegree: "Polynomial Degree (n ≤ 200):",
                 btnGenerate: "Generate Fields",
-                lblBulk: "📋 Bulk Coefficients Input (Space, Comma, or Line-separated):",
+                btnWilkinson: "🧪 Generate 15th Wilkinson",
+                lblBulk: "📋 Bulk Coefficients Input (Supports 'i' & 'j' / Space, Comma, Line-separated):",
                 btnApplyBulk: "Apply Bulk Input",
                 lblCoeffs: "Individual Coefficients (a_n * x^n + ... + a_0):",
                 modeRoots: "Display Mode: 50-Digit High-Precision Roots",
@@ -343,8 +335,6 @@
                 totalIter: "Total Iterations",
                 appliedScale: "Applied Scale Factor S",
                 alertDegree: "Please enter a degree between 1 and 200.",
-                alertNoText: "Please enter coefficient text.",
-                alertLackData: (input, req) => `Entered coefficients (${input}) are less than required (${req}).`,
                 alertBulkDone: (count) => `Successfully set ${count} coefficients!`,
                 alertZeroLead: "Leading coefficient a_n cannot be zero.",
                 alertInvalidCoeff: (idx) => `Invalid coefficient value at degree ${idx}`
@@ -365,6 +355,7 @@
             document.getElementById('descBox').innerHTML = t.desc;
             document.getElementById('lblDegree').innerText = t.lblDegree;
             document.getElementById('btnGenerate').innerText = t.btnGenerate;
+            document.getElementById('btnWilkinson').innerText = t.btnWilkinson;
             document.getElementById('lblBulk').innerText = t.lblBulk;
             document.getElementById('btnApplyBulk').innerText = t.btnApplyBulk;
             document.getElementById('lblCoeffs').innerText = t.lblCoeffs;
@@ -407,8 +398,35 @@
                 row.appendChild(input);
                 div.appendChild(row);
             }
-            
-            // 入力欄生成時にテキストエリアの値がすでに存在していれば自動反映を試みる
+        }
+
+        // 15次ウィルキンソン係数を自動生成してセットする機能
+        function generateWilkinson15() {
+            n = 15;
+            document.getElementById('maxDegree').value = n;
+            createFields();
+
+            // 15次ウィルキンソン多項式の厳密な係数データ
+            const wilkinsonCoeffs = [
+                "1",
+                "-120",
+                "6440",
+                "-206140",
+                "4363680",
+                "-64335072",
+                "676646560",
+                "-5147814080",
+                "28359288160",
+                "-113400587520",
+                "324103138816",
+                "-646274431488",
+                "856515582720",
+                "-687258950400",
+                "300445555200",
+                "-1307674368000"
+            ];
+
+            document.getElementById('bulkCoeffs').value = wilkinsonCoeffs.join("\n");
             applyBulkCoefficients(false);
         }
 
@@ -419,51 +437,39 @@
 
             const values = rawText.split(/[\s,]+/).filter(v => v.length > 0);
             
-            // 自動的に次数を合わせるか、入力数が足りているかチェック
-            if (n === null || values.length !== n + 1) {
-                if (values.length >= 2 && values.length <= 201) {
-                    n = values.length - 1;
-                    document.getElementById('maxDegree').value = n;
-                    
-                    // フィールド再生成
-                    const div = document.getElementById('coefficients');
-                    div.innerHTML = '';
-                    for (let i = 0; i <= n; i++) {
-                        const row = document.createElement('div');
-                        row.className = 'coeff-row';
-                        const lbl = document.createElement('span');
-                        lbl.className = 'coeff-label';
-                        lbl.id = `coeffLabel_${i}`;
-                        lbl.textContent = `a_${n - i} (x^${n - i}):`;
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.id = `coeff${i}`;
-                        input.value = values[i];
-                        row.appendChild(lbl);
-                        row.appendChild(input);
-                        div.appendChild(row);
-                    }
-                    if (showAlert) alert(t.alertBulkDone(n + 1));
-                    return;
-                }
-            }
-
-            if (n !== null && values.length >= n + 1) {
+            if (values.length >= 2 && values.length <= 201) {
+                n = values.length - 1;
+                document.getElementById('maxDegree').value = n;
+                
+                const div = document.getElementById('coefficients');
+                div.innerHTML = '';
                 for (let i = 0; i <= n; i++) {
-                    const field = document.getElementById('coeff' + i);
-                    if (field) field.value = values[i];
+                    const row = document.createElement('div');
+                    row.className = 'coeff-row';
+                    const lbl = document.createElement('span');
+                    lbl.className = 'coeff-label';
+                    lbl.id = `coeffLabel_${i}`;
+                    lbl.textContent = `a_${n - i} (x^${n - i}):`;
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = `coeff${i}`;
+                    input.value = values[i];
+                    row.appendChild(lbl);
+                    row.appendChild(input);
+                    div.appendChild(row);
                 }
                 if (showAlert) alert(t.alertBulkDone(n + 1));
             }
         }
 
-        // 初期ロード時に自動で15次フィールドを生成して反映
         window.onload = function() {
-            createFields();
+            // 初期状態で15次ウィルキンソン係数を自動生成してロード
+            generateWilkinson15();
         };
 
+        // 複素数パース ('i' または電気工学の 'j' に完全対応)
         function parseComplex(str) {
-            let s = str.replace(/\s+/g, '').replace(/j/g, 'i');
+            let s = str.replace(/\s+/g, '').toLowerCase().replace(/j/g, 'i');
             if (s === '') return { r: new Decimal(0), i: new Decimal(0) };
             let re = "0", im = "0";
             if (!s.includes('i')) {
@@ -501,10 +507,7 @@
 
         async function startCalculation() {
             const t = i18n[currentLang];
-            if (n === null) {
-                alert(t.alertPushGen);
-                return;
-            }
+            if (n === null) return;
 
             let origA_r = [], origA_i = [];
             for (let idx = 0; idx <= n; idx++) {
@@ -558,7 +561,7 @@
             }
 
             // --- 3. DKA法 反復計算 ---
-            const maxIter = 20000;
+            const maxIter = 25000;
             const targetTolerance = new Decimal("1e-40");
 
             for (let k = 1; k <= maxIter; k++) {
@@ -635,7 +638,6 @@
                     html += `<div class="result-card"><strong>[${i}] ${t.resultRoot} z_${i}</strong> = ${rVal} ${sign} ${iVal}i<br>` +
                             `<small>${t.errRadius}: ${errVal} | ${t.iterCount}: ${sIter[i]}</small></div>`;
                 } else {
-                    let rf = sr[i].toDecimalPlaces(1).toString();
                     let imAbs = si[i].abs().toDecimalPlaces(1);
                     let factorStr = "";
                     if (imAbs.isZero()) {
