@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodDka - Multilingual Polynomial Solver</title>
+    <title>MethodDka - Multilingual Polynomial Solver & Benchmark</title>
     <style>
         :root {
             --primary-color: #2563eb;
             --hover-color: #1d4ed8;
+            --success-color: #16a34a;
             --bg-color: #f8fafc;
             --text-color: #1e293b;
             --card-bg: #ffffff;
+            --border-color: #e2e8f0;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -40,6 +42,7 @@
             padding: 24px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
+            border: 1px solid var(--border-color);
         }
         .btn {
             display: inline-block;
@@ -57,6 +60,12 @@
         .btn:hover {
             background-color: var(--hover-color);
         }
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        .btn-success:hover {
+            background-color: #15803d;
+        }
         .benchmark-box {
             background-color: #f1f5f9;
             padding: 15px;
@@ -66,13 +75,17 @@
             width: 100%;
             box-sizing: border-box;
             resize: vertical;
+            border-radius: 4px;
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
         .lang-switch {
             text-align: right;
             margin-bottom: 20px;
         }
         .copy-success {
-            color: #16a34a;
+            color: var(--success-color);
             font-weight: bold;
             margin-left: 10px;
             display: none;
@@ -90,7 +103,7 @@
         <!-- ヘッダー -->
         <div class="header">
             <h1 id="mainTitle">MethodDka</h1>
-            <p id="descText">HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ</p>
+            <p id="descText">HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ（複素数 i, j 対応）</p>
             <a href="MethodDka.html" class="btn" id="launchBtn">アプリを起動 / Launch App</a>
         </div>
 
@@ -100,17 +113,17 @@
             <ul id="featuresList">
                 <li>最大200次までのオートスケーリング対応</li>
                 <li>Decimal.jsによる50桁高精度演算</li>
-                <li>実数・複素数係数の一括ペースト (i, j 対応)</li>
+                <li>実数・複素数係数の一括ペースト (i, j 完全対応)</li>
                 <li>日本語・英語のリアルタイム切替</li>
             </ul>
         </div>
 
-        <!-- ベンチマークセクション (15次ウィルキンソン係数データを常時表示＆ワンクリックコピー) -->
+        <!-- ベンチマークセクション (15次ウィルキンソン係数データの常時表示＆ワンクリックコピー) -->
         <div class="card">
             <h2 id="benchTitle">🧪 ベンチマーク: 15次ウィルキンソン多項式</h2>
             <p id="benchDesc">
                 DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の生成済み係数データです。<br>
-                下のボタンでコピーし、アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。
+                下のボタンで係数データのみを確実にコピーし、アプリの「一括ペースト」機能に貼り付けてお試しいただけます。
             </p>
             
             <textarea id="coeffOutput" class="benchmark-box" rows="8" readonly>1
@@ -131,7 +144,7 @@
 -1307674368000</textarea>
             
             <div style="margin-top: 15px;">
-                <button class="btn" onclick="copyWilkinsonData()" id="copyBtn">📋 係数データを一括コピー</button>
+                <button class="btn btn-success" onclick="copyWilkinsonData()" id="copyBtn">📋 係数データのみを一括コピー</button>
                 <span id="copyMsg" class="copy-success">コピーしました！</span>
             </div>
         </div>
@@ -143,30 +156,32 @@
         function toggleLanguage() {
             isEnglish = !isEnglish;
             document.getElementById('langBtn').innerText = isEnglish ? "日本語に切り替え" : "Switch to English";
-            document.getElementById('descText').innerText = isEnglish ? "Lightweight, ultra-fast, high-precision polynomial solver & factorization web app using pure HTML+JS." : "HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ";
+            document.getElementById('descText').innerText = isEnglish ? "Lightweight, ultra-fast, high-precision polynomial solver & factorization web app (supporting complex 'i' & 'j') using pure HTML+JS." : "HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ（複素数 i, j 対応）";
             document.getElementById('launchBtn').innerText = isEnglish ? "Launch App" : "アプリを起動 / Launch App";
             document.getElementById('featuresTitle').innerText = isEnglish ? "🌟 Key Features" : "🌟 主な特徴";
             document.getElementById('featuresList').innerHTML = isEnglish ? 
-                "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Bulk real & complex input (i, j)</li><li>Real-time English/Japanese switching</li>" : 
-                "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>実数・複素数係数の一括ペースト (i, j 対応)</li><li>日本語・英語のリアルタイム切替</li>";
+                "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Bulk real & complex input (fully supporting 'i' & 'j')</li><li>Real-time English/Japanese switching</li>" : 
+                "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>実数・複素数係数の一括ペースト (i, j 完全対応)</li><li>日本語・英語のリアルタイム切替</li>";
             document.getElementById('benchTitle').innerText = isEnglish ? "🧪 Benchmark: 15th-Degree Wilkinson Polynomial" : "🧪 ベンチマーク: 15次ウィルキンソン多項式";
             document.getElementById('benchDesc').innerHTML = isEnglish ? 
-                "Pre-generated coefficients for W₁₅(x) = (x-1)(x-2)...(x-15) to test ill-conditioned polynomials in the DKA method.<br>Copy the data and paste it into the app's Bulk Input to observe false convergence at saddle points." : 
-                "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の生成済み係数データです。<br>下のボタンでコピーし、アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。";
-            document.getElementById('copyBtn').innerText = isEnglish ? "📋 Copy Coefficients" : "📋 係数データを一括コピー";
+                "Pre-generated coefficients for W₁₅(x) = (x-1)(x-2)...(x-15) to test ill-conditioned polynomials in the DKA method.<br>Copy the coefficient data precisely and paste it into the app's Bulk Input." : 
+                "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の生成済み係数データです。<br>下のボタンで係数データのみを確実にコピーし、アプリの「一括ペースト」機能に貼り付けてお試しいただけます。";
+            document.getElementById('copyBtn').innerText = isEnglish ? "📋 Copy Coefficients Only" : "📋 係数データのみを一括コピー";
             document.getElementById('copyMsg').innerText = isEnglish ? "Copied!" : "コピーしました！";
         }
 
         function copyWilkinsonData() {
-            const textarea = document.getElementById('coeffOutput');
-            textarea.select();
-            document.execCommand('copy');
+            const textToCopy = document.getElementById('coeffOutput').value;
 
-            const msg = document.getElementById('copyMsg');
-            msg.style.display = 'inline';
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 2000);
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const msg = document.getElementById('copyMsg');
+                msg.style.display = 'inline';
+                setTimeout(() => {
+                    msg.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('コピーに失敗しました:', err);
+            });
         }
     </script>
 </body>
