@@ -89,7 +89,7 @@
             <ul id="featuresList">
                 <li>最大200次までのオートスケーリング対応</li>
                 <li>Decimal.jsによる50桁高精度演算</li>
-                <li>因数分解表示への瞬時切り替え</li>
+                <li>実数・複素数係数の一括ペースト (i, j 対応)</li>
                 <li>日本語・英語のリアルタイム切替</li>
             </ul>
         </div>
@@ -119,8 +119,8 @@
             
             document.getElementById('featuresTitle').innerText = isEnglish ? "🌟 Key Features" : "🌟 主な特徴";
             document.getElementById('featuresList').innerHTML = isEnglish 
-                ? "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Instant toggle to factored form</li><li>Real-time English/Japanese switching</li>"
-                : "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>因数分解表示への瞬時切り替え</li><li>日本語・英語のリアルタイム切替</li>";
+                ? "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Bulk real & complex input (i, j)</li><li>Real-time English/Japanese switching</li>"
+                : "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>実数・複素数係数の一括ペースト (i, j 対応)</li><li>日本語・英語のリアルタイム切替</li>";
             
             document.getElementById('benchTitle').innerText = isEnglish ? "🧪 Benchmark: 15th-Degree Wilkinson Polynomial" : "🧪 ベンチマーク: 15次ウィルキンソン多項式";
             document.getElementById('benchDesc').innerHTML = isEnglish 
@@ -128,9 +128,7 @@
                 : "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の係数を生成します。<br>アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。";
         }
 
-        // ウィルキンソン多項式の係数展開 (W_n(x) = (x-1)(x-2)...(x-n))
         function generateWilkinson(n) {
-            // BigIntを使用して巨大な係数オーバーフローを防止
             let coeffs = [1n]; 
             for (let i = 1; i <= n; i++) {
                 let nextCoeffs = new Array(coeffs.length + 1).fill(0n);
