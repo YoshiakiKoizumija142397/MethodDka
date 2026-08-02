@@ -1,11 +1,11 @@
 # MethodDka (200次対応 & 50桁高精度多項式解法・因数分解 Web アプリ / Multilingual Polynomial Solver)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14920000.svg)](https://doi.org/10.5281/zenodo.14920000) | [日本語](#-日本語概要) | [English](#-english-overview)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14920000.svg)](https://zenodo.org/badge/DOI/10.5281/zenodo.14920000.svg) | [日本語](#-日本語概要) | [English](#-english-overview)
 
 ## 🇯🇵 日本語概要
 
 *MethodDka* は、HTML と JavaScript だけで動作する軽量・高速・超高精度な多項式解法 ＆ 因数分解 Web アプリケーションです。
-DKA法（Durand-Kerner 法）を採用し、 Decimal.js による **50桁高精度演算** 、 **最大200次対応オートスケーリング処理** 、 **実数・複素数係数の一括ペースト機能** 、および **日本語 / English 瞬時言語切替機能** を統合したオールインワン版です。
+DKA法（Durand-Kerner 法）を採用し、 Decimal.js による **50桁高精度演算** 、 **最大200次対応オートスケーリング処理** 、 **実数・複素数係数の一括ペースト機能 (i, j 完全対応)** 、および **日本語 / English 瞬時言語切替機能** を統合したオールインワン版です。
 
 ## 📝 主な機能と特徴
 
@@ -24,7 +24,7 @@ DKA法（Durand-Kerner 法）を採用し、 Decimal.js による **50桁高精�
 ## 🇬🇧 English Overview
 
 *MethodDka* is a lightweight, ultra-fast, and high-precision web application designed for solving complex polynomials and performing factorization using pure HTML and JavaScript.
-Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with **50-digit precision** , it features **auto-scaling normalization up to degree 200** , **bulk real/complex coefficient input** , and **instant bilingual language switching (English/Japanese)** .
+Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with **50-digit precision** , it features **auto-scaling normalization up to degree 200** , **bulk real and complex coefficient input (fully supporting 'i' and 'j')** , and **instant bilingual language switching (English/Japanese)** .
 
 ## 🌟 Key Features
 
@@ -42,7 +42,7 @@ Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with **50-digit prec
 
 ## 🧪 ベンチマーク: 15次ウィルキンソン多項式 / Benchmark: 15th-Degree Wilkinson Polynomial
 
-本アプリの DKA法の特性（悪条件多項式におけるサドルポイントへの引き込み）を検証するためのテストケースとして、以下の **15次のウィルキンソン多項式係数データ** をあらかじめ用意しています。
+本アプリの DKA法の特性を検証するためのテストケースとして、以下の **15次のウィルキンソン多項式係数データ** をあらかじめ用意しています。
 
 *テスト用係数データ (15th-Degree Wilkinson Coefficients):*
 ```text
@@ -63,18 +63,17 @@ Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with **50-digit prec
 300445555200
 -1307674368000
 
-💡 補足 / Note (悪条件多項式について / Ill-conditioned polynomials): 本アプリはオートスケーリング処理により最大200次までの計算に対応していますが、ウィルキンソン多項式のように「根が実軸上に極めて密集して並ぶ悪条件多項式」では、並列円周初期値を用いる DKA 法の性質上、高次（15次以上）で複素数領域の鞍点へ引き込まれる（偽収束する）場合があります。
 
 テスト手順 (How to test):
 
 ランディングページ (index.html) またはアプリ版 (MethodDka.html) にアクセスします。
 
-上記の係数データをコピーし、一括ペーストエリアに貼り付けて計算を実行してください。
+上記の係数データをコピーするか、アプリ内の「15次ウィルキンソン係数を生成」ボタンを使用して計算を実行してください。
 
 🌐 公式ページ ＆ リポジトリ / Official Links
-Web アプリ (Live Demo): https://YoshiakiKoizumija142397.github.io/MethodDka/MethodDka.html
+Web アプリ (Live Demo): MethodDka Live Demo
 
-GitHub リポジトリ (Repository): https://github.com/YoshiakiKoizumija142397/MethodDka
+GitHub リポジトリ (Repository): MethodDka Repository
 
 📁 リポジトリの構成 / Repository Structure
 
