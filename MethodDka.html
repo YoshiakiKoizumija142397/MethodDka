@@ -209,14 +209,14 @@
 
     <!-- 係数一括ペースト -->
     <div id="pasteSection" class="form-group" style="display: none;">
-        <label for="bulkCoeffs" id="lblBulk">📋 係数データの一括ペースト (スペース/改行/カンマ区切り):</label>
-        <textarea id="bulkCoeffs" placeholder="例: 1 -55 1320 -18150 ..."></textarea>
+        <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り。複素数は 1+2i や 3-4j):</label>
+        <textarea id="bulkCoeffs" placeholder="例: 1, -5.5, 3-4j, 0, 1+2i ..."></textarea>
         <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients()" id="btnApplyBulk">一括反映</button>
     </div>
 
     <!-- 個別係数入力欄 -->
     <div class="form-group">
-        <label id="lblCoeffs">各項の係数入力:</label>
+        <label id="lblCoeffs">各項の係数入力 (複素数 i, j 対応):</label>
         <div id="coefficients"></div>
     </div>
 
@@ -242,30 +242,29 @@
 <script>
     Decimal.set({ precision: 50 });
 
-    let currentLang = 'ja'; // 'ja' または 'en'
+    let currentLang = 'ja';
     let n = null;
-    let sa = [], sr = [], si = [], sErr = [], sIter = [];
+    let saR = [], saI = [], sr = [], si = [], sErr = [], sIter = [];
     let scaleFactor = new Decimal(1);
 
-    // 言語リソース定義
     const i18n = {
         ja: {
             pageTitle: "MethodDka - 高精度多項式解法 & 因数分解",
             appTitle: "MethodDka (200次対応 & 50桁高精度)",
             langBtn: "🌐 English",
             desc: `<strong>概要と主な特徴:</strong>
-                <p style="margin: 5px 0;">DKA法（Durand-Kerner法）と高精度演算エンジン Decimal.js を用い、最大200次までの多項式の全根（実根・複素根）を高精度に計算します。</p>
+                <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算します。</p>
                 <ul>
                     <li><strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持。</li>
-                    <li><strong>自動スケーリング (規格化):</strong> 巨大/極小係数が混在する多項式でも数値的に安定化。</li>
-                    <li><strong>一括ペースト & モード切替:</strong> 係数データの一括入力と、50桁解 / 因数分解の即時切替に対応。</li>
+                    <li><strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能。</li>
+                    <li><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化。</li>
                 </ul>`,
             lblDegree: "最高次数 (n ≤ 200):",
             btnGenerate: "入力欄生成",
-            lblBulk: "📋 係数データの一括ペースト (スペース/改行/カンマ区切り):",
-            bulkPlaceholder: "例: 1 -55 1320 -18150 ...",
+            lblBulk: "📋 係数一括ペースト (カンマ/空白区切り。複素数は 1+2i や 3-4j):",
+            bulkPlaceholder: "例: 1, -5.5, 3-4j, 0, 1+2i ...",
             btnApplyBulk: "一括反映",
-            lblCoeffs: "各項の係数入力 (a_n * x^n + ... + a_0):",
+            lblCoeffs: "各項の係数入力 (複素数 i, j 対応):",
             coeffTerm: "次の係数",
             modeRoots: "モード: 50桁高精度解表示",
             modeFactored: "モード: 因数分解表示（小数第1位で四捨五入）",
@@ -288,22 +287,22 @@
             alertInvalidCoeff: (idx) => `${idx}次の係数に不正な値が含まれています`
         },
         en: {
-            pageTitle: "MethodDka - High Precision Polynomial Solver & Factorization",
-            appTitle: "MethodDka (Max Degree 200 & 50-Digit Precision)",
+            pageTitle: "MethodDka - High Precision Polynomial Solver",
+            appTitle: "MethodDka (Max Degree 200 & 50-Digit)",
             langBtn: "🌐 日本語",
             desc: `<strong>Overview & Features:</strong>
-                <p style="margin: 5px 0;">Calculates all real and complex roots of polynomials up to degree 200 with ultra-high precision using pure JavaScript.</p>
+                <p style="margin: 5px 0;">Calculates all roots of polynomials up to degree 200 with ultra-high precision.</p>
                 <ul>
-                    <li><strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical underflow and overflow.</li>
-                    <li><strong>Durand-Kerner (DKA) Algorithm:</strong> Simultaneously calculates all roots iteratively with auto-scaling.</li>
-                    <li><strong>Bulk Input & Display Toggle:</strong> Paste multiple coefficients at once and toggle between 50-digit roots and factored form.</li>
+                    <li><strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical errors.</li>
+                    <li><strong>Complex Coefficients:</strong> Full support for complex coefficients using <code>i</code> or <code>j</code> (e.g., 1+2i, 3-4j).</li>
+                    <li><strong>Auto-Scaling:</strong> Normalization prevents overflow/underflow for extreme coefficients.</li>
                 </ul>`,
             lblDegree: "Polynomial Degree (n ≤ 200):",
             btnGenerate: "Generate Fields",
-            lblBulk: "📋 Bulk Coefficients Input (Space, Comma, or Line-separated):",
-            bulkPlaceholder: "e.g., 1 -55 1320 -18150 ...",
+            lblBulk: "📋 Bulk Coefficients Input (Comma or Space separated. Complex: 1+2i or 3-4j):",
+            bulkPlaceholder: "e.g., 1, -5.5, 3-4j, 0, 1+2i ...",
             btnApplyBulk: "Apply Bulk Input",
-            lblCoeffs: "Individual Coefficients (a_n * x^n + ... + a_0):",
+            lblCoeffs: "Individual Coefficients (Supports i and j):",
             coeffTerm: "degree coeff",
             modeRoots: "Display Mode: 50-Digit High-Precision Roots",
             modeFactored: "Display Mode: Factored Form (Rounded for Readability)",
@@ -347,13 +346,10 @@
         document.getElementById('lblCoeffs').innerText = t.lblCoeffs;
         document.getElementById('btnCalc').innerText = t.btnCalc;
 
-        // ラベルの動的更新
         if (n !== null) {
             for (let i = 0; i <= n; i++) {
                 const lbl = document.getElementById(`coeffLabel_${i}`);
-                if (lbl) {
-                    lbl.textContent = `a_${n - i} (x^${n - i}):`;
-                }
+                if (lbl) lbl.textContent = `a_${n - i} (x^${n - i}):`;
             }
         }
         renderResults();
@@ -396,7 +392,14 @@
             alert(t.alertNoText);
             return;
         }
-        const values = rawText.split(/[\s,]+/).filter(v => v.length > 0);
+        
+        let values = [];
+        // カンマが含まれている場合はカンマで分割、そうでない場合は空白で分割
+        if (rawText.includes(',')) {
+            values = rawText.split(',').map(v => v.trim()).filter(v => v.length > 0);
+        } else {
+            values = rawText.split(/[\s]+/).filter(v => v.length > 0);
+        }
         
         if (values.length < n + 1) {
             alert(t.alertLackData(values.length, n + 1));
@@ -409,6 +412,42 @@
         alert(t.alertBulkDone(n + 1));
     }
 
+    // 複素数文字列（i, j）を解析して Decimal オブジェクトの {r, i} に変換する関数
+    function parseComplex(str) {
+        str = str.replace(/\s+/g, '').toLowerCase().replace(/j/g, 'i'); // 空白除去、jをiに統一
+        if (!str) return { r: new Decimal(0), i: new Decimal(0) };
+        if (str === 'i' || str === '+i') return { r: new Decimal(0), i: new Decimal(1) };
+        if (str === '-i') return { r: new Decimal(0), i: new Decimal(-1) };
+
+        // 指数(e)ではない、最後の '+' または '-' を探す
+        let splitIdx = -1;
+        for (let i = str.length - 1; i > 0; i--) {
+            if ((str[i] === '+' || str[i] === '-') && str[i-1] !== 'e') {
+                splitIdx = i;
+                break;
+            }
+        }
+
+        if (splitIdx !== -1 && str.endsWith('i')) {
+            let rStr = str.substring(0, splitIdx);
+            let iStr = str.substring(splitIdx).replace('i', '');
+            
+            if (rStr === '') rStr = '0';
+            if (iStr === '+' || iStr === '') iStr = '1';
+            if (iStr === '-') iStr = '-1';
+            return { r: new Decimal(rStr), i: new Decimal(iStr) };
+        } else {
+            if (str.endsWith('i')) {
+                let iStr = str.replace('i', '');
+                if (iStr === '+' || iStr === '') iStr = '1';
+                if (iStr === '-') iStr = '-1';
+                return { r: new Decimal(0), i: new Decimal(iStr) };
+            } else {
+                return { r: new Decimal(str), i: new Decimal(0) };
+            }
+        }
+    }
+
     async function startCalculation() {
         const t = i18n[currentLang];
         if (n === null) {
@@ -416,17 +455,19 @@
             return;
         }
         
-        let origA = [];
+        let origAR = [], origAI = [];
         for (let i = 0; i <= n; i++) {
             try {
-                origA[i] = new Decimal(document.getElementById('coeff' + i).value || "0");
+                let c = parseComplex(document.getElementById('coeff' + i).value || "0");
+                origAR[i] = c.r;
+                origAI[i] = c.i;
             } catch (e) {
                 alert(t.alertInvalidCoeff(n - i));
                 return;
             }
         }
 
-        if (origA[0].isZero()) {
+        if (origAR[0].isZero() && origAI[0].isZero()) {
             alert(t.alertZeroLead);
             return;
         }
@@ -434,18 +475,24 @@
         const prog = document.getElementById('progress');
         prog.innerText = t.msgScaling;
 
-        // --- 1. オートスケーリング（規格化）処理 ---
-        if (!origA[n].isZero()) {
-            scaleFactor = origA[n].abs().div(origA[0].abs()).pow(new Decimal(1).div(n));
+        // --- 1. オートスケーリング（複素数対応版） ---
+        if (!origAR[n].isZero() || !origAI[n].isZero()) {
+            let magN = origAR[n].pow(2).add(origAI[n].pow(2)).sqrt();
+            let mag0 = origAR[0].pow(2).add(origAI[0].pow(2)).sqrt();
+            scaleFactor = magN.div(mag0).pow(new Decimal(1).div(n));
         } else {
             scaleFactor = new Decimal(1);
         }
 
-        sa = [];
-        let a0 = origA[0];
+        saR = []; saI = [];
+        let denom0 = origAR[0].pow(2).add(origAI[0].pow(2));
         for (let i = 0; i <= n; i++) {
             let sPow = scaleFactor.pow(i);
-            sa[i] = origA[i].div(a0.mul(sPow));
+            // 複素数の除算: (a_j / a_0)
+            let nr = origAR[i].mul(origAR[0]).add(origAI[i].mul(origAI[0])).div(denom0);
+            let ni = origAI[i].mul(origAR[0]).sub(origAR[i].mul(origAI[0])).div(denom0);
+            saR[i] = nr.div(sPow);
+            saI[i] = ni.div(sPow);
         }
 
         // --- 2. 初期値の設定 ---
@@ -474,11 +521,13 @@
             for (let i = 1; i <= n; i++) {
                 if (sErr[i] && sErr[i].lte(targetTolerance)) continue;
 
-                let pr = sa[0], pi = new Decimal(0);
+                // 多項式評価 (ホーナー法: 複素数対応)
+                let pr = saR[0], pi = saI[0];
                 for (let j = 1; j <= n; j++) {
-                    let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(sa[j]);
-                    pi = pr.mul(si[i]).add(pi.mul(sr[i]));
+                    let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(saR[j]);
+                    let ni = pr.mul(si[i]).add(pi.mul(sr[i])).add(saI[j]);
                     pr = nr;
+                    pi = ni;
                 }
 
                 let dr = new Decimal(1), di = new Decimal(0);
@@ -568,7 +617,6 @@
         </div>`;
     }
 
-    // 初期起動時設定
     window.onload = () => {
         updateLanguageUI();
         createFields();
