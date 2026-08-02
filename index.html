@@ -32,6 +32,7 @@
         .header h1 {
             font-size: 2.5rem;
             color: var(--primary-color);
+            margin-bottom: 10px;
         }
         .card {
             background-color: var(--card-bg);
@@ -77,9 +78,17 @@
         <div class="lang-switch">
             <button class="btn" onclick="toggleLanguage()" id="langBtn">Switch to English</button>
         </div>
-
+        
         <div class="header">
             <h1>MethodDka</h1>
+            
+            <!-- Zenodo DOI バッジ -->
+            <div style="text-align: center; margin: 15px 0;">
+              <a href="https://doi.org/10.5281/zenodo.21753228" target="_blank" rel="noopener noreferrer">
+                <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.21753228.svg" alt="DOI">
+              </a>
+            </div>
+
             <p id="descText">HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ</p>
             <a href="MethodDka.html" class="btn" id="launchBtn">アプリを起動 / Launch App</a>
         </div>
@@ -112,26 +121,24 @@
             isEnglish = !isEnglish;
             
             document.getElementById('langBtn').innerText = isEnglish ? "日本語に切り替え" : "Switch to English";
-            document.getElementById('descText').innerText = isEnglish 
-                ? "Lightweight, ultra-fast, high-precision polynomial solver & factorization web app using pure HTML+JS." 
-                : "HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ";
+            document.getElementById('descText').innerText = isEnglish ? "Lightweight, ultra-fast, high-precision polynomial solver & factorization web app using pure HTML+JS." : "HTML+JSで動く軽量・高速・超高精度な多項式解法＆因数分解Webアプリ";
             document.getElementById('launchBtn').innerText = isEnglish ? "Launch App" : "アプリを起動 / Launch App";
-            
             document.getElementById('featuresTitle').innerText = isEnglish ? "🌟 Key Features" : "🌟 主な特徴";
-            document.getElementById('featuresList').innerHTML = isEnglish 
-                ? "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Instant toggle to factored form</li><li>Real-time English/Japanese switching</li>"
-                : "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>因数分解表示への瞬時切り替え</li><li>日本語・英語のリアルタイム切替</li>";
+            
+            document.getElementById('featuresList').innerHTML = isEnglish ? 
+                "<li>Auto-scaling normalization up to degree 200</li><li>50-digit precision with Decimal.js</li><li>Instant toggle to factored form</li><li>Real-time English/Japanese switching</li>" : 
+                "<li>最大200次までのオートスケーリング対応</li><li>Decimal.jsによる50桁高精度演算</li><li>因数分解表示への瞬時切り替え</li><li>日本語・英語のリアルタイム切替</li>";
             
             document.getElementById('benchTitle').innerText = isEnglish ? "🧪 Benchmark: 15th-Degree Wilkinson Polynomial" : "🧪 ベンチマーク: 15次ウィルキンソン多項式";
-            document.getElementById('benchDesc').innerHTML = isEnglish 
-                ? "Generates coefficients for W₁₅(x) = (x-1)(x-2)...(x-15) to test ill-conditioned polynomials in the DKA method.<br>Paste the result into the app's Bulk Input to observe false convergence at saddle points."
-                : "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の係数を生成します。<br>アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。";
+            document.getElementById('benchDesc').innerHTML = isEnglish ? 
+                "Generates coefficients for W₁₅(x) = (x-1)(x-2)...(x-15) to test ill-conditioned polynomials in the DKA method.<br>Paste the result into the app's Bulk Input to observe false convergence at saddle points." : 
+                "DKA法における悪条件多項式のテストとして、W₁₅(x) = (x-1)(x-2)...(x-15) の係数を生成します。<br>アプリの「一括ペースト」機能に貼り付けて、サドルポイントへの引き込み（偽収束）現象を確認できます。";
         }
 
         // ウィルキンソン多項式の係数展開 (W_n(x) = (x-1)(x-2)...(x-n))
         function generateWilkinson(n) {
             // BigIntを使用して巨大な係数オーバーフローを防止
-            let coeffs = [1n]; 
+            let coeffs = [1n];
             for (let i = 1; i <= n; i++) {
                 let nextCoeffs = new Array(coeffs.length + 1).fill(0n);
                 for (let j = 0; j < coeffs.length; j++) {
