@@ -21,6 +21,9 @@ DKA法（Durand-Kerner 法）を採用し、 Decimal.js による **50桁高精�
    - サーバー不要で単一の HTML ファイルとして動作するため、Windows, Mac, Linux, iOS, Android, ChromeOS 等のあらゆるブラウザでローカル・オフライン動作します。
 
 ## 🇬🇧 English Overview
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21753228.svg)](https://doi.org/10.5281/zenodo.21753228)
+
 **MethodDka** is a lightweight, ultra-fast, and high-precision web application designed for solving complex polynomials and performing factorization using pure HTML and JavaScript.
 Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with **50-digit precision** , it features **auto-scaling normalization up to degree 200** , **bulk coefficient input** , and **instant bilingual language switching (English/Japanese)** .
 
