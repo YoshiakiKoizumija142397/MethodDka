@@ -13,18 +13,21 @@ DKA法（Durand-Kerner 法）を採用し、 Decimal.js による *50桁高精�
 
 ## 🎧 応用例: ハイレゾ対応オーディオ用デジタルチャンネルデバイダー (Audio DSP Application)
 
-### 【New Application: High-Resolution Audio Digital Crossover & Minimum-Phase FIR Filter Design】
-本リポジトリの Durand-Kerner-Aberth法（MethodDka）と decimal.js による50桁高精度演算は、純粋な数学的計算にとどまらず、ハイレゾ配信（24bit/96kHz）に対応したオーディオ用デジタルチャンネルデバイダーの「ミニマムフェーズFIRフィルター係数」のオフライン設計に応用可能です。
+### 【New Application: High-Resolution Audio Digital Crossover & Minimum-Phase FIR Filter Design for SONY SS-CS5 Multi-Amp System】
 
-標準の64bit浮動小数点では破綻する200次（200タップ）の高次多項式の根を完全に掌握し、アナログ回路では実現不可能な超急峻かつ位相の乱れない理想的なマルチアンプ駆動を実現します。
+3WAYスピーカー **SONY SS-CS5** の内蔵ネットワーク（コンデンサやコイル等による受動素子の挿入損失や位相歪み）を完全に排除し、極限の高音質化を達成するためのデジタルチャンネルデバイダーを本プロジェクト（MethodDka）の数学的エンジンを用いてオフライン設計します。
 
-### 具体的なスペックとユースケースの提示（SONY SS-CS5 の例など）
-* **ターゲット環境:** Windows 11 (25H2) / Node.js / JavaScript
-* **サンプリング周波数:** 96kHz (ハイレゾ対応)
-* **クロスオーバー設計例 (3-WAY):**
+7.1チャンネルHDMI接続ハイレゾ配信対応アンプが持つ7chアンプのうち6ch（中古保証付きアンプ）をマルチアンプ駆動へ転用し、デジタルプリアンプとパワーアンプの間に挿入する高精度デジタルフィルターの係数算出に応用します。
+
+### 🛠️ 開発設計の前提条件とスペック・ユースケース
+* **OS環境:** Windows 11 Home (25H2)
+* **音源・サンプリング周波数:** Amazon Music Unlimited (ハイレゾ配信 24bit / 96kHz)
+* **ターゲットスピーカー:** SONY SS-CS5 (3WAYスピーカー・内蔵ネットワーク完全バイパス)
+* **ハードウェア構成:** 7.1ch HDMIアンプの6ch流用マルチアンプ駆動（デジタルプリアンプ ～ チャンネルデバイダー ～ パワーアンプ）
+* **クロスオーバー周波数 (3-WAY):**
   * **Low / Mid (2.5kHz):** 200タップによる急峻な減衰と、位相のブレない自然な繋がり。
   * **Mid / High (17kHz):** スーパートゥイーターを正確に駆動する高精度フィルタリング。
-* **最大のメリット:** プレエコー（プリリンギング）を排除する「ミニマムフェーズ化」を、50桁の数学的精度でノーエラーで実行。
+* **最大のメリット:** パッシブネットワークを排除してアンプが直接ユニットを駆動するドライブ力の向上と、プレエコー（プリリンギング）を極限まで排除する「ミニマムフェーズ化」を、50桁の数学的精度でノーエラーで実行。
 
 ---
 
@@ -72,9 +75,9 @@ Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with *50-digit preci
 💡 **補足 / Note (悪条件多項式について / Ill-conditioned polynomials):** 本アプリはオートスケーリング処理により最大200次までの計算に対応していますが、ウィルキンソン多項式のように「根が実軸上に極めて密集して並ぶ悪条件多項式（Ill-conditioned polynomials）」では、並列円周初期値を用いる DKA 法の性質上、高次（15次以上）で複素数領域の鞍点へ引き込まれる（偽収束する）場合があります。通常分散された多項式では高次まで正常に動作します。
 
 ### テスト手順 (How to test):
-1. ランディングページ ([index.html](index.html)) にアクセスします。
+1. ランディングページ ([index.html](https://github.com/YoshiakiKoizumija142397/MethodDka/blob/main/index.html)) にアクセスします。
 2. 「15次ウィルキンソン係数を生成 (Generate 15th-degree Wilkinson)」ボタンをクリックします。
-3. 生成された係数をコピーし、[MethodDka.html](MethodDka.html) の「一括ペースト」エリアに貼り付けて計算を実行してください。
+3. 生成された係数をコピーし、[MethodDka.html](https://github.com/YoshiakiKoizumija142397/MethodDka/blob/main/MethodDka.html) の「一括ペースト」エリアに貼り付けて計算を実行してください。
 
 ---
 
