@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="help-page-title">MethodDka ヘルプ</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        /* 共通ナビゲーションバー */
+        .nav-bar {
+            background: #343a40;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2 {
+            color: #0d6efd;
+        }
+
+        .section {
+            background: #fff;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #5c636a;
+        }
+
+        .lang-btn {
+            background-color: #0d6efd;
+        }
+
+        .lang-btn:hover {
+            background-color: #0b5ed7;
+        }
+
+        code {
+            background: #f1f3f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 共通ナビゲーションバー -->
+    <nav class="nav-bar">
+        <a href="index.html">🏠 TOP</a>
+        <a href="MethodDka.html">🧮 Calculator</a>
+        <a href="help.html">📖 Help</a>
+    </nav>
+
+    <div class="top-bar">
+        <button class="btn" onclick="goBack()" id="btn-back">← 戻る</button>
+        <button class="btn lang-btn" onclick="toggleLanguage()" id="btn-lang-toggle">🌐 English</button>
+    </div>
+
+    <h1 id="h-title">MethodDka ヘルプ（正式公開バージョン）</h1>
+
+    <div class="section">
+        <h2 id="h-overview-title">概要と主な特徴</h2>
+        <p id="h-overview-desc">
+            MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算するための本格的なデスクトップアプリケーションです。
+        </p>
+        <ul>
+            <li id="h-feat-1"><strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持します。</li>
+            <li id="h-feat-2"><strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能です。</li>
+            <li id="h-feat-3"><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。</li>
+        </ul>
+        <p style="margin-top: 15px;">
+            <span id="txt-author">作者</span>：小泉嘉章 (Koizumi Yoshiaki)<br>
+            Email: ja142397@s6.dion.ne.jp<br>
+            <strong>Version 1.0.0</strong>
+        </p>
+    </div>
+
+    <div class="section">
+        <h2 id="h-precision-title">精度保証と誤差半径について</h2>
+        <p id="h-precision-desc">
+            計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2 id="h-usage-title">使い方</h2>
+        <p id="h-usage-desc">
+            1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>
+            2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>
+            3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。
+        </p>
+    </div>
+
+    <script>
+        const helpTexts = {
+            ja: {
+                pageTitle: "MethodDka ヘルプ",
+                back: "← 戻る",
+                langToggle: "🌐 English",
+                title: "MethodDka ヘルプ（正式公開バージョン）",
+                overviewTitle: "概要と主な特徴",
+                overviewDesc: "MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算するための本格的なデスクトップアプリケーションです。",
+                feat1: "<strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持します。",
+                feat2: "<strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能です。",
+                feat3: "<strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。",
+                authorLabel: "作者",
+                precisionTitle: "精度保証と誤差半径について",
+                precisionDesc: "計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。",
+                usageTitle: "使い方",
+                usageDesc: "1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。"
+            },
+            en: {
+                pageTitle: "MethodDka Help",
+                back: "← Back",
+                langToggle: "🌐 日本語",
+                title: "MethodDka Help (Official Release)",
+                overviewTitle: "Overview & Features",
+                overviewDesc: "MethodDka is a full-scale desktop application for calculating all roots of polynomials up to degree 200 with ultra-high precision using the DKA method and Decimal.js.",
+                feat1: "<strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical errors and maintain stability.",
+                feat2: "<strong>Complex Coefficients:</strong> Full support for complex coefficients using <code>i</code> or <code>j</code> (e.g., 1+2i, 3-4j).",
+                feat3: "<strong>Auto-Scaling:</strong> Normalization prevents overflow/underflow for extreme coefficients.",
+                authorLabel: "Author",
+                precisionTitle: "Precision Guarantee & Error Radius",
+                precisionDesc: "The <strong>'error radius'</strong> is calculated and displayed in real-time for each root. Through rigorous evaluation, you can verify that the obtained solutions have converged correctly with high precision.",
+                usageTitle: "How to Use",
+                usageDesc: "1. <strong>Specify the degree</strong> and click 'Generate Fields' (supports up to degree 200).<br>2. Enter coefficients individually or use the <strong>'Bulk Coefficients Input'</strong> feature (comma or space separated, supports complex numbers like <code>1+2i</code> or <code>3-4j</code>).<br>3. Click the 'Calculate' button to execute high-precision root finding and check factored forms."
+            }
+        };
+
+        function updateContent() {
+            let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
+            const t = helpTexts[currentLang];
+
+            document.documentElement.lang = currentLang;
+            document.getElementById('help-page-title').innerText = t.pageTitle;
+            document.getElementById('btn-back').innerText = t.back;
+            document.getElementById('btn-lang-toggle').innerText = t.langToggle;
+            document.getElementById('h-title').innerText = t.title;
+            document.getElementById('h-overview-title').innerText = t.overviewTitle;
+            document.getElementById('h-overview-desc').innerHTML = t.overviewDesc;
+            document.getElementById('h-feat-1').innerHTML = t.feat1;
+            document.getElementById('h-feat-2').innerHTML = t.feat2;
+            document.getElementById('h-feat-3').innerHTML = t.feat3;
+            document.getElementById('txt-author').innerText = t.authorLabel;
+            document.getElementById('h-precision-title').innerText = t.precisionTitle;
+            document.getElementById('h-precision-desc').innerHTML = t.precisionDesc;
+            document.getElementById('h-usage-title').innerText = t.usageTitle;
+            document.getElementById('h-usage-desc').innerHTML = t.usageDesc;
+        }
+
+        function toggleLanguage() {
+            let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
+            let newLang = currentLang === 'ja' ? 'en' : 'ja';
+            localStorage.setItem('methoddka_lang', newLang);
+            updateContent();
+        }
+
+        window.addEventListener('DOMContentLoaded', updateContent);
+
+        function goBack() {
+            window.location.href = 'MethodDka.html';
+        }
+    </script>
+</body>
+</html>
