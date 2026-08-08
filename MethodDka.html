@@ -30,6 +30,25 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        /* 共通ナビゲーションバー */
+        .nav-bar {
+            background: #343a40;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
         .header-row {
             display: flex;
             justify-content: space-between;
@@ -44,18 +63,19 @@
             color: #000;
         }
         .lang-switch-btn {
-            background-color: #e9ecef;
-            color: #495057;
-            border: 1px solid #ced4da;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: bold;
             transition: all 0.2s;
+            margin-left: auto;
         }
         .lang-switch-btn:hover {
-            background-color: #dee2e6;
+            background-color: #0b5ed7;
         }
         .desc-box {
             background-color: #f1f3f5;
@@ -188,6 +208,13 @@
 <body>
 
 <div class="container">
+    <!-- 共通ナビゲーションバー -->
+    <nav class="nav-bar">
+        <a href="index.html">🏠 TOP</a>
+        <a href="MethodDka.html">🧮 Calculator</a>
+        <a href="help.html">📖 Help</a>
+    </nav>
+
     <div class="header-row">
         <h1 id="appTitle">MethodDka (200次対応 & 50桁高精度)</h1>
         <button type="button" class="lang-switch-btn" onclick="toggleLanguage()" id="langBtn">🌐 English</button>
@@ -242,7 +269,7 @@
 <script>
     Decimal.set({ precision: 50 });
 
-    let currentLang = 'ja';
+    let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
     let n = null;
     let saR = [], saI = [], sr = [], si = [], sErr = [], sIter = [];
     let scaleFactor = new Decimal(1);
@@ -328,6 +355,7 @@
 
     function toggleLanguage() {
         currentLang = (currentLang === 'ja') ? 'en' : 'ja';
+        localStorage.setItem('methoddka_lang', currentLang);
         document.documentElement.lang = currentLang;
         updateLanguageUI();
     }
@@ -352,7 +380,13 @@
                 if (lbl) lbl.textContent = `a_${n - i} (x^${n - i}):`;
             }
         }
-        renderResults();
+
+        if (sr.length > 1) {
+            renderResults();
+        } else {
+            const isFactorMode = document.getElementById('modeToggle').checked;
+            document.getElementById('toggleText').innerText = isFactorMode ? t.modeFactored : t.modeRoots;
+        }
     }
 
     function createFields() {
@@ -394,7 +428,6 @@
         }
         
         let values = [];
-        // カンマが含まれている場合はカンマで分割、そうでない場合は空白で分割
         if (rawText.includes(',')) {
             values = rawText.split(',').map(v => v.trim()).filter(v => v.length > 0);
         } else {
@@ -412,14 +445,12 @@
         alert(t.alertBulkDone(n + 1));
     }
 
-    // 複素数文字列（i, j）を解析して Decimal オブジェクトの {r, i} に変換する関数
     function parseComplex(str) {
-        str = str.replace(/\s+/g, '').toLowerCase().replace(/j/g, 'i'); // 空白除去、jをiに統一
+        str = str.replace(/\s+/g, '').toLowerCase().replace(/j/g, 'i');
         if (!str) return { r: new Decimal(0), i: new Decimal(0) };
         if (str === 'i' || str === '+i') return { r: new Decimal(0), i: new Decimal(1) };
         if (str === '-i') return { r: new Decimal(0), i: new Decimal(-1) };
 
-        // 指数(e)ではない、最後の '+' または '-' を探す
         let splitIdx = -1;
         for (let i = str.length - 1; i > 0; i--) {
             if ((str[i] === '+' || str[i] === '-') && str[i-1] !== 'e') {
@@ -475,7 +506,6 @@
         const prog = document.getElementById('progress');
         prog.innerText = t.msgScaling;
 
-        // --- 1. オートスケーリング（複素数対応版） ---
         if (!origAR[n].isZero() || !origAI[n].isZero()) {
             let magN = origAR[n].pow(2).add(origAI[n].pow(2)).sqrt();
             let mag0 = origAR[0].pow(2).add(origAI[0].pow(2)).sqrt();
@@ -488,14 +518,12 @@
         let denom0 = origAR[0].pow(2).add(origAI[0].pow(2));
         for (let i = 0; i <= n; i++) {
             let sPow = scaleFactor.pow(i);
-            // 複素数の除算: (a_j / a_0)
             let nr = origAR[i].mul(origAR[0]).add(origAI[i].mul(origAI[0])).div(denom0);
             let ni = origAI[i].mul(origAR[0]).sub(origAR[i].mul(origAI[0])).div(denom0);
             saR[i] = nr.div(sPow);
             saI[i] = ni.div(sPow);
         }
 
-        // --- 2. 初期値の設定 ---
         sErr = [];
         for (let i = 1; i <= n; i++) sIter[i] = 0;
         let sp = Decimal.acos(-1);
@@ -508,7 +536,6 @@
             si[j] = initR.mul(perturbation).mul(Decimal.sin(ang));
         }
 
-        // --- 3. DKA法 反復計算 ---
         const maxIter = 20000;
         const targetTolerance = new Decimal("1e-40");
 
@@ -521,7 +548,6 @@
             for (let i = 1; i <= n; i++) {
                 if (sErr[i] && sErr[i].lte(targetTolerance)) continue;
 
-                // 多項式評価 (ホーナー法: 複素数対応)
                 let pr = saR[0], pi = saI[0];
                 for (let j = 1; j <= n; j++) {
                     let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(saR[j]);
@@ -553,7 +579,6 @@
             if (!bContinue) break;
         }
 
-        // --- 4. 元のスケールへの逆変換 ---
         for (let i = 1; i <= n; i++) {
             sr[i] = sr[i].mul(scaleFactor);
             si[i] = si[i].mul(scaleFactor);
@@ -618,6 +643,7 @@
     }
 
     window.onload = () => {
+        document.documentElement.lang = currentLang;
         updateLanguageUI();
         createFields();
     };
