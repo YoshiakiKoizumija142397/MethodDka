@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -83,6 +83,15 @@
             border-radius: 4px;
             font-family: monospace;
         }
+
+        pre {
+            background: #f1f3f5;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +135,14 @@
     </div>
 
     <div class="section">
+        <h2 id="h-sample-title">テスト用サンプルデータ（10次ウィルキンソン多項式）</h2>
+        <p id="h-sample-desc">
+            精度検証用の10次ウィルキンソン多項式（根が 1 から 10 の整数）の係数データです。以下のデータをコピーし、Calculator画面の「係数一括ペースト」欄に貼り付けてテストしてください。
+        </p>
+        <pre>1, -55, 1320, -18150, 157773, -902055, 3416930, -8409500, 12753576, -10628640, 3628800</pre>
+    </div>
+
+    <div class="section">
         <h2 id="h-usage-title">使い方</h2>
         <p id="h-usage-desc">
             1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>
@@ -149,6 +166,8 @@
                 authorLabel: "作者",
                 precisionTitle: "精度保証と誤差半径について",
                 precisionDesc: "計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。",
+                sampleTitle: "テスト用サンプルデータ（10次ウィルキンソン多項式）",
+                sampleDesc: "精度検証用の10次ウィルキンソン多項式（根が 1 から 10 の整数）の係数データです。以下のデータをコピーし、Calculator画面の「係数一括ペースト」欄に貼り付けてテストしてください。",
                 usageTitle: "使い方",
                 usageDesc: "1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。"
             },
@@ -165,6 +184,8 @@
                 authorLabel: "Author",
                 precisionTitle: "Precision Guarantee & Error Radius",
                 precisionDesc: "The <strong>'error radius'</strong> is calculated and displayed in real-time for each root. Through rigorous evaluation, you can verify that the obtained solutions have converged correctly with high precision.",
+                sampleTitle: "Test Sample Data (10th Degree Wilkinson Polynomial)",
+                sampleDesc: "Coefficient data for the 10th degree Wilkinson polynomial (with integer roots from 1 to 10) for accuracy verification. Copy the data below and paste it into the 'Bulk Coefficients Input' field on the Calculator screen.",
                 usageTitle: "How to Use",
                 usageDesc: "1. <strong>Specify the degree</strong> and click 'Generate Fields' (supports up to degree 200).<br>2. Enter coefficients individually or use the <strong>'Bulk Coefficients Input'</strong> feature (comma or space separated, supports complex numbers like <code>1+2i</code> or <code>3-4j</code>).<br>3. Click the 'Calculate' button to execute high-precision root finding and check factored forms."
             }
@@ -187,6 +208,8 @@
             document.getElementById('txt-author').innerText = t.authorLabel;
             document.getElementById('h-precision-title').innerText = t.precisionTitle;
             document.getElementById('h-precision-desc').innerHTML = t.precisionDesc;
+            document.getElementById('h-sample-title').innerText = t.sampleTitle;
+            document.getElementById('h-sample-desc').innerText = t.sampleDesc;
             document.getElementById('h-usage-title').innerText = t.usageTitle;
             document.getElementById('h-usage-desc').innerHTML = t.usageDesc;
         }
