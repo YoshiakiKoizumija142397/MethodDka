@@ -25,15 +25,17 @@
             gap: 15px;
             align-items: center;
         }
-        .nav-bar a {
-            color: white;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .nav-bar a:hover {
-            text-decoration: underline;
-        }
+
+            .nav-bar a {
+                color: white;
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+            }
+
+                .nav-bar a:hover {
+                    text-decoration: underline;
+                }
 
         h1, h2 {
             color: #0d6efd;
@@ -65,17 +67,17 @@
             font-weight: 600;
         }
 
-        .btn:hover {
-            background-color: #5c636a;
-        }
+            .btn:hover {
+                background-color: #5c636a;
+            }
 
         .lang-btn {
             background-color: #0d6efd;
         }
 
-        .lang-btn:hover {
-            background-color: #0b5ed7;
-        }
+            .lang-btn:hover {
+                background-color: #0b5ed7;
+            }
 
         code {
             background: #f1f3f5;
@@ -98,9 +100,10 @@
 
     <!-- 共通ナビゲーションバー -->
     <nav class="nav-bar">
-        <a href="index.html">🏠 TOP</a>
-        <a href="MethodDka.html">🧮 Calculator</a>
-        <a href="help.html">📖 Help</a>
+        <a href="index.html" data-lang-ja="🏠 トップ" data-lang-en="🏠 TOP">🏠 トップ</a>
+        <a href="MethodDka.html" data-lang-ja="🧮 計算" data-lang-en="🧮 Calculator">🧮 計算</a>
+        <a href="help.html" data-lang-ja="📖 ヘルプ" data-lang-en="📖 Help">📖 ヘルプ</a>
+        <a href="privacy.html" data-lang-ja="🔒 プライバシー" data-lang-en="🔒 Privacy">🔒 プライバシー</a>
     </nav>
 
     <div class="top-bar">
@@ -121,9 +124,9 @@
             <li id="h-feat-3"><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。</li>
         </ul>
         <p style="margin-top: 15px;">
-            <span id="txt-author">作者</span>：小泉嘉章 (Koizumi Yoshiaki)<br>
+            <span id="txt-author">小泉嘉章 (Yoshiaki Koizumi)</span><br>
             Email: ja142397@s6.dion.ne.jp<br>
-            <strong>Version 2.5.0</strong>
+            <strong>Version 2.5.2</strong>
         </p>
     </div>
 
@@ -154,6 +157,7 @@
     <script>
         const helpTexts = {
             ja: {
+                nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
                 pageTitle: "MethodDka ヘルプ",
                 back: "← 戻る",
                 langToggle: "🌐 English",
@@ -163,7 +167,7 @@
                 feat1: "<strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持します。",
                 feat2: "<strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能です。",
                 feat3: "<strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。",
-                authorLabel: "作者",
+                authorText: "小泉嘉章 (Yoshiaki Koizumi)",
                 precisionTitle: "精度保証と誤差半径について",
                 precisionDesc: "計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。",
                 sampleTitle: "テスト用サンプルデータ（10次ウィルキンソン多項式）",
@@ -172,6 +176,7 @@
                 usageDesc: "1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。"
             },
             en: {
+                nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
                 pageTitle: "MethodDka Help",
                 back: "← Back",
                 langToggle: "🌐 日本語",
@@ -181,7 +186,7 @@
                 feat1: "<strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical errors and maintain stability.",
                 feat2: "<strong>Complex Coefficients:</strong> Full support for complex coefficients using <code>i</code> or <code>j</code> (e.g., 1+2i, 3-4j).",
                 feat3: "<strong>Auto-Scaling:</strong> Normalization prevents overflow/underflow for extreme coefficients.",
-                authorLabel: "Author",
+                authorText: "Yoshiaki Koizumi (小泉嘉章)",
                 precisionTitle: "Precision Guarantee & Error Radius",
                 precisionDesc: "The <strong>'error radius'</strong> is calculated and displayed in real-time for each root. Through rigorous evaluation, you can verify that the obtained solutions have converged correctly with high precision.",
                 sampleTitle: "Test Sample Data (10th Degree Wilkinson Polynomial)",
@@ -192,10 +197,15 @@
         };
 
         function updateContent() {
-            let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
-            const t = helpTexts[currentLang];
+            let lang = localStorage.getItem('methoddka_lang') || 'ja';
+            const t = helpTexts[lang];
 
-            document.documentElement.lang = currentLang;
+            document.documentElement.lang = lang;
+
+            // Navigation update
+            const navLinks = document.querySelectorAll('.nav-bar a');
+            t.nav.forEach((text, i) => { navLinks[i].innerText = text; });
+
             document.getElementById('help-page-title').innerText = t.pageTitle;
             document.getElementById('btn-back').innerText = t.back;
             document.getElementById('btn-lang-toggle').innerText = t.langToggle;
@@ -205,7 +215,7 @@
             document.getElementById('h-feat-1').innerHTML = t.feat1;
             document.getElementById('h-feat-2').innerHTML = t.feat2;
             document.getElementById('h-feat-3').innerHTML = t.feat3;
-            document.getElementById('txt-author').innerText = t.authorLabel;
+            document.getElementById('txt-author').innerText = t.authorText;
             document.getElementById('h-precision-title').innerText = t.precisionTitle;
             document.getElementById('h-precision-desc').innerHTML = t.precisionDesc;
             document.getElementById('h-sample-title').innerText = t.sampleTitle;
@@ -215,8 +225,8 @@
         }
 
         function toggleLanguage() {
-            let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
-            let newLang = currentLang === 'ja' ? 'en' : 'ja';
+            let lang = localStorage.getItem('methoddka_lang') || 'ja';
+            let newLang = lang === 'ja' ? 'en' : 'ja';
             localStorage.setItem('methoddka_lang', newLang);
             updateContent();
         }

@@ -5,7 +5,6 @@
 [日本語](README.md) | [English](README.md#english-overview)
 
 ## 🇯🇵 日本語概要
-
 *MethodDka* は、HTML と JavaScript だけで動作する軽量・高速・超高精度な多項式解法 ＆ 因数分解 Web アプリケーションです。
 DKA法（Durand-Kerner 法）を採用し、 Decimal.js による *50桁高精度演算* 、 *最大200次対応オートスケーリング処理* 、 *複素数係数（i, j）の完全対応* 、 *係数一括ペースト機能* 、および *日本語 / English 瞬時言語切替機能* を統合したオールインワン版です。
 
@@ -47,7 +46,6 @@ DKA法（Durand-Kerner 法）を採用し、 Decimal.js による *50桁高精�
 ---
 
 ## 🇬🇧 English Overview
-
 *MethodDka* is a lightweight, ultra-fast, and high-precision web application designed for solving complex polynomials and performing factorization using pure HTML and JavaScript.
 Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with *50-digit precision*, it features *auto-scaling normalization up to degree 200*, *full support for complex coefficients using `i` or `j`*, *bulk coefficient input*, and *instant bilingual language switching (English/Japanese)*.
 
@@ -75,9 +73,9 @@ Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with *50-digit preci
 💡 **補足 / Note (悪条件多項式について / Ill-conditioned polynomials):** 本アプリはオートスケーリング処理により最大200次までの計算に対応していますが、ウィルキンソン多項式のように「根が実軸上に極めて密集して並ぶ悪条件多項式（Ill-conditioned polynomials）」では、並列円周初期値を用いる DKA 法の性質上、高次（10次以上）で複素数領域の鞍点へ引き込まれる（偽収束する）場合があります。通常分散された多項式では高次まで正常に動作します。
 
 ### テスト手順 (How to test):
-1. ヘルプページ ([help.html](https://github.com/YoshiakiKoizumija142397/MethodDka/blob/main/help.html)) にアクセスします。
-2. 「10次ウィルキンソン係数をコピペします。
-3. Calculator[MethodDka.html](https://github.com/YoshiakiKoizumija142397/MethodDka/blob/main/MethodDka.html) の「一括ペースト」エリアに貼り付けて計算を実行してください。
+1. ヘルプページ ([help.html](help.html)) にアクセスします。
+2. 10次ウィルキンソン係数をコピーします。
+3. Calculator [MethodDka.html](MethodDka.html) の「一括ペースト」エリアに貼り付けて計算を実行してください。
 
 ---
 
@@ -92,7 +90,8 @@ Powered by the Durand-Kerner (DKA) algorithm and Decimal.js with *50-digit preci
 
 ```text
 MethodDka/
-├── help.html              #　ヘルプと１０次ウィルキンソン係数一括読み込み対応データ
+├── help.html              # ヘルプと10次ウィルキンソン係数一括読み込み対応データ
 ├── MethodDka.html         # 統合マスターコード / Multilingual master code
-├── index.html             # 公式ランディングページ (ベンチマーク生成機能付き) / Official Landing Page
-└── README.md              # 本ドキュメント / Documentation
+├── index.html             # 公式ランディングページ (ベンチマーク生成機能付き)
+├── privacy.html           # プライバシーポリシー
+└── README.md              # 本ドキュメント / Documentation (v2.5.2)
