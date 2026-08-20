@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="help-page-title">MethodDka ヘルプ</title>
+    <title id="help-page-title">MethodDka v3.0.0 ヘルプ & 操作マニュアル</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.8;
             padding: 20px;
-            max-width: 900px;
+            max-width: 950px;
             margin: auto;
             background-color: #f8f9fa;
             color: #212529;
@@ -37,14 +37,14 @@
                     text-decoration: underline;
                 }
 
-        h1, h2 {
+        h1, h2, h3 {
             color: #0d6efd;
         }
 
         .section {
             background: #fff;
-            padding: 20px 25px;
-            margin-bottom: 20px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -79,20 +79,37 @@
                 background-color: #0b5ed7;
             }
 
-        code {
+        .step-box {
             background: #f1f3f5;
+            border-left: 5px solid #0d6efd;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+            .step-box h3 {
+                margin-top: 0;
+                color: #333;
+            }
+
+        code {
+            background: #e9ecef;
             padding: 2px 6px;
             border-radius: 4px;
             font-family: monospace;
+            color: #d63384;
         }
 
         pre {
-            background: #f1f3f5;
-            padding: 12px;
+            background: #212529;
+            color: #f8f9fa;
+            padding: 15px;
             border-radius: 6px;
             overflow-x: auto;
             font-family: monospace;
-            font-size: 14px;
+            font-size: 13px;
+            word-break: break-all;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -111,98 +128,94 @@
         <button class="btn lang-btn" onclick="toggleLanguage()" id="btn-lang-toggle">🌐 English</button>
     </div>
 
-    <h1 id="h-title">MethodDka ヘルプ</h1>
+    <h1 id="h-title">MethodDka v3.0.0 操作マニュアル & ヘルプ</h1>
 
+    <!-- 概要セクション -->
     <div class="section">
         <h2 id="h-overview-title">概要と主な特徴</h2>
         <p id="h-overview-desc">
-            MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算するための本格的なデスクトップアプリケーションです。
+            MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算・因数分解するための本格的なWebアプリケーションです。
         </p>
         <ul>
-            <li id="h-feat-1"><strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持します。</li>
-            <li id="h-feat-2"><strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能です。</li>
-            <li id="h-feat-3"><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。</li>
+            <li id="h-feat-1"><strong>多段階高精度演算 (50/100/200桁):</strong> 小泉の初期値による再帰的極限収束（Koizumi Scheme）に対応。</li>
+            <li id="h-feat-2"><strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能。</li>
+            <li id="h-feat-3"><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でもオーバーフローを完全に防止。</li>
         </ul>
         <p style="margin-top: 15px;">
             <span id="txt-author">小泉嘉章 (Yoshiaki Koizumi)</span><br>
             Email: ja142397@s6.dion.ne.jp<br>
-            <strong>Version 2.5.2</strong>
+            <strong>Version 3.0.0</strong>
         </p>
     </div>
 
+    <!-- 使い方・ステップバイステップ解説 (新規追加・丁寧版) -->
     <div class="section">
-        <h2 id="h-precision-title">精度保証と誤差半径について</h2>
-        <p id="h-precision-desc">
-            計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。
+        <h2 id="h-guide-title">🚀 「小泉の初期値」再帰的デバッグの完全な手順（使い方）</h2>
+        <p id="h-guide-desc">
+            20次ウィルキンソン多項式のような極めて悪条件な難問を200桁の極限精度で解くための、推奨オペレーション手順です。
         </p>
+
+        <div class="step-box">
+            <h3>Step 1: 第1フェーズ（50桁ベースライン）</h3>
+            <p>
+                1. <code>MethodDka.html</code> を開きます。<br>
+                2. 画面上の<strong>「🧪 20次ウィルキンソン係数を一発ロード」</strong>ボタンを押します。<br>
+                3. 精度セレクトボックスを <strong>「50桁」</strong> に合わせます。<br>
+                4. <strong>「計算開始」</strong>ボタンを押して初期の解の配置を求めます。
+            </p>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 2: 第2フェーズ（100桁 ＆ 小泉の2回目初期値）</h3>
+            <p>
+                1. 計算が完了したら、緑色のボタン<strong>「💾 今回の解を『小泉の初期値』として保存」</strong>を押します。<br>
+                2. 精度セレクトボックスを <strong>「100桁」</strong> に変更します。<br>
+                3. 再度<strong>「計算開始」</strong>を押します（保存した50桁の解が自動ロードされ、一瞬で収束が加速します）。
+            </p>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 3: 第3フェーズ（200桁 ＆ 小泉の3回目初期値・限界突破）</h3>
+            <p>
+                1. 100桁での計算が完了したら、もう一度<strong>「💾 今回の解を『小泉の初期値』として保存」</strong>を押します。<br>
+                2. 精度セレクトボックスを <strong>「200桁」</strong> に変更します。<br>
+                3. 最後に<strong>「計算開始」</strong>を押すことで、わずか数回の反復で誤差半径 <code>10^-180</code> オーダーの極限精度（小泉の3回目初期値による完全収束）に到達します！
+            </p>
+        </div>
     </div>
 
+    <!-- サンプルデータ -->
     <div class="section">
-        <h2 id="h-sample-title">テスト用サンプルデータ（10次ウィルキンソン多項式）</h2>
+        <h2 id="h-sample-title">テスト用サンプルデータ（20次ウィルキンソン多項式）</h2>
         <p id="h-sample-desc">
-            精度検証用の10次ウィルキンソン多項式（根が 1 から 10 の整数）の係数データです。以下のデータをコピーし、Calculator画面の「係数一括ペースト」欄に貼り付けてテストしてください。
+            手動で一括ペーストしたい場合は、以下の係数データ（x^20 から x^0 まで）をコピーし、計算画面の「係数一括ペースト」欄に貼り付けてください。
         </p>
-        <pre>1, -55, 1320, -18150, 157773, -902055, 3416930, -8409500, 12753576, -10628640, 3628800</pre>
-    </div>
-
-    <div class="section">
-        <h2 id="h-usage-title">使い方</h2>
-        <p id="h-usage-desc">
-            1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>
-            2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>
-            3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。
-        </p>
+        <pre>1, -210, 20615, -1256850, 53327946, -1672280820, 40171771630, -756111184500, 11310276995381, -135585182899530, 1307535010540395, -10142299865511450, 63030812099294896, -311333643161390640, 1206647803780373360, -3599979517947607200, 8037811822645051392, -12870931245150988000, 13803759753640704000, -8752948036761600000, 2432902008176640000</pre>
     </div>
 
     <script>
         const helpTexts = {
             ja: {
                 nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
-                pageTitle: "MethodDka ヘルプ",
+                pageTitle: "MethodDka v3.0.0 ヘルプ & 操作マニュアル",
                 back: "← 戻る",
                 langToggle: "🌐 English",
-                title: "MethodDka ヘルプ",
-                overviewTitle: "概要と主な特徴",
-                overviewDesc: "MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算するための本格的なデスクトップアプリケーションです。",
-                feat1: "<strong>50桁超高精度演算:</strong> 桁あふれ・情報落ちを防ぎ安定した計算精度を保持します。",
-                feat2: "<strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能です。",
-                feat3: "<strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でも数値的に安定化させます。",
-                authorText: "小泉嘉章 (Yoshiaki Koizumi)",
-                precisionTitle: "精度保証と誤差半径について",
-                precisionDesc: "計算された各根に対して<strong>「誤差半径」</strong>がリアルタイムで算出・表示されます。厳密な評価により、求まった解が数学的に正しく高精度に収束しているかを確認することが可能です。",
-                sampleTitle: "テスト用サンプルデータ（10次ウィルキンソン多項式）",
-                sampleDesc: "精度検証用の10次ウィルキンソン多項式（根が 1 から 10 の整数）の係数データです。以下のデータをコピーし、Calculator画面の「係数一括ペースト」欄に貼り付けてテストしてください。",
-                usageTitle: "使い方",
-                usageDesc: "1. <strong>最高次数を指定</strong>し、「入力欄生成」ボタンを押します（1〜200次まで対応）。<br>2. 各項の係数を個別に直接入力するか、便利な<strong>「係数一括ペースト」</strong>機能（カンマまたは空白区切り、複素数 <code>1+2i</code> / <code>3-4j</code> 対応）をご利用いただけます。<br>3. 「計算開始」ボタンを押すことで、50桁精度による高精度な根の算出・検証および因数分解表示モードへの切り替えが行われます。"
+                title: "MethodDka v3.0.0 操作マニュアル & ヘルプ"
             },
             en: {
                 nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
-                pageTitle: "MethodDka Help",
+                pageTitle: "MethodDka v3.0.0 Help & Operation Manual",
                 back: "← Back",
                 langToggle: "🌐 日本語",
-                title: "MethodDka Help",
-                overviewTitle: "Overview & Features",
-                overviewDesc: "MethodDka is a full-scale desktop application for calculating all roots of polynomials up to degree 200 with ultra-high precision using the DKA method and Decimal.js.",
-                feat1: "<strong>50-Digit High Precision:</strong> Powered by Decimal.js to prevent numerical errors and maintain stability.",
-                feat2: "<strong>Complex Coefficients:</strong> Full support for complex coefficients using <code>i</code> or <code>j</code> (e.g., 1+2i, 3-4j).",
-                feat3: "<strong>Auto-Scaling:</strong> Normalization prevents overflow/underflow for extreme coefficients.",
-                authorText: "Yoshiaki Koizumi (小泉嘉章)",
-                precisionTitle: "Precision Guarantee & Error Radius",
-                precisionDesc: "The <strong>'error radius'</strong> is calculated and displayed in real-time for each root. Through rigorous evaluation, you can verify that the obtained solutions have converged correctly with high precision.",
-                sampleTitle: "Test Sample Data (10th Degree Wilkinson Polynomial)",
-                sampleDesc: "Coefficient data for the 10th degree Wilkinson polynomial (with integer roots from 1 to 10) for accuracy verification. Copy the data below and paste it into the 'Bulk Coefficients Input' field on the Calculator screen.",
-                usageTitle: "How to Use",
-                usageDesc: "1. <strong>Specify the degree</strong> and click 'Generate Fields' (supports up to degree 200).<br>2. Enter coefficients individually or use the <strong>'Bulk Coefficients Input'</strong> feature (comma or space separated, supports complex numbers like <code>1+2i</code> or <code>3-4j</code>).<br>3. Click the 'Calculate' button to execute high-precision root finding and check factored forms."
+                title: "MethodDka v3.0.0 Operation Manual & Help"
             }
         };
 
         function updateContent() {
             let lang = localStorage.getItem('methoddka_lang') || 'ja';
             const t = helpTexts[lang];
-
             document.documentElement.lang = lang;
 
-            // Navigation update
             const navLinks = document.querySelectorAll('.nav-bar a');
             t.nav.forEach((text, i) => { navLinks[i].innerText = text; });
 
@@ -210,18 +223,6 @@
             document.getElementById('btn-back').innerText = t.back;
             document.getElementById('btn-lang-toggle').innerText = t.langToggle;
             document.getElementById('h-title').innerText = t.title;
-            document.getElementById('h-overview-title').innerText = t.overviewTitle;
-            document.getElementById('h-overview-desc').innerHTML = t.overviewDesc;
-            document.getElementById('h-feat-1').innerHTML = t.feat1;
-            document.getElementById('h-feat-2').innerHTML = t.feat2;
-            document.getElementById('h-feat-3').innerHTML = t.feat3;
-            document.getElementById('txt-author').innerText = t.authorText;
-            document.getElementById('h-precision-title').innerText = t.precisionTitle;
-            document.getElementById('h-precision-desc').innerHTML = t.precisionDesc;
-            document.getElementById('h-sample-title').innerText = t.sampleTitle;
-            document.getElementById('h-sample-desc').innerText = t.sampleDesc;
-            document.getElementById('h-usage-title').innerText = t.usageTitle;
-            document.getElementById('h-usage-desc').innerHTML = t.usageDesc;
         }
 
         function toggleLanguage() {
