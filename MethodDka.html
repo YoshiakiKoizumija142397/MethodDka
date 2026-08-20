@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">MethodDka - 高精度多項式解法 & 再帰的初期値機能</title>
+    <title id="pageTitle">MethodDka - 小泉の自動再帰的初期値 (全3フェーズ結果表示対応)</title>
     <!-- Decimal.js (高精度多倍長演算ライブラリ) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
     <style>
@@ -16,6 +16,8 @@
             --border-color: #dee2e6;
             --success-color: #198754;
             --success-hover: #157347;
+            --koizumi-color: #6610f2;
+            --koizumi-hover: #520dc2;
         }
 
         body {
@@ -27,7 +29,7 @@
         }
 
         .container {
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 30px;
@@ -92,7 +94,7 @@
             background-color: #f1f3f5;
             padding: 15px 20px;
             border-radius: 6px;
-            border-left: 4px solid var(--primary-color);
+            border-left: 4px solid var(--koizumi-color);
             margin-bottom: 25px;
             font-size: 0.9rem;
             line-height: 1.6;
@@ -180,10 +182,21 @@
                     background-color: var(--success-hover);
                 }
 
+            button.koizumi-btn {
+                background-color: var(--koizumi-color);
+                font-size: 1.05rem;
+                padding: 12px 24px;
+            }
+
+                button.koizumi-btn:hover {
+                    background-color: var(--koizumi-hover);
+                }
+
         #progress {
             margin: 15px 0;
             font-weight: bold;
-            color: var(--primary-color);
+            color: var(--koizumi-color);
+            white-space: pre-wrap;
         }
 
         .toggle-box {
@@ -242,6 +255,23 @@
                 transform: translateX(24px);
             }
 
+        .phase-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .phase-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--koizumi-color);
+            color: var(--koizumi-color);
+        }
+
         .result-card {
             margin-top: 10px;
             padding: 12px;
@@ -290,7 +320,7 @@
         </nav>
 
         <div class="header-row">
-            <h1 id="appTitle">MethodDka (再帰的初期値対応版)</h1>
+            <h1 id="appTitle">MethodDka (全3フェーズ結果表示対応 v3.1.1)</h1>
             <button type="button" class="lang-switch-btn" onclick="toggleLanguage()" id="langBtn">🌐 English</button>
         </div>
 
@@ -299,26 +329,27 @@
 
         <!-- 精度選択セレクトボックス -->
         <div class="form-group">
-            <label for="precisionSelect" id="lblPrecision">演算精度 (Precision):</label>
+            <label for="precisionSelect" id="lblPrecision">個別演算精度 (Manual Precision):</label>
             <select id="precisionSelect" style="max-width: 250px;">
-                <option value="50">50桁 (第1フェーズ / 1e-44)</option>
-                <option value="100">100桁 (第2フェーズ / 1e-94)</option>
-                <option value="200" selected>200桁 (限界突破 / 1e-180)</option>
+                <option value="50">50桁 (個別計算用)</option>
+                <option value="100">100桁 (個別計算用)</option>
+                <option value="200" selected>200桁 (個別計算用 / 限界突破)</option>
             </select>
         </div>
 
         <!-- 次数入力 -->
         <div class="form-group">
             <label for="maxDegree" id="lblDegree">最高次数 (n ≤ 200):</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="maxDegree" value="4" min="1" max="200" style="max-width: 150px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="number" id="maxDegree" value="20" min="1" max="200" style="max-width: 150px;">
                 <button type="button" class="secondary" onclick="createFields()" id="btnGenerate">生成</button>
+                <button type="button" class="success" onclick="loadWilkinson20()" id="btnWilkinson">🧪 20次ウィルキンソン一発ロード</button>
             </div>
         </div>
 
         <!-- 係数一括ペースト -->
         <div id="pasteSection" class="form-group" style="display: none;">
-            <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り。複素数は 1+2i や 3-4j):</label>
+            <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り):</label>
             <textarea id="bulkCoeffs" placeholder="例: 1, -5.5, 3-4j, 0, 1+2i ..."></textarea>
             <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients()" id="btnApplyBulk">一括反映</button>
         </div>
@@ -338,17 +369,20 @@
             </label>
         </div>
 
-        <!-- 計算ボタン & 初期値セーブ・ロードボタン (新規追加) -->
-        <div class="btn-group">
-            <button type="button" onclick="startCalculation()" id="btnCalc">計算開始</button>
-            <button type="button" class="success" onclick="saveCurrentRootsAsInitial()" id="btnSaveInit">💾 今回の解を「小泉の初期値」として保存</button>
-            <button type="button" class="secondary" onclick="clearSavedInitial()" id="btnClearInit" style="display:none;">🗑️ 保存された初期値をクリア</button>
+        <!-- 計算ボタン類 -->
+        <div class="btn-group" style="flex-direction: column; gap: 12px;">
+            <button type="button" class="koizumi-btn" onclick="startKoizumiRecursivePipeline()" id="btnKoizumiPipeline">🚀 【小泉の再帰的初期値】 50桁→100桁→200桁 全3フェーズ自動計算＆全結果表示！</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" onclick="startCalculation()" id="btnCalc">通常の個別計算開始</button>
+                <button type="button" class="success" onclick="saveCurrentRootsAsInitial()" id="btnSaveInit">💾 現在の解を手動保存</button>
+                <button type="button" class="secondary" onclick="clearSavedInitial()" id="btnClearInit" style="display:none;">🗑️ 保存初期値をクリア</button>
+            </div>
         </div>
         <div id="savedInitStatus" style="font-size: 0.85rem; color: #198754; font-weight: bold; margin-bottom: 10px;"></div>
         <div id="progress"></div>
 
-        <!-- 結果出力欄 -->
-        <div id="results"></div>
+        <!-- 全3フェーズの結果出力コンテナ -->
+        <div id="resultsContainer"></div>
     </div>
 
     <script>
@@ -356,101 +390,78 @@
 
         let currentLang = localStorage.getItem('methoddka_lang') || 'ja';
         let n = null;
-        let saR = [], saI = [], sr = [], si = [], sErr = [], sIter = [];
         let scaleFactor = new Decimal(1);
 
-        // 「小泉の初期値」として保存する変数
+        // 全3フェーズの計算結果を保持する変数
+        let phase1Result = null;
+        let phase2Result = null;
+        let phase3Result = null;
+
         let savedInitialRootsR = null;
         let savedInitialRootsI = null;
 
         const i18n = {
             ja: {
                 nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
-                pageTitle: "MethodDka - 高精度多項式解法 & 再帰的初期値機能",
-                appTitle: "MethodDka (再帰的初期値対応版)",
+                pageTitle: "MethodDka - 小泉の自動再帰的初期値 (全3フェーズ結果表示)",
+                appTitle: "MethodDka (全3フェーズ結果表示対応 v3.1.1)",
                 langBtn: "🌐 English",
                 desc: `<strong>概要と主な特徴:</strong>
-                        <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式を高精度に解きます。</p>
-                        <ul>
-                            <li><strong>「小泉の初期値」セーブ＆ロード:</strong> 1回目の解を高精度な初期値として保存し、次のフェーズ（高精度化）へ再帰的に引き継ぎ可能。</li>
-                            <li><strong>選択式超高精度演算 (50/100/200桁):</strong> ターゲット許容値を自動調整し極限まで収束。</li>
-                        </ul>`,
-                lblPrecision: "演算精度 (Decimal Precision):",
+                            <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式を高精度に解きます。</p>
+                            <ul>
+                                <li><strong>📊 全3フェーズ結果完全表示:</strong> 「50桁(第1)」「100桁(第2)」「200桁限界突破(第3)」の各ステップにおける解と誤差半径の推移をすべて画面上に並べて表示します。</li>
+                            </ul>`,
+                lblPrecision: "個別演算精度:",
                 lblDegree: "最高次数 (n ≤ 200):",
                 btnGenerate: "入力欄生成",
-                lblBulk: "📋 係数一括ペースト (カンマ/空白区切り):",
+                btnWilkinson: "🧪 20次ウィルキンソン一発ロード",
+                lblBulk: "📋 係数一括ペースト:",
                 bulkPlaceholder: "例: 1, -5.5, 3-4j, 0, 1+2i ...",
                 btnApplyBulk: "一括反映",
-                lblCoeffs: "各項の係数入力 (複素数 i, j 対応):",
+                lblCoeffs: "各項の係数入力:",
                 modeRoots: "モード: 高精度解表示",
-                modeFactored: "モード: 因数分解表示（小数第1位で四捨五入）",
-                btnCalc: "計算開始",
-                btnSaveInit: "💾 今回の解を「小泉の初期値」として保存",
-                btnClearInit: "🗑️ 保存された初期値をクリア",
-                msgSaved: "✨ 「小泉の初期値」がメモリにセーブされました！次の計算時に自動ロードされます。",
-                msgCleared: "🗑️ 保存された初期値をクリアしました（標準のAberth初期値に戻ります）。",
-                msgUsingSaved: "🚀 【小泉の初期値ロード完了】保存された高精度な解を初期値として計算を開始します！",
-                msgScaling: "スケーリング計算中...",
-                msgCalculating: "計算中...",
-                msgComplete: "計算完了",
+                modeFactored: "モード: 因数分解表示",
+                btnKoizumiPipeline: "🚀 【小泉の再帰的初期値】 50桁→100桁→200桁 全3フェーズ自動計算＆全結果表示！",
+                btnCalc: "通常の個別計算開始",
+                btnSaveInit: "💾 現在の解を手動保存",
+                btnClearInit: "🗑️ 保存初期値をクリア",
+                msgComplete: "全3フェーズの計算が正常に完了しました！",
                 resultRoot: "解",
-                resultFactor: "因数",
                 errRadius: "誤差半径",
                 iterCount: "収束反復回数",
                 totalIter: "全合計反復回数",
-                appliedScale: "適用スケール因子 S",
-                alertDegree: "次数は1から200の範囲で指定してください",
-                alertNoText: "係数データテキストを入力してください",
-                alertLackData: (input, req) => `入力されたデータ件数 (${input}件) が、必要な係数の数 (${req}件) より少なくなっています。`,
-                alertBulkDone: (count) => `${count} 件の係数を一括セットしました！`,
-                alertPushGen: "最初に「入力欄生成」ボタンを押してください",
-                alertZeroLead: "最高次の係数は0以外を入力してください",
-                alertInvalidCoeff: (idx) => `${idx}次の係数に不正な値が含まれています`,
-                alertNoRootsToSave: "まだ計算結果が存在しません。先に計算を行ってください。"
+                appliedScale: "適用スケール因子 S"
             },
             en: {
                 nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
-                pageTitle: "MethodDka - High Precision Polynomial Solver",
-                appTitle: "MethodDka (Recursive Initial Values)",
+                pageTitle: "MethodDka - Koizumi Recursive Pipeline (All 3 Phases)",
+                appTitle: "MethodDka (All 3 Phases Display v3.1.1)",
                 langBtn: "🌐 日本語",
                 desc: `<strong>Overview & Features:</strong>
-                        <p style="margin: 5px 0;">Calculates polynomial roots with high precision using DKA method.</p>
-                        <ul>
-                            <li><strong>Koizumi Initial Values Save/Load:</strong> Save roots from previous run and recursively feed them as initial values for higher precision phases.</li>
-                            <li><strong>Selectable Precision (50/100/200 digits):</strong> Automatic tolerance adjustment.</li>
-                        </ul>`,
-                lblPrecision: "Calculation Precision:",
+                            <p style="margin: 5px 0;">Calculates polynomial roots with high precision using DKA method.</p>
+                            <ul>
+                                <li><strong>📊 All 3 Phases Display:</strong> Displays results for Phase 1 (50D), Phase 2 (100D), and Phase 3 (200D) sequentially.</li>
+                            </ul>`,
+                lblPrecision: "Manual Precision:",
                 lblDegree: "Polynomial Degree (n ≤ 200):",
                 btnGenerate: "Generate Fields",
+                btnWilkinson: "🧪 Load 20th Wilkinson",
                 lblBulk: "📋 Bulk Coefficients Input:",
                 bulkPlaceholder: "e.g., 1, -5.5, 3-4j, 0, 1+2i ...",
                 btnApplyBulk: "Apply Bulk Input",
                 lblCoeffs: "Individual Coefficients:",
                 modeRoots: "Display Mode: High-Precision Roots",
                 modeFactored: "Display Mode: Factored Form",
-                btnCalc: "Calculate Roots",
-                btnSaveInit: "💾 Save Roots as 'Koizumi Initial Values'",
-                btnClearInit: "🗑️ Clear Saved Initial Values",
-                msgSaved: "✨ Koizumi Initial Values saved successfully! Will be loaded on next run.",
-                msgCleared: "🗑️ Saved initial values cleared.",
-                msgUsingSaved: "🚀 [Loaded Koizumi Initial Values] Starting calculation with high-precision initial guess!",
-                msgScaling: "Scaling coefficients...",
-                msgCalculating: "Calculating...",
-                msgComplete: "Calculation Completed",
+                btnKoizumiPipeline: "🚀 [Koizumi Pipeline] Run All 3 Phases & Display All Results!",
+                btnCalc: "Calculate (Manual)",
+                btnSaveInit: "💾 Save Roots",
+                btnClearInit: "🗑️ Clear",
+                msgComplete: "All 3 phases successfully completed!",
                 resultRoot: "Root",
-                resultFactor: "Factor",
-                errRadius: "Residual / Error Radius",
+                errRadius: "Error Radius",
                 iterCount: "Iterations",
                 totalIter: "Total Iterations",
-                appliedScale: "Applied Scale Factor S",
-                alertDegree: "Please enter a degree between 1 and 200.",
-                alertNoText: "Please enter coefficient text.",
-                alertLackData: (input, req) => `Entered coefficients (${input}) are less than required (${req}).`,
-                alertBulkDone: (count) => `Successfully set ${count} coefficients!`,
-                alertPushGen: "Please click 'Generate Fields' button first.",
-                alertZeroLead: "Leading coefficient a_n cannot be zero.",
-                alertInvalidCoeff: (idx) => `Invalid coefficient value at degree ${idx}`,
-                alertNoRootsToSave: "No roots calculated yet. Please run calculation first."
+                appliedScale: "Scale Factor S"
             }
         };
 
@@ -474,10 +485,12 @@
             document.getElementById('lblPrecision').innerText = t.lblPrecision;
             document.getElementById('lblDegree').innerText = t.lblDegree;
             document.getElementById('btnGenerate').innerText = t.btnGenerate;
+            document.getElementById('btnWilkinson').innerText = t.btnWilkinson;
             document.getElementById('lblBulk').innerText = t.lblBulk;
             document.getElementById('bulkCoeffs').placeholder = t.bulkPlaceholder;
             document.getElementById('btnApplyBulk').innerText = t.btnApplyBulk;
             document.getElementById('lblCoeffs').innerText = t.lblCoeffs;
+            document.getElementById('btnKoizumiPipeline').innerText = t.btnKoizumiPipeline;
             document.getElementById('btnCalc').innerText = t.btnCalc;
             document.getElementById('btnSaveInit').innerText = t.btnSaveInit;
             document.getElementById('btnClearInit').innerText = t.btnClearInit;
@@ -489,18 +502,14 @@
                 }
             }
 
-            if (sr.length > 1) {
-                renderResults();
-            } else {
-                const isFactorMode = document.getElementById('modeToggle').checked;
-                document.getElementById('toggleText').innerText = isFactorMode ? t.modeFactored : t.modeRoots;
+            if (phase3Result) {
+                renderAllPhasesResults();
             }
         }
 
         function createFields() {
-            const t = i18n[currentLang];
             n = parseInt(document.getElementById('maxDegree').value);
-            if (isNaN(n) || n < 1 || n > 200) { alert(t.alertDegree); return; }
+            if (isNaN(n) || n < 1 || n > 200) { alert("次数は1〜200で指定してください"); return; }
             const div = document.getElementById('coefficients');
             div.innerHTML = '';
             for (let i = 0; i <= n; i++) {
@@ -513,36 +522,44 @@
             document.getElementById('pasteSection').style.display = 'block';
         }
 
-        function applyBulkCoefficients() {
-            const t = i18n[currentLang];
-            const rawText = document.getElementById('bulkCoeffs').value.trim();
-            if (!rawText) { alert(t.alertNoText); return; }
-            let values = rawText.includes(',') ? rawText.split(',').map(v => v.trim()).filter(v => v.length > 0) : rawText.split(/[\s]+/).filter(v => v.length > 0);
-            if (values.length < n + 1) { alert(t.alertLackData(values.length, n + 1)); return; }
-            for (let i = 0; i <= n; i++) { document.getElementById('coeff' + i).value = values[i]; }
-            alert(t.alertBulkDone(n + 1));
+        function loadWilkinson20() {
+            document.getElementById('maxDegree').value = 20;
+            createFields();
+            const wilkinsonCoeffs = [
+                "1", "-210", "20615", "-1256850", "53327946", "-1672280820",
+                "40171771630", "-756111184500", "11310276995381", "-135585182899530",
+                "1307535010540395", "-10142299865511450", "63030812099294896",
+                "-311333643161390640", "1206647803780373360", "-3599979517947607200",
+                "8037811822645051392", "-12870931245150988000", "13803759753640704000",
+                "-8752948036761600000", "2432902008176640000"
+            ];
+            for (let i = 0; i <= 20; i++) {
+                document.getElementById('coeff' + i).value = wilkinsonCoeffs[i];
+            }
+            alert("20次ウィルキンソン多項式の係数をロードしました！");
         }
 
-        // 現在求まっている解を「小泉の初期値」として保存
+        function applyBulkCoefficients() {
+            const rawText = document.getElementById('bulkCoeffs').value.trim();
+            if (!rawText) { alert("テキストを入力してください"); return; }
+            let values = rawText.includes(',') ? rawText.split(',').map(v => v.trim()).filter(v => v.length > 0) : rawText.split(/[\s]+/).filter(v => v.length > 0);
+            if (values.length < n + 1) { alert("係数の数が足りません"); return; }
+            for (let i = 0; i <= n; i++) { document.getElementById('coeff' + i).value = values[i]; }
+            alert("一括反映しました！");
+        }
+
         function saveCurrentRootsAsInitial() {
-            const t = i18n[currentLang];
-            if (sr.length <= 1 || n === null) {
-                alert(t.alertNoRootsToSave);
-                return;
-            }
-            // ディープコピーして保存
-            savedInitialRootsR = [...sr];
-            savedInitialRootsI = [...si];
-            document.getElementById('savedInitStatus').innerText = t.msgSaved;
+            if (!phase3Result || phase3Result.sr.length <= 1) { alert("保存する計算結果がありません。"); return; }
+            savedInitialRootsR = [...phase3Result.sr];
+            savedInitialRootsI = [...phase3Result.si];
+            document.getElementById('savedInitStatus').innerText = "✨ 現在の解を初期値として手動保存しました！";
             document.getElementById('btnClearInit').style.display = 'inline-block';
         }
 
-        // 保存された初期値をクリア
         function clearSavedInitial() {
-            const t = i18n[currentLang];
             savedInitialRootsR = null;
             savedInitialRootsI = null;
-            document.getElementById('savedInitStatus').innerText = t.msgCleared;
+            document.getElementById('savedInitStatus').innerText = "🗑️ 保存された初期値をクリアしました。";
             document.getElementById('btnClearInit').style.display = 'none';
         }
 
@@ -561,27 +578,20 @@
                 if (str.endsWith('i')) {
                     let iStr = str.replace('i', '');
                     if (iStr === '+' || iStr === '') iStr = '1'; if (iStr === '-') iStr = '-1';
-                    return { r: new Decimal(0), i: new Decimal(iStr) };
+                    return { r: new Decimal(0), i: new Decimal(0) };
                 } else { return { r: new Decimal(str), i: new Decimal(0) }; }
             }
         }
 
-        async function startCalculation() {
-            const t = i18n[currentLang];
-            if (n === null) { alert(t.alertPushGen); return; }
-
-            const selectedPrecision = parseInt(document.getElementById('precisionSelect').value);
-            Decimal.set({ precision: selectedPrecision });
+        // 汎用DKA計算エンジン
+        async function runDkaEngine(precision, customInitR, customInitI, progressCallback) {
+            Decimal.set({ precision: precision });
 
             let origAR = [], origAI = [];
             for (let i = 0; i <= n; i++) {
-                try { let c = parseComplex(document.getElementById('coeff' + i).value || "0"); origAR[i] = c.r; origAI[i] = c.i; }
-                catch (e) { alert(t.alertInvalidCoeff(n - i)); return; }
+                let c = parseComplex(document.getElementById('coeff' + i).value || "0");
+                origAR[i] = c.r; origAI[i] = c.i;
             }
-            if (origAR[0].isZero() && origAI[0].isZero()) { alert(t.alertZeroLead); return; }
-
-            const prog = document.getElementById('progress');
-            prog.innerText = t.msgScaling;
 
             if (!origAR[n].isZero() || !origAI[n].isZero()) {
                 let magN = origAR[n].pow(2).add(origAI[n].pow(2)).sqrt();
@@ -589,94 +599,186 @@
                 scaleFactor = magN.div(mag0).pow(new Decimal(1).div(n));
             } else { scaleFactor = new Decimal(1); }
 
-            saR = []; saI = []; let denom0 = origAR[0].pow(2).add(origAI[0].pow(2));
+            let localSaR = [], localSaI = [];
+            let denom0 = origAR[0].pow(2).add(origAI[0].pow(2));
             for (let i = 0; i <= n; i++) {
                 let sPow = scaleFactor.pow(i);
                 let nr = origAR[i].mul(origAR[0]).add(origAI[i].mul(origAI[0])).div(denom0);
                 let ni = origAI[i].mul(origAR[0]).sub(origAR[i].mul(origAI[0])).div(denom0);
-                saR[i] = nr.div(sPow); saI[i] = ni.div(sPow);
+                localSaR[i] = nr.div(sPow); localSaI[i] = ni.div(sPow);
             }
-            sErr = []; for (let i = 1; i <= n; i++) sIter[i] = 0;
 
-            // 【初期値のセット判定】保存された「小泉の初期値」があればそれをロードする！
-            if (savedInitialRootsR && savedInitialRootsR.length === n + 1) {
-                prog.innerText = t.msgUsingSaved;
+            let localSr = [], localSi = [], localSErr = [], localSIter = [];
+            for (let i = 1; i <= n; i++) localSIter[i] = 0;
+
+            if (customInitR && customInitR.length === n + 1) {
                 for (let j = 1; j <= n; j++) {
-                    // スケール変動を考慮しつつ初期値をスケーリング空間に合わせる
-                    let valR = new Decimal(savedInitialRootsR[j]).div(scaleFactor);
-                    let valI = new Decimal(savedInitialRootsI[j]).div(scaleFactor);
-                    sr[j] = valR; si[j] = valI;
+                    localSr[j] = new Decimal(customInitR[j]).div(scaleFactor);
+                    localSi[j] = new Decimal(customInitI[j]).div(scaleFactor);
                 }
             } else {
-                // 通常のAberth初期値（円周上配置）
                 let sp = Decimal.acos(-1), initR = new Decimal(1.5);
                 for (let j = 1; j <= n; j++) {
                     let ang = new Decimal(2).mul(sp).mul(j).div(n), perturbation = new Decimal(1).add(new Decimal(j).mul("0.01"));
-                    sr[j] = initR.mul(perturbation).mul(Decimal.cos(ang)); si[j] = initR.mul(perturbation).mul(Decimal.sin(ang));
+                    localSr[j] = initR.mul(perturbation).mul(Decimal.cos(ang));
+                    localSi[j] = initR.mul(perturbation).mul(Decimal.sin(ang));
                 }
             }
 
-            const maxIter = 20000;
-            const targetTolerance = selectedPrecision >= 200 ? new Decimal("1e-180") : (selectedPrecision >= 100 ? new Decimal("1e-94") : new Decimal("1e-44"));
+            const maxIter = 1000;
+            const targetTolerance = precision >= 200 ? new Decimal("1e-180") : (precision >= 100 ? new Decimal("1e-94") : new Decimal("1e-44"));
 
             for (let k = 1; k <= maxIter; k++) {
-                if (k % 25 === 0) { prog.innerText = `${t.msgCalculating} (Prec: ${selectedPrecision}, Loop: ${k}/${maxIter}, Deg: ${n})`; await new Promise(r => setTimeout(r, 0)); }
+                if (k % 10 === 0 && progressCallback) {
+                    progressCallback(precision, k, maxIter);
+                    await new Promise(r => setTimeout(r, 0));
+                }
                 let bContinue = false;
                 for (let i = 1; i <= n; i++) {
-                    if (sErr[i] && sErr[i].lte(targetTolerance)) continue;
-                    let pr = saR[0], pi = saI[0];
+                    if (localSErr[i] && localSErr[i].lte(targetTolerance)) continue;
+                    let pr = localSaR[0], pi = localSaI[0];
                     for (let j = 1; j <= n; j++) {
-                        let nr = pr.mul(sr[i]).sub(pi.mul(si[i])).add(saR[j]);
-                        let ni = pr.mul(si[i]).add(pi.mul(sr[i])).add(saI[j]);
+                        let nr = pr.mul(localSr[i]).sub(pi.mul(localSi[i])).add(localSaR[j]);
+                        let ni = pr.mul(localSi[i]).add(pi.mul(localSr[i])).add(localSaI[j]);
                         pr = nr; pi = ni;
                     }
                     let dr = new Decimal(1), di = new Decimal(0);
                     for (let j = 1; j <= n; j++) {
                         if (i === j) continue;
-                        let diffR = sr[i].sub(sr[j]), diffI = si[i].sub(si[j]);
+                        let diffR = localSr[i].sub(localSr[j]), diffI = localSi[i].sub(localSi[j]);
                         let nr = dr.mul(diffR).sub(di.mul(diffI));
                         di = dr.mul(diffI).add(di.mul(diffR)); dr = nr;
                     }
                     let mag = dr.mul(dr).add(di.mul(di));
                     let ur = (pr.mul(dr).add(pi.mul(di))).div(mag), ui = (pi.mul(dr).sub(pr.mul(di))).div(mag);
-                    sr[i] = sr[i].sub(ur); si[i] = si[i].sub(ui); sErr[i] = ur.abs().add(ui.abs()); sIter[i] = k;
-                    if (sErr[i].gt(targetTolerance)) bContinue = true;
+                    localSr[i] = localSr[i].sub(ur); localSi[i] = localSi[i].sub(ui);
+                    localSErr[i] = ur.abs().add(ui.abs()); localSIter[i] = k;
+                    if (localSErr[i].gt(targetTolerance)) bContinue = true;
                 }
                 if (!bContinue) break;
             }
-            for (let i = 1; i <= n; i++) { sr[i] = sr[i].mul(scaleFactor); si[i] = si[i].mul(scaleFactor); if (sErr[i]) sErr[i] = sErr[i].mul(scaleFactor); }
-            prog.innerText = t.msgComplete; renderResults();
-        }
-
-        function renderResults() {
-            if (sr.length <= 1) return;
-            const t = i18n[currentLang];
-            const isFactorMode = document.getElementById('modeToggle').checked;
-            document.getElementById('toggleText').innerText = isFactorMode ? t.modeFactored : t.modeRoots;
-            const resDiv = document.getElementById('results'); resDiv.innerHTML = '';
-            let totalIterations = 0;
-            const currentPrec = parseInt(document.getElementById('precisionSelect').value);
-            const displayDigits = currentPrec;
 
             for (let i = 1; i <= n; i++) {
-                let errVal = sErr[i] || new Decimal(1);
-                let isBad = errVal.gte("1e-35"); totalIterations += sIter[i];
-                let outputStr = "";
-                if (isFactorMode) {
-                    let re = Math.round(Number(sr[i])), im = Math.round(Number(si[i]));
-                    let rootStr = "";
-                    if (im === 0) { rootStr = `${re}`; } else {
-                        let imAbs = Math.abs(im), imStr = imAbs === 1 ? "i" : `${imAbs}i`;
-                        rootStr = (re === 0) ? (im > 0 ? `${imStr}` : `-${imStr}`) : (im > 0 ? `${re} + ${imStr}` : `${re} - ${imStr}`);
-                    }
-                    outputStr = `${t.resultFactor} ${i}: (x - (${rootStr}))`;
-                } else {
-                    let signStr = si[i].gte(0) ? '+' : '-';
-                    outputStr = `${t.resultRoot} ${i}: ${sr[i].toFixed(displayDigits)} ${signStr} ${si[i].abs().toFixed(displayDigits)}i`;
-                }
-                resDiv.innerHTML += `<div class="result-card">${outputStr}<br><span class="${isBad ? 'err-warn' : 'err-ok'}">${t.errRadius}: ${errVal.toExponential(4)}</span><br><strong>${t.iterCount}: ${sIter[i]}</strong></div>`;
+                localSr[i] = localSr[i].mul(scaleFactor);
+                localSi[i] = localSi[i].mul(scaleFactor);
+                if (localSErr[i]) localSErr[i] = localSErr[i].mul(scaleFactor);
             }
-            resDiv.innerHTML += `<div class="summary-card"><strong>${t.totalIter}: ${totalIterations}</strong><br><span>（${t.appliedScale}: ${scaleFactor.toFixed(10)}）</span></div>`;
+
+            return { sr: localSr, si: localSi, sErr: localSErr, sIter: localSIter };
+        }
+
+        // 🚀 全3フェーズ自動実行パイプライン
+        async function startKoizumiRecursivePipeline() {
+            const t = i18n[currentLang];
+            if (n === null) { alert("最初に入力欄を生成してください"); return; }
+
+            const prog = document.getElementById('progress');
+
+            // 第1フェーズ (50桁)
+            prog.innerText = `🔥 [Phase 1/3] 50桁精度で初期探索中...`;
+            phase1Result = await runDkaEngine(50, null, null, (prec, k, max) => {
+                prog.innerText = `🔥 [Phase 1/3] 50桁精度計算中 (Loop: ${k}/${max})`;
+            });
+
+            let init1R = [], init1I = [];
+            for (let i = 1; i <= n; i++) { init1R[i] = phase1Result.sr[i]; init1I[i] = phase1Result.si[i]; }
+
+            // 第2フェーズ (100桁)
+            prog.innerText = `✨ [Phase 2/3] 100桁精度へ再帰的引き継ぎ & 収束中...`;
+            phase2Result = await runDkaEngine(100, init1R, init1I, (prec, k, max) => {
+                prog.innerText = `✨ [Phase 2/3] 100桁精度計算中 (Loop: ${k}/${max})`;
+            });
+
+            let init2R = [], init2I = [];
+            for (let i = 1; i <= n; i++) { init2R[i] = phase2Result.sr[i]; init2I[i] = phase2Result.si[i]; }
+
+            // 第3フェーズ (200桁 限界突破)
+            prog.innerText = `🚀 [Phase 3/3] 200桁精度へ再帰的引き継ぎ & 極限完全収束中...`;
+            phase3Result = await runDkaEngine(200, init2R, init2I, (prec, k, max) => {
+                prog.innerText = `🚀 [Phase 3/3] 200桁限界突破計算中 (Loop: ${k}/${max})`;
+            });
+
+            prog.innerText = t.msgComplete;
+            renderAllPhasesResults();
+        }
+
+        // 通常の個別計算
+        async function startCalculation() {
+            if (n === null) { alert("最初に入力欄を生成してください"); return; }
+            const selectedPrecision = parseInt(document.getElementById('precisionSelect').value);
+            const prog = document.getElementById('progress');
+            prog.innerText = "個別計算中...";
+
+            let customR = (savedInitialRootsR && savedInitialRootsR.length === n + 1) ? savedInitialRootsR : null;
+            let customI = (savedInitialRootsI && savedInitialRootsI.length === n + 1) ? savedInitialRootsI : null;
+
+            let res = await runDkaEngine(selectedPrecision, customR, customI, (prec, k, max) => {
+                prog.innerText = `個別計算中 (Prec: ${selectedPrecision}, Loop: ${k}/${max})`;
+            });
+
+            phase3Result = res; // 個別計算結果もフェーズ3枠に表示
+            phase1Result = null; phase2Result = null;
+            renderSingleResult(res, selectedPrecision);
+            prog.innerText = "個別計算完了";
+        }
+
+        // 全3フェーズの結果を描画する関数
+        renderAllPhasesResults = () => {
+            if (!phase3Result) return;
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+
+            const phases = [
+                { title: "🔥 第1フェーズ結果 (50桁精度 / 初期探索)", data: phase1Result, prec: 50 },
+                { title: "✨ 第2フェーズ結果 (100桁精度 / 中間収束)", data: phase2Result, prec: 100 },
+                { title: "🚀 第3フェーズ結果 (200桁精度 / 限界突破極限収束)", data: phase3Result, prec: 200 }
+            ];
+
+            phases.forEach(p => {
+                if (!p.data) return;
+                let html = `<div class="phase-section"><div class="phase-title">${p.title}</div>`;
+                let totalIter = 0;
+                const isFactorMode = document.getElementById('modeToggle').checked;
+
+                for (let i = 1; i <= n; i++) {
+                    let errVal = p.data.sErr[i] || new Decimal(1);
+                    let isBad = errVal.gte("1e-35");
+                    totalIter += p.data.sIter[i];
+                    let outputStr = "";
+
+                    if (isFactorMode) {
+                        let re = Math.round(Number(p.data.sr[i])), im = Math.round(Number(p.data.si[i]));
+                        let rootStr = im === 0 ? `${re}` : (im > 0 ? `${re} + ${im}i` : `${re} - ${Math.abs(im)}i`);
+                        outputStr = `因数 ${i}: (x - (${rootStr}))`;
+                    } else {
+                        let signStr = p.data.si[i].gte(0) ? '+' : '-';
+                        outputStr = `解 ${i}: ${p.data.sr[i].toFixed(p.prec)} ${signStr} ${p.data.si[i].abs().toFixed(p.prec)}i`;
+                    }
+                    html += `<div class="result-card">${outputStr}<br><span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${errVal.toExponential(4)}</span><br><strong>収束反復回数: ${p.data.sIter[i]}</strong></div>`;
+                }
+                html += `<div class="summary-card"><strong>全合計反復回数: ${totalIter}</strong><br><span>（適用スケール因子 S: ${scaleFactor.toFixed(10)}）</span></div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // 個別計算の結果を描画する関数
+        function renderSingleResult(res, prec) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+            let html = `<div class="phase-section"><div class="phase-title">🧮 個別計算結果 (${prec}桁精度)</div>`;
+            let totalIter = 0;
+            const isFactorMode = document.getElementById('modeToggle').checked;
+
+            for (let i = 1; i <= n; i++) {
+                let errVal = res.sErr[i] || new Decimal(1);
+                let isBad = errVal.gte("1e-35");
+                totalIter += res.sIter[i];
+                let signStr = res.si[i].gte(0) ? '+' : '-';
+                let outputStr = `解 ${i}: ${res.sr[i].toFixed(prec)} ${signStr} ${res.si[i].abs().toFixed(prec)}i`;
+                html += `<div class="result-card">${outputStr}<br><span class="${isBad ? 'err-warn' : 'err-ok'}">誤差半径: ${errVal.toExponential(4)}</span><br><strong>収束反復回数: ${res.sIter[i]}</strong></div>`;
+            }
+            html += `<div class="summary-card"><strong>全合計反復回数: ${totalIter}</strong><br><span>（適用スケール因子 S: ${scaleFactor.toFixed(10)}）</span></div></div>`;
+            container.innerHTML += html;
         }
 
         window.onload = () => {

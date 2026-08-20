@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="help-page-title">MethodDka v3.0.0 ヘルプ & 操作マニュアル</title>
+    <title id="help-page-title">MethodDka v3.1.1 ヘルプ & 操作マニュアル</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -81,7 +81,7 @@
 
         .step-box {
             background: #f1f3f5;
-            border-left: 5px solid #0d6efd;
+            border-left: 5px solid #6610f2;
             padding: 15px 20px;
             margin: 15px 0;
             border-radius: 4px;
@@ -89,7 +89,7 @@
 
             .step-box h3 {
                 margin-top: 0;
-                color: #333;
+                color: #6610f2;
             }
 
         code {
@@ -128,7 +128,7 @@
         <button class="btn lang-btn" onclick="toggleLanguage()" id="btn-lang-toggle">🌐 English</button>
     </div>
 
-    <h1 id="h-title">MethodDka v3.0.0 操作マニュアル & ヘルプ</h1>
+    <h1 id="h-title">MethodDka v3.1.1 操作マニュアル & ヘルプ</h1>
 
     <!-- 概要セクション -->
     <div class="section">
@@ -137,49 +137,45 @@
             MethodDka は、DKA法と Decimal.js を用い、最大200次までの多項式の全根を高精度に計算・因数分解するための本格的なWebアプリケーションです。
         </p>
         <ul>
-            <li id="h-feat-1"><strong>多段階高精度演算 (50/100/200桁):</strong> 小泉の初期値による再帰的極限収束（Koizumi Scheme）に対応。</li>
-            <li id="h-feat-2"><strong>複素数係数完全対応:</strong> 係数に虚数単位 <code>i</code> や <code>j</code> (例: 1+2i, 3-4j) を直接入力可能。</li>
-            <li id="h-feat-3"><strong>自動スケーリング:</strong> 巨大/極小係数が混在する多項式でもオーバーフローを完全に防止。</li>
+            <li id="h-feat-1"><strong>小泉の再帰的初期値オートパイプライン:</strong> ボタン1つで「50桁 → 100桁 → 200桁限界突破」を全自動リレーし、極限精度へ到達。</li>
+            <li id="h-feat-2"><strong>全3フェーズ結果完全表示:</strong> 各ステップの解と誤差半径の推移を並べて視覚的に確認可能。</li>
+            <li id="h-feat-3"><strong>セーフティロック最適化 (1000回):</strong> スマホでも無駄なループを排して高速かつスマートに計算。</li>
         </ul>
         <p style="margin-top: 15px;">
             <span id="txt-author">小泉嘉章 (Yoshiaki Koizumi)</span><br>
             Email: ja142397@s6.dion.ne.jp<br>
-            <strong>Version 3.0.0</strong>
+            <strong>Version 3.1.1</strong>
         </p>
     </div>
 
-    <!-- 使い方・ステップバイステップ解説 (新規追加・丁寧版) -->
+    <!-- 使い方・ステップバイステップ解説 -->
     <div class="section">
-        <h2 id="h-guide-title">🚀 「小泉の初期値」再帰的デバッグの完全な手順（使い方）</h2>
+        <h2 id="h-guide-title">🚀 「小泉の再帰的初期値」一発自動パイプラインの使い方</h2>
         <p id="h-guide-desc">
-            20次ウィルキンソン多項式のような極めて悪条件な難問を200桁の極限精度で解くための、推奨オペレーション手順です。
+            20次ウィルキンソン多項式のような極めて悪条件な難問を、ボタン一つで完全自動攻略するための手順です。
         </p>
 
         <div class="step-box">
-            <h3>Step 1: 第1フェーズ（50桁ベースライン）</h3>
+            <h3>Step 1: 係数の準備（一発ロード または 手動入力）</h3>
             <p>
                 1. <code>MethodDka.html</code> を開きます。<br>
-                2. 画面上の<strong>「🧪 20次ウィルキンソン係数を一発ロード」</strong>ボタンを押します。<br>
-                3. 精度セレクトボックスを <strong>「50桁」</strong> に合わせます。<br>
-                4. <strong>「計算開始」</strong>ボタンを押して初期の解の配置を求めます。
+                2. 画面上の<strong>「🧪 20次ウィルキンソン一発ロード」</strong>ボタンを押すか、任意の係数を入力します。
             </p>
         </div>
 
         <div class="step-box">
-            <h3>Step 2: 第2フェーズ（100桁 ＆ 小泉の2回目初期値）</h3>
+            <h3>Step 2: 一発自動再帰計算の実行</h3>
             <p>
-                1. 計算が完了したら、緑色のボタン<strong>「💾 今回の解を『小泉の初期値』として保存」</strong>を押します。<br>
-                2. 精度セレクトボックスを <strong>「100桁」</strong> に変更します。<br>
-                3. 再度<strong>「計算開始」</strong>を押します（保存した50桁の解が自動ロードされ、一瞬で収束が加速します）。
+                1. 紫色のボタン<strong>「🚀 【小泉の再帰的初期値】 50桁→100桁→200桁 全3フェーズ自動計算＆全結果表示！」</strong>を押します。<br>
+                2. 裏側で 第1フェーズ(50桁) → 第2フェーズ(100桁) → 第3フェーズ(200桁限界突破) が自動でリレー実行されます。
             </p>
         </div>
 
         <div class="step-box">
-            <h3>Step 3: 第3フェーズ（200桁 ＆ 小泉の3回目初期値・限界突破）</h3>
+            <h3>Step 3: 全3フェーズの結果を比較・確認</h3>
             <p>
-                1. 100桁での計算が完了したら、もう一度<strong>「💾 今回の解を『小泉の初期値』として保存」</strong>を押します。<br>
-                2. 精度セレクトボックスを <strong>「200桁」</strong> に変更します。<br>
-                3. 最後に<strong>「計算開始」</strong>を押すことで、わずか数回の反復で誤差半径 <code>10^-180</code> オーダーの極限精度（小泉の3回目初期値による完全収束）に到達します！
+                1. 計算が完了すると、画面下に3つのフェーズごとの結果ボックスが展開されます。<br>
+                2. 誤差半径が <code>10^-37</code> → <code>10^-87</code> → <code>10^-187</code> オーダーへと段階的に劇的向上していくプロセスを完全に確認できます！
             </p>
         </div>
     </div>
@@ -197,17 +193,17 @@
         const helpTexts = {
             ja: {
                 nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
-                pageTitle: "MethodDka v3.0.0 ヘルプ & 操作マニュアル",
+                pageTitle: "MethodDka v3.1.1 ヘルプ & 操作マニュアル",
                 back: "← 戻る",
                 langToggle: "🌐 English",
-                title: "MethodDka v3.0.0 操作マニュアル & ヘルプ"
+                title: "MethodDka v3.1.1 操作マニュアル & ヘルプ"
             },
             en: {
                 nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
-                pageTitle: "MethodDka v3.0.0 Help & Operation Manual",
+                pageTitle: "MethodDka v3.1.1 Help & Operation Manual",
                 back: "← Back",
                 langToggle: "🌐 日本語",
-                title: "MethodDka v3.0.0 Operation Manual & Help"
+                title: "MethodDka v3.1.1 Operation Manual & Help"
             }
         };
 
