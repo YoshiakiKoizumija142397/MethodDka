@@ -290,7 +290,7 @@
         </nav>
 
         <div class="header-row">
-            <h1 id="appTitle">MethodDka (再帰的初期値対応版)</h1>
+            <h1 id="appTitle">MethodDka (再帰的初期値対応版 v3.0.1)</h1>
             <button type="button" class="lang-switch-btn" onclick="toggleLanguage()" id="langBtn">🌐 English</button>
         </div>
 
@@ -311,14 +311,15 @@
         <div class="form-group">
             <label for="maxDegree" id="lblDegree">最高次数 (n ≤ 200):</label>
             <div style="display: flex; gap: 10px;">
-                <input type="number" id="maxDegree" value="4" min="1" max="200" style="max-width: 150px;">
+                <input type="number" id="maxDegree" value="20" min="1" max="200" style="max-width: 150px;">
                 <button type="button" class="secondary" onclick="createFields()" id="btnGenerate">生成</button>
+                <button type="button" class="success" onclick="loadWilkinson20()" id="btnWilkinson">🧪 20次ウィルキンソン一発ロード</button>
             </div>
         </div>
 
         <!-- 係数一括ペースト -->
         <div id="pasteSection" class="form-group" style="display: none;">
-            <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り。複素数は 1+2i や 3-4j):</label>
+            <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り。複素수는 1+2i や 3-4j):</label>
             <textarea id="bulkCoeffs" placeholder="例: 1, -5.5, 3-4j, 0, 1+2i ..."></textarea>
             <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients()" id="btnApplyBulk">一括反映</button>
         </div>
@@ -338,7 +339,7 @@
             </label>
         </div>
 
-        <!-- 計算ボタン & 初期値セーブ・ロードボタン (新規追加) -->
+        <!-- 計算ボタン & 初期値セーブ・ロードボタン -->
         <div class="btn-group">
             <button type="button" onclick="startCalculation()" id="btnCalc">計算開始</button>
             <button type="button" class="success" onclick="saveCurrentRootsAsInitial()" id="btnSaveInit">💾 今回の解を「小泉の初期値」として保存</button>
@@ -367,17 +368,18 @@
             ja: {
                 nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
                 pageTitle: "MethodDka - 高精度多項式解法 & 再帰的初期値機能",
-                appTitle: "MethodDka (再帰的初期値対応版)",
+                appTitle: "MethodDka (再帰的初期値対応版 v3.0.1)",
                 langBtn: "🌐 English",
                 desc: `<strong>概要と主な特徴:</strong>
-                        <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式を高精度に解きます。</p>
-                        <ul>
-                            <li><strong>「小泉の初期値」セーブ＆ロード:</strong> 1回目の解を高精度な初期値として保存し、次のフェーズ（高精度化）へ再帰的に引き継ぎ可能。</li>
-                            <li><strong>選択式超高精度演算 (50/100/200桁):</strong> ターゲット許容値を自動調整し極限まで収束。</li>
-                        </ul>`,
+                            <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式を高精度に解きます。</p>
+                            <ul>
+                                <li><strong>「小泉の初期値」セーブ＆ロード:</strong> 1回目の解を高精度な初期値として保存し、次のフェーズ（高精度化）へ再帰的に引き継ぎ可能。</li>
+                                <li><strong>選択式超高精度演算 (50/100/200桁):</strong> セーフティロック制限回数を1000回に最適化し、高速かつスマートに収束。</li>
+                            </ul>`,
                 lblPrecision: "演算精度 (Decimal Precision):",
                 lblDegree: "最高次数 (n ≤ 200):",
                 btnGenerate: "入力欄生成",
+                btnWilkinson: "🧪 20次ウィルキンソン一発ロード",
                 lblBulk: "📋 係数一括ペースト (カンマ/空白区切り):",
                 bulkPlaceholder: "例: 1, -5.5, 3-4j, 0, 1+2i ...",
                 btnApplyBulk: "一括反映",
@@ -403,7 +405,7 @@
                 alertNoText: "係数データテキストを入力してください",
                 alertLackData: (input, req) => `入力されたデータ件数 (${input}件) が、必要な係数の数 (${req}件) より少なくなっています。`,
                 alertBulkDone: (count) => `${count} 件の係数を一括セットしました！`,
-                alertPushGen: "最初に「入力欄生成」ボタンを押してください",
+                alertPushGen: "最初に「入力欄生成」または「一発ロード」ボタンを押してください",
                 alertZeroLead: "最高次の係数は0以外を入力してください",
                 alertInvalidCoeff: (idx) => `${idx}次の係数に不正な値が含まれています`,
                 alertNoRootsToSave: "まだ計算結果が存在しません。先に計算を行ってください。"
@@ -411,17 +413,18 @@
             en: {
                 nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
                 pageTitle: "MethodDka - High Precision Polynomial Solver",
-                appTitle: "MethodDka (Recursive Initial Values)",
+                appTitle: "MethodDka (Recursive Initial Values v3.0.1)",
                 langBtn: "🌐 日本語",
                 desc: `<strong>Overview & Features:</strong>
-                        <p style="margin: 5px 0;">Calculates polynomial roots with high precision using DKA method.</p>
-                        <ul>
-                            <li><strong>Koizumi Initial Values Save/Load:</strong> Save roots from previous run and recursively feed them as initial values for higher precision phases.</li>
-                            <li><strong>Selectable Precision (50/100/200 digits):</strong> Automatic tolerance adjustment.</li>
-                        </ul>`,
+                            <p style="margin: 5px 0;">Calculates polynomial roots with high precision using DKA method.</p>
+                            <ul>
+                                <li><strong>Koizumi Initial Values Save/Load:</strong> Save roots from previous run and recursively feed them as initial values for higher precision phases.</li>
+                                <li><strong>Selectable Precision (50/100/200 digits):</strong> Optimized safety limit to 1000 iterations for lightning-fast convergence.</li>
+                            </ul>`,
                 lblPrecision: "Calculation Precision:",
                 lblDegree: "Polynomial Degree (n ≤ 200):",
                 btnGenerate: "Generate Fields",
+                btnWilkinson: "🧪 Load 20th Wilkinson",
                 lblBulk: "📋 Bulk Coefficients Input:",
                 bulkPlaceholder: "e.g., 1, -5.5, 3-4j, 0, 1+2i ...",
                 btnApplyBulk: "Apply Bulk Input",
@@ -447,7 +450,7 @@
                 alertNoText: "Please enter coefficient text.",
                 alertLackData: (input, req) => `Entered coefficients (${input}) are less than required (${req}).`,
                 alertBulkDone: (count) => `Successfully set ${count} coefficients!`,
-                alertPushGen: "Please click 'Generate Fields' button first.",
+                alertPushGen: "Please click 'Generate Fields' or 'Load' button first.",
                 alertZeroLead: "Leading coefficient a_n cannot be zero.",
                 alertInvalidCoeff: (idx) => `Invalid coefficient value at degree ${idx}`,
                 alertNoRootsToSave: "No roots calculated yet. Please run calculation first."
@@ -474,6 +477,7 @@
             document.getElementById('lblPrecision').innerText = t.lblPrecision;
             document.getElementById('lblDegree').innerText = t.lblDegree;
             document.getElementById('btnGenerate').innerText = t.btnGenerate;
+            document.getElementById('btnWilkinson').innerText = t.btnWilkinson;
             document.getElementById('lblBulk').innerText = t.lblBulk;
             document.getElementById('bulkCoeffs').placeholder = t.bulkPlaceholder;
             document.getElementById('btnApplyBulk').innerText = t.btnApplyBulk;
@@ -513,6 +517,24 @@
             document.getElementById('pasteSection').style.display = 'block';
         }
 
+        function loadWilkinson20() {
+            document.getElementById('maxDegree').value = 20;
+            createFields();
+            const wilkinsonCoeffs = [
+                "1", "-210", "20615", "-1256850", "53327946", "-1672280820",
+                "40171771630", "-756111184500", "11310276995381", "-135585182899530",
+                "1307535010540395", "-10142299865511450", "63030812099294896",
+                "-311333643161390640", "1206647803780373360", "-3599979517947607200",
+                "8037811822645051392", "-12870931245150988000", "13803759753640704000",
+                "-8752948036761600000", "2432902008176640000"
+            ];
+            for (let i = 0; i <= 20; i++) {
+                document.getElementById('coeff' + i).value = wilkinsonCoeffs[i];
+            }
+            const t = i18n[currentLang];
+            alert(t.ja ? "20次ウィルキンソン多項式の係数をロードしました！" : "Loaded 20th Wilkinson polynomial coefficients!");
+        }
+
         function applyBulkCoefficients() {
             const t = i18n[currentLang];
             const rawText = document.getElementById('bulkCoeffs').value.trim();
@@ -523,21 +545,18 @@
             alert(t.alertBulkDone(n + 1));
         }
 
-        // 現在求まっている解を「小泉の初期値」として保存
         function saveCurrentRootsAsInitial() {
             const t = i18n[currentLang];
             if (sr.length <= 1 || n === null) {
                 alert(t.alertNoRootsToSave);
                 return;
             }
-            // ディープコピーして保存
             savedInitialRootsR = [...sr];
             savedInitialRootsI = [...si];
             document.getElementById('savedInitStatus').innerText = t.msgSaved;
             document.getElementById('btnClearInit').style.display = 'inline-block';
         }
 
-        // 保存された初期値をクリア
         function clearSavedInitial() {
             const t = i18n[currentLang];
             savedInitialRootsR = null;
@@ -598,17 +617,14 @@
             }
             sErr = []; for (let i = 1; i <= n; i++) sIter[i] = 0;
 
-            // 【初期値のセット判定】保存された「小泉の初期値」があればそれをロードする！
             if (savedInitialRootsR && savedInitialRootsR.length === n + 1) {
                 prog.innerText = t.msgUsingSaved;
                 for (let j = 1; j <= n; j++) {
-                    // スケール変動を考慮しつつ初期値をスケーリング空間に合わせる
                     let valR = new Decimal(savedInitialRootsR[j]).div(scaleFactor);
                     let valI = new Decimal(savedInitialRootsI[j]).div(scaleFactor);
                     sr[j] = valR; si[j] = valI;
                 }
             } else {
-                // 通常のAberth初期値（円周上配置）
                 let sp = Decimal.acos(-1), initR = new Decimal(1.5);
                 for (let j = 1; j <= n; j++) {
                     let ang = new Decimal(2).mul(sp).mul(j).div(n), perturbation = new Decimal(1).add(new Decimal(j).mul("0.01"));
@@ -616,11 +632,12 @@
                 }
             }
 
-            const maxIter = 20000;
+            // セーフティロックの最大反復回数を 1000回 に最適化
+            const maxIter = 1000;
             const targetTolerance = selectedPrecision >= 200 ? new Decimal("1e-180") : (selectedPrecision >= 100 ? new Decimal("1e-94") : new Decimal("1e-44"));
 
             for (let k = 1; k <= maxIter; k++) {
-                if (k % 25 === 0) { prog.innerText = `${t.msgCalculating} (Prec: ${selectedPrecision}, Loop: ${k}/${maxIter}, Deg: ${n})`; await new Promise(r => setTimeout(r, 0)); }
+                if (k % 10 === 0) { prog.innerText = `${t.msgCalculating} (Prec: ${selectedPrecision}, Loop: ${k}/${maxIter}, Deg: ${n})`; await new Promise(r => setTimeout(r, 0)); }
                 let bContinue = false;
                 for (let i = 1; i <= n; i++) {
                     if (sErr[i] && sErr[i].lte(targetTolerance)) continue;
