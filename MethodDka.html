@@ -320,7 +320,11 @@
         </nav>
 
         <div class="header-row">
+<<<<<<< HEAD
             <h1 id="appTitle">MethodDka (全3フェーズ結果表示対応 v3.1.1)</h1>
+=======
+            <h1 id="appTitle">MethodDka (再帰的初期値対応版 v3.0.1)</h1>
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
             <button type="button" class="lang-switch-btn" onclick="toggleLanguage()" id="langBtn">🌐 English</button>
         </div>
 
@@ -340,7 +344,11 @@
         <!-- 次数入力 -->
         <div class="form-group">
             <label for="maxDegree" id="lblDegree">最高次数 (n ≤ 200):</label>
+<<<<<<< HEAD
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+=======
+            <div style="display: flex; gap: 10px;">
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 <input type="number" id="maxDegree" value="20" min="1" max="200" style="max-width: 150px;">
                 <button type="button" class="secondary" onclick="createFields()" id="btnGenerate">生成</button>
                 <button type="button" class="success" onclick="loadWilkinson20()" id="btnWilkinson">🧪 20次ウィルキンソン一発ロード</button>
@@ -349,7 +357,11 @@
 
         <!-- 係数一括ペースト -->
         <div id="pasteSection" class="form-group" style="display: none;">
+<<<<<<< HEAD
             <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り):</label>
+=======
+            <label for="bulkCoeffs" id="lblBulk">📋 係数一括ペースト (カンマ/空白区切り。複素수는 1+2i や 3-4j):</label>
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
             <textarea id="bulkCoeffs" placeholder="例: 1, -5.5, 3-4j, 0, 1+2i ..."></textarea>
             <button type="button" class="secondary" style="margin-top: 8px; padding: 6px 15px; font-size: 0.85rem;" onclick="applyBulkCoefficients()" id="btnApplyBulk">一括反映</button>
         </div>
@@ -369,6 +381,7 @@
             </label>
         </div>
 
+<<<<<<< HEAD
         <!-- 計算ボタン類 -->
         <div class="btn-group" style="flex-direction: column; gap: 12px;">
             <button type="button" class="koizumi-btn" onclick="startKoizumiRecursivePipeline()" id="btnKoizumiPipeline">🚀 【小泉の再帰的初期値】 50桁→100桁→200桁 全3フェーズ自動計算＆全結果表示！</button>
@@ -377,6 +390,13 @@
                 <button type="button" class="success" onclick="saveCurrentRootsAsInitial()" id="btnSaveInit">💾 現在の解を手動保存</button>
                 <button type="button" class="secondary" onclick="clearSavedInitial()" id="btnClearInit" style="display:none;">🗑️ 保存初期値をクリア</button>
             </div>
+=======
+        <!-- 計算ボタン & 初期値セーブ・ロードボタン -->
+        <div class="btn-group">
+            <button type="button" onclick="startCalculation()" id="btnCalc">計算開始</button>
+            <button type="button" class="success" onclick="saveCurrentRootsAsInitial()" id="btnSaveInit">💾 今回の解を「小泉の初期値」として保存</button>
+            <button type="button" class="secondary" onclick="clearSavedInitial()" id="btnClearInit" style="display:none;">🗑️ 保存された初期値をクリア</button>
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
         </div>
         <div id="savedInitStatus" style="font-size: 0.85rem; color: #198754; font-weight: bold; margin-bottom: 10px;"></div>
         <div id="progress"></div>
@@ -403,12 +423,18 @@
         const i18n = {
             ja: {
                 nav: ["🏠 トップ", "🧮 計算", "📖 ヘルプ", "🔒 プライバシー"],
+<<<<<<< HEAD
                 pageTitle: "MethodDka - 小泉の自動再帰的初期値 (全3フェーズ結果表示)",
                 appTitle: "MethodDka (全3フェーズ結果表示対応 v3.1.1)",
+=======
+                pageTitle: "MethodDka - 高精度多項式解法 & 再帰的初期値機能",
+                appTitle: "MethodDka (再帰的初期値対応版 v3.0.1)",
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 langBtn: "🌐 English",
                 desc: `<strong>概要と主な特徴:</strong>
                             <p style="margin: 5px 0;">DKA法と Decimal.js を用い、最大200次までの多項式を高精度に解きます。</p>
                             <ul>
+<<<<<<< HEAD
                                 <li><strong>📊 全3フェーズ結果完全表示:</strong> 「50桁(第1)」「100桁(第2)」「200桁限界突破(第3)」の各ステップにおける解と誤差半径の推移をすべて画面上に並べて表示します。</li>
                             </ul>`,
                 lblPrecision: "個別演算精度:",
@@ -416,6 +442,16 @@
                 btnGenerate: "入力欄生成",
                 btnWilkinson: "🧪 20次ウィルキンソン一発ロード",
                 lblBulk: "📋 係数一括ペースト:",
+=======
+                                <li><strong>「小泉の初期値」セーブ＆ロード:</strong> 1回目の解を高精度な初期値として保存し、次のフェーズ（高精度化）へ再帰的に引き継ぎ可能。</li>
+                                <li><strong>選択式超高精度演算 (50/100/200桁):</strong> セーフティロック制限回数を1000回に最適化し、高速かつスマートに収束。</li>
+                            </ul>`,
+                lblPrecision: "演算精度 (Decimal Precision):",
+                lblDegree: "最高次数 (n ≤ 200):",
+                btnGenerate: "入力欄生成",
+                btnWilkinson: "🧪 20次ウィルキンソン一発ロード",
+                lblBulk: "📋 係数一括ペースト (カンマ/空白区切り):",
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 bulkPlaceholder: "例: 1, -5.5, 3-4j, 0, 1+2i ...",
                 btnApplyBulk: "一括反映",
                 lblCoeffs: "各項の係数入力:",
@@ -430,19 +466,43 @@
                 errRadius: "誤差半径",
                 iterCount: "収束反復回数",
                 totalIter: "全合計反復回数",
+<<<<<<< HEAD
                 appliedScale: "適用スケール因子 S"
             },
             en: {
                 nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
                 pageTitle: "MethodDka - Koizumi Recursive Pipeline (All 3 Phases)",
                 appTitle: "MethodDka (All 3 Phases Display v3.1.1)",
+=======
+                appliedScale: "適用スケール因子 S",
+                alertDegree: "次数は1から200の範囲で指定してください",
+                alertNoText: "係数データテキストを入力してください",
+                alertLackData: (input, req) => `入力されたデータ件数 (${input}件) が、必要な係数の数 (${req}件) より少なくなっています。`,
+                alertBulkDone: (count) => `${count} 件の係数を一括セットしました！`,
+                alertPushGen: "最初に「入力欄生成」または「一発ロード」ボタンを押してください",
+                alertZeroLead: "最高次の係数は0以外を入力してください",
+                alertInvalidCoeff: (idx) => `${idx}次の係数に不正な値が含まれています`,
+                alertNoRootsToSave: "まだ計算結果が存在しません。先に計算を行ってください。"
+            },
+            en: {
+                nav: ["🏠 TOP", "🧮 Calculator", "📖 Help", "🔒 Privacy"],
+                pageTitle: "MethodDka - High Precision Polynomial Solver",
+                appTitle: "MethodDka (Recursive Initial Values v3.0.1)",
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 langBtn: "🌐 日本語",
                 desc: `<strong>Overview & Features:</strong>
                             <p style="margin: 5px 0;">Calculates polynomial roots with high precision using DKA method.</p>
                             <ul>
+<<<<<<< HEAD
                                 <li><strong>📊 All 3 Phases Display:</strong> Displays results for Phase 1 (50D), Phase 2 (100D), and Phase 3 (200D) sequentially.</li>
                             </ul>`,
                 lblPrecision: "Manual Precision:",
+=======
+                                <li><strong>Koizumi Initial Values Save/Load:</strong> Save roots from previous run and recursively feed them as initial values for higher precision phases.</li>
+                                <li><strong>Selectable Precision (50/100/200 digits):</strong> Optimized safety limit to 1000 iterations for lightning-fast convergence.</li>
+                            </ul>`,
+                lblPrecision: "Calculation Precision:",
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 lblDegree: "Polynomial Degree (n ≤ 200):",
                 btnGenerate: "Generate Fields",
                 btnWilkinson: "🧪 Load 20th Wilkinson",
@@ -461,7 +521,19 @@
                 errRadius: "Error Radius",
                 iterCount: "Iterations",
                 totalIter: "Total Iterations",
+<<<<<<< HEAD
                 appliedScale: "Scale Factor S"
+=======
+                appliedScale: "Applied Scale Factor S",
+                alertDegree: "Please enter a degree between 1 and 200.",
+                alertNoText: "Please enter coefficient text.",
+                alertLackData: (input, req) => `Entered coefficients (${input}) are less than required (${req}).`,
+                alertBulkDone: (count) => `Successfully set ${count} coefficients!`,
+                alertPushGen: "Please click 'Generate Fields' or 'Load' button first.",
+                alertZeroLead: "Leading coefficient a_n cannot be zero.",
+                alertInvalidCoeff: (idx) => `Invalid coefficient value at degree ${idx}`,
+                alertNoRootsToSave: "No roots calculated yet. Please run calculation first."
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
             }
         };
 
@@ -536,7 +608,12 @@
             for (let i = 0; i <= 20; i++) {
                 document.getElementById('coeff' + i).value = wilkinsonCoeffs[i];
             }
+<<<<<<< HEAD
             alert("20次ウィルキンソン多項式の係数をロードしました！");
+=======
+            const t = i18n[currentLang];
+            alert(t.ja ? "20次ウィルキンソン多項式の係数をロードしました！" : "Loaded 20th Wilkinson polynomial coefficients!");
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
         }
 
         function applyBulkCoefficients() {
@@ -549,10 +626,21 @@
         }
 
         function saveCurrentRootsAsInitial() {
+<<<<<<< HEAD
             if (!phase3Result || phase3Result.sr.length <= 1) { alert("保存する計算結果がありません。"); return; }
             savedInitialRootsR = [...phase3Result.sr];
             savedInitialRootsI = [...phase3Result.si];
             document.getElementById('savedInitStatus').innerText = "✨ 現在の解を初期値として手動保存しました！";
+=======
+            const t = i18n[currentLang];
+            if (sr.length <= 1 || n === null) {
+                alert(t.alertNoRootsToSave);
+                return;
+            }
+            savedInitialRootsR = [...sr];
+            savedInitialRootsI = [...si];
+            document.getElementById('savedInitStatus').innerText = t.msgSaved;
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
             document.getElementById('btnClearInit').style.display = 'inline-block';
         }
 
@@ -608,6 +696,7 @@
                 localSaR[i] = nr.div(sPow); localSaI[i] = ni.div(sPow);
             }
 
+<<<<<<< HEAD
             let localSr = [], localSi = [], localSErr = [], localSIter = [];
             for (let i = 1; i <= n; i++) localSIter[i] = 0;
 
@@ -615,6 +704,14 @@
                 for (let j = 1; j <= n; j++) {
                     localSr[j] = new Decimal(customInitR[j]).div(scaleFactor);
                     localSi[j] = new Decimal(customInitI[j]).div(scaleFactor);
+=======
+            if (savedInitialRootsR && savedInitialRootsR.length === n + 1) {
+                prog.innerText = t.msgUsingSaved;
+                for (let j = 1; j <= n; j++) {
+                    let valR = new Decimal(savedInitialRootsR[j]).div(scaleFactor);
+                    let valI = new Decimal(savedInitialRootsI[j]).div(scaleFactor);
+                    sr[j] = valR; si[j] = valI;
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 }
             } else {
                 let sp = Decimal.acos(-1), initR = new Decimal(1.5);
@@ -625,6 +722,7 @@
                 }
             }
 
+<<<<<<< HEAD
             const maxIter = 1000;
             const targetTolerance = precision >= 200 ? new Decimal("1e-180") : (precision >= 100 ? new Decimal("1e-94") : new Decimal("1e-44"));
 
@@ -633,6 +731,14 @@
                     progressCallback(precision, k, maxIter);
                     await new Promise(r => setTimeout(r, 0));
                 }
+=======
+            // セーフティロックの最大反復回数を 1000回 に最適化
+            const maxIter = 1000;
+            const targetTolerance = selectedPrecision >= 200 ? new Decimal("1e-180") : (selectedPrecision >= 100 ? new Decimal("1e-94") : new Decimal("1e-44"));
+
+            for (let k = 1; k <= maxIter; k++) {
+                if (k % 10 === 0) { prog.innerText = `${t.msgCalculating} (Prec: ${selectedPrecision}, Loop: ${k}/${maxIter}, Deg: ${n})`; await new Promise(r => setTimeout(r, 0)); }
+>>>>>>> f89ecaf0b47296255b52b7b2a96f9a16b6013f01
                 let bContinue = false;
                 for (let i = 1; i <= n; i++) {
                     if (localSErr[i] && localSErr[i].lte(targetTolerance)) continue;
