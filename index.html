@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MethodDka - 200-digit Precision Polynomial Solver</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .header-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .lang-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover { background: #cbd5e1; }
+    .hero-section {
+      text-align: center;
+      padding-bottom: 25px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+      margin: 0 0 10px 0;
+    }
+    .version-badge {
+      display: inline-block;
+      background: #e0e7ff;
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 35px 0;
+    }
+    .launch-btn {
+      display: inline-block;
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 16px 32px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s;
+    }
+    .launch-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    .feature-list {
+      background: #f1f5f9;
+      padding: 25px 30px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+    .feature-list h3 {
+      margin-top: 0;
+      color: var(--text);
+    }
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px 25px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .nav-links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+    footer.footer-copyright {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-bar">
+    <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
+  </div>
+
+  <div class="hero-section">
+    <h1 id="app-title">MethodDka</h1>
+    <span class="version-badge" id="version-text">v3.2.0 (200桁極限高精度版)</span>
+    <p style="font-size: 1.1rem; color: #64748b; margin-top: 15px;" id="app-desc">
+      DKA法 ＆ Decimal.js による超高精度多項式解法・因数分解 Web アプリケーション
+    </p>
+  </div>
+
+  <div class="btn-container">
+    <a href="MethodDka.html" class="launch-btn" id="btn-launch">🚀 MethodDka アプリを起動する</a>
+  </div>
+
+  <div class="feature-list">
+    <h3 id="feature-title">✨ 主な特徴 (v3.2.0)</h3>
+    <ul id="feature-items">
+      <li><strong>ダイレクト 200 桁演算:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
+      <li><strong>リアルタイム進行UI ＆ 時間計測:</strong> 反復計算のループ進捗率や経過時間・残り時間をリアルタイム表示。</li>
+      <li><strong>非破壊モード切替トグル:</strong> 高精度解法表示（100桁出力）と因数分解表示（整数化）をワンクリック切り替え。</li>
+      <li><strong>最高 200 次対応:</strong> オートスケーリング機構によりオーバーフローを防止。</li>
+      <li><strong>完全オフライン動作:</strong> ブラウザ単体および Windows 11 ネイティブアプリ（MSI / APPX）で爆速動作。</li>
+    </ul>
+  </div>
+
+  <div class="nav-links">
+    <a href="MethodDka.html" id="link-calc">🧪 計算アプリ</a>
+    <a href="help.html" id="link-help">📖 ヘルプ・テストデータ</a>
+    <a href="https://yoshiakikoizumija142397.github.io/wilkinson-coeff-generator/" target="_blank" rel="noopener" id="link-gen">📊 ウィルキンソン係数ジェネレーター</a>
+    <a href="privacy.html" id="link-privacy">🔒 プライバシーポリシー</a>
+  </div>
+
+  <footer class="footer-copyright">
+    <div><strong>MethodDka v3.2.0</strong> — Created by <strong>Yoshiaki Koizumi (小泉嘉章)</strong></div>
+    <div>Copyright &copy; 2026 Yoshiaki Koizumi. Released under the <strong>MIT License</strong>.</div>
+  </footer>
+</div>
+
+<script>
+  let currentLang = 'ja';
+
+  const translations = {
+    ja: {
+      btnLang: "English",
+      versionText: "v3.2.0 (200桁極限高精度版)",
+      appDesc: "DKA法 ＆ Decimal.js による超高精度多項式解法・因数分解 Web アプリケーション",
+      btnLaunch: "🚀 MethodDka アプリを起動する",
+      featureTitle: "✨ 主な特徴 (v3.2.0)",
+      featureItems: `
+        <li><strong>ダイレクト 200 桁演算:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
+        <li><strong>リアルタイム進行UI ＆ 時間計測:</strong> 反復計算のループ進捗率や経過時間・残り時間をリアルタイム表示。</li>
+        <li><strong>非破壊モード切替トグル:</strong> 高精度解法表示（100桁出力）と因数分解表示（整数化）をワンクリック切り替え。</li>
+        <li><strong>最高 200 次対応:</strong> オートスケーリング機構によりオーバーフローを防止。</li>
+        <li><strong>完全オフライン動作:</strong> ブラウザ単体および Windows 11 ネイティブアプリ（MSI / APPX）で爆速動作。</li>
+      `,
+      linkCalc: "🧪 計算アプリ",
+      linkHelp: "📖 ヘルプ・テストデータ",
+      linkGen: "📊 ウィルキンソン係数ジェネレーター",
+      linkPrivacy: "🔒 プライバシーポリシー"
+    },
+    en: {
+      btnLang: "日本語",
+      versionText: "v3.2.0 (200-Digit Extreme Precision)",
+      appDesc: "High-Precision Polynomial Solver & Factorization Web App powered by DKA Method & Decimal.js",
+      btnLaunch: "🚀 Launch MethodDka App",
+      featureTitle: "✨ Key Features (v3.2.0)",
+      featureItems: `
+        <li><strong>Direct 200-Digit Precision:</strong> 200-digit fixed precision (Decimal.js) ensuring convergence for ill-conditioned polynomials.</li>
+        <li><strong>Real-Time Execution Tracking:</strong> Displays iteration loops, progress %, elapsed time, and remaining time.</li>
+        <li><strong>Non-Destructive Mode Toggle:</strong> Instant switch between High Precision Root Mode and Factored Form Mode.</li>
+        <li><strong>Degree Up To 200:</strong> Integrated auto-scaling mechanism preventing numerical overflow/underflow.</li>
+        <li><strong>100% Offline Execution:</strong> Runs completely client-side in browsers and Windows 11 native apps.</li>
+      `,
+      linkCalc: "🧪 Solver App",
+      linkHelp: "📖 Help & Benchmark",
+      linkGen: "📊 Wilkinson Coeff Generator",
+      linkPrivacy: "🔒 Privacy Policy"
+    }
+  };
+
+  function toggleLanguage() {
+    currentLang = (currentLang === 'ja') ? 'en' : 'ja';
+    updateUI();
+  }
+
+  function updateUI() {
+    const t = translations[currentLang];
+    document.getElementById('lang-toggle-btn').innerText = t.btnLang;
+    document.getElementById('version-text').innerText = t.versionText;
+    document.getElementById('app-desc').innerText = t.appDesc;
+    document.getElementById('btn-launch').innerText = t.btnLaunch;
+    document.getElementById('feature-title').innerText = t.featureTitle;
+    document.getElementById('feature-items').innerHTML = t.featureItems;
+    document.getElementById('link-calc').innerText = t.linkCalc;
+    document.getElementById('link-help').innerText = t.linkHelp;
+    document.getElementById('link-gen').innerText = t.linkGen;
+    document.getElementById('link-privacy').innerText = t.linkPrivacy;
+  }
+</script>
+
+</body>
+</html>

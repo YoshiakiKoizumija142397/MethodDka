@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MethodDka - Help & Test Data / ヘルプ・テストデータ</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+    h1 { margin: 0; font-size: 1.6rem; color: var(--primary); }
+    .lang-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover { background: #cbd5e1; }
+    .section {
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+      margin-bottom: 15px;
+    }
+    .code-box {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .nav-links {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .nav-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
+    .nav-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-bar">
+    <h1 id="app-title">📖 MethodDka ヘルプ ＆ テストデータ</h1>
+    <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
+  </div>
+
+  <div class="section">
+    <h2 id="sec1-title">💡 使い方・基本操作</h2>
+    <div id="sec1-body">
+      <p>MethodDka は、Durand-Kerner-Aberth (DKA) 法と Decimal.js を用いた 200桁高精度多項式解法 Web アプリケーションです。</p>
+      <ul>
+        <li><strong>次数指定:</strong> 計算したい多項式の最高次数 $n$（最大 200）を入力し「入力欄生成」を押します。</li>
+        <li><strong>一括ペースト:</strong> 係数データを $a_n, a_{n-1}, \dots, a_0$ の降順（カンマまたは空白区切り）でペーストし「一括反映」を押すと、全係数が各入力欄へ一度に設定されます。</li>
+        <li><strong>計算実行:</strong> 「🚀 200桁高精度計算開始！」ボタンを押すと、200桁ダイレクト精度で反復計算を開始し、リアルタイム進捗・経過時間・全解・誤差半径を表示します。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 id="sec2-title">🧪 検証用テストデータ：20次ウィルキンソン多項式</h2>
+    <p id="sec2-desc">ウィルキンソン多項式 $W_{20}(x) = \prod_{i=1}^{20} (x - i)$ は、真の解が $1, 2, 3, \dots, 20$ となる有名な超悪条件多項式です。以下の一括テキストをコピーして計算アプリの「一括ペースト」欄へ貼り付けてお試しください。</p>
+    <div class="code-box">1, -210, 20615, -1256850, 53327946, -1672280820, 40171771630, -756111184500, 11310276995381, -135585182899 cliff, 1307535010540395, -10142299865511450, 6303081209929485, -31133364316139064, 120664780378037336, -359997951794760720, 803781182264505177, -1287093124515098880, 1380375975364070400, -875294803676160000, 2432902008176640000</div>
+  </div>
+
+  <div class="section">
+    <h2 id="sec3-title">🔗 外部テストツール連携</h2>
+    <p id="sec3-body">
+      任意次数の完全精度ウィルキンソン多項式係数を生成する場合は、以下の専用ジェネレーターをご利用いただけます。<br>
+      👉 <a href="https://yoshiakikoizumija142397.github.io/wilkinson-coeff-generator/" target="_blank" rel="noopener" style="font-weight: bold; color: var(--primary);" id="link-generator">MethodDka用 - 完全精度ウィルキンソン係数ジェネレータ</a>
+    </p>
+  </div>
+
+  <div class="nav-links">
+    <a href="index.html" id="link-home">ホーム</a> |
+    <a href="MethodDka.html" id="link-calc">計算アプリ</a> |
+    <a href="privacy.html" id="link-privacy">プライバシーポリシー</a>
+  </div>
+</div>
+
+<script>
+  let currentLang = 'ja';
+
+  const translations = {
+    ja: {
+      title: "📖 MethodDka ヘルプ ＆ テストデータ",
+      btnLang: "English",
+      sec1Title: "💡 使い方・基本操作",
+      sec1Body: `
+        <p>MethodDka は、Durand-Kerner-Aberth (DKA) 法と Decimal.js を用いた 200桁高精度多項式解法 Web アプリケーションです。</p>
+        <ul>
+          <li><strong>次数指定:</strong> 計算したい多項式の最高次数 n（最大 200）を入力し「入力欄生成」を押します。</li>
+          <li><strong>一括ペースト:</strong> 係数データを a_n, a_{n-1}, ..., a_0 の降順（カンマまたは空白区切り）でペーストし「一括反映」を押すと、全係数が各入力欄へ一度に設定されます。</li>
+          <li><strong>計算実行:</strong> 「🚀 200桁高精度計算開始！」ボタンを押すと、200桁ダイレクト精度で反復計算を開始し、リアルタイム進捗・経過時間・全解・誤差半径を表示します。</li>
+        </ul>
+      `,
+      sec2Title: "🧪 検証用テストデータ：20次ウィルキンソン多項式",
+      sec2Desc: "ウィルキンソン多項式 W_20(x) = (x-1)(x-2)...(x-20) は、真の解が 1, 2, 3, ..., 20 となる有名な超悪条件多項式です。以下の一括テキストをコピーして計算アプリの「一括ペースト」欄へ貼り付けてお試しください。",
+      sec3Title: "🔗 外部テストツール連携",
+      sec3Body: `
+        任意次数の完全精度ウィルキンソン多項式係数を生成する場合は、以下の専用ジェネレーターをご利用いただけます。<br>
+        👉 <a href="https://yoshiakikoizumija142397.github.io/wilkinson-coeff-generator/" target="_blank" rel="noopener" style="font-weight: bold; color: var(--primary);" id="link-generator">MethodDka用 - 完全精度ウィルキンソン係数ジェネレータ</a>
+      `,
+      linkHome: "ホーム",
+      linkCalc: "計算アプリ",
+      linkPrivacy: "プライバシーポリシー"
+    },
+    en: {
+      title: "📖 MethodDka Help & Test Data",
+      btnLang: "日本語",
+      sec1Title: "💡 How to Use & Basic Operations",
+      sec1Body: `
+        <p>MethodDka is a Web application that solves high-degree polynomials with 200-digit precision using the Durand-Kerner-Aberth (DKA) method and Decimal.js.</p>
+        <ul>
+          <li><strong>Degree Specification:</strong> Enter the polynomial degree n (up to 200) and click "Generate Fields".</li>
+          <li><strong>Bulk Paste:</strong> Paste coefficient data in descending order (a_n, a_{n-1}, ..., a_0 separated by commas or spaces) and click "Apply" to populate all fields at once.</li>
+          <li><strong>Execution:</strong> Click "🚀 Start 200-Digit Precision Solver!" to initiate iteration with 200-digit precision, displaying real-time progress, time, all roots, and error radii.</li>
+        </ul>
+      `,
+      sec2Title: "🧪 Benchmark Test Data: Degree 20 Wilkinson Polynomial",
+      sec2Desc: "The Wilkinson polynomial W_20(x) = (x-1)(x-2)...(x-20) is a famous ill-conditioned polynomial with true roots 1, 2, 3, ..., 20. Copy the bulk text below and paste it into the 'Bulk Paste' field in the solver app.",
+      sec3Title: "🔗 External Test Generator Tool",
+      sec3Body: `
+        To generate exact Wilkinson coefficients for any degree, you can use our dedicated generator:<br>
+        👉 <a href="https://yoshiakikoizumija142397.github.io/wilkinson-coeff-generator/" target="_blank" rel="noopener" style="font-weight: bold; color: var(--primary);" id="link-generator">Exact Precision Wilkinson Coefficient Generator</a>
+      `,
+      linkHome: "Home",
+      linkCalc: "Solver App",
+      linkPrivacy: "Privacy Policy"
+    }
+  };
+
+  function toggleLanguage() {
+    currentLang = (currentLang === 'ja') ? 'en' : 'ja';
+    updateUI();
+  }
+
+  function updateUI() {
+    const t = translations[currentLang];
+    document.getElementById('app-title').innerText = t.title;
+    document.getElementById('lang-toggle-btn').innerText = t.btnLang;
+    document.getElementById('sec1-title').innerText = t.sec1Title;
+    document.getElementById('sec1-body').innerHTML = t.sec1Body;
+    document.getElementById('sec2-title').innerText = t.sec2Title;
+    document.getElementById('sec2-desc').innerText = t.sec2Desc;
+    document.getElementById('sec3-title').innerText = t.sec3Title;
+    document.getElementById('sec3-body').innerHTML = t.sec3Body;
+    document.getElementById('link-home').innerText = t.linkHome;
+    document.getElementById('link-calc').innerText = t.linkCalc;
+    document.getElementById('link-privacy').innerText = t.linkPrivacy;
+  }
+</script>
+
+</body>
+</html>
