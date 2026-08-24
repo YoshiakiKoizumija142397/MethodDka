@@ -121,5 +121,140 @@ MethodDka/
 * **ライセンス**: MIT License
 
 ```
+Here is the complete translation of your `README.md` into English, formatted and tailored specifically for open-source repositories on GitHub.
 
+---
+
+# MethodDka (Up to Degree 200 & Max 200-Digit High-Precision Polynomial Solver / Factorization Web App)
+
+[日本語](https://www.google.com/search?q=README.md) | [English](https://www.google.com/search?q=%23-english-overview)
+
+---
+
+## 🌐 English Overview
+
+*MethodDka* is a lightweight, ultra-fast, and high-precision web application for solving high-degree polynomials and performing polynomial factorization, running entirely on HTML and JavaScript.
+
+Utilizing the Durand-Kerner-Aberth (DKA) method, it fully integrates a **Direct 200-Digit Extreme Precision Engine** via `Decimal.js`. In version 3.2.0, it features a direct evaluation engine operating at a fixed 200-digit precision alongside a real-time progress UI (tracking loop count, elapsed time, estimated remaining time, and error radius). This enables full convergence even for ill-conditioned polynomials—such as the 20th and 65th-degree Wilkinson polynomials—achieving extreme precision on the order of $10^{-150} \sim 10^{-186}$.
+
+---
+
+## 📋 Technical Specifications
+
+| Item | Specification Details |
+| --- | --- |
+| **Core Solver Algorithm** | Durand-Kerner-Aberth (DKA) Simultaneous Root-Finding Method |
+| **Arithmetic Precision** | Fixed 200-digit precision (Full application of `Decimal.js` internal precision) |
+| **Numerical Stabilization** | **Auto-Scaling**: Normalizes by the leading coefficient $a_n$ to automatically prevent overflow and underflow |
+| **Initial Value Placement** | Aberth Initialization (Non-equispaced complex placement on a circle) |
+| **Max Degree Supported** | Up to Degree 200 ($n \le 200$) |
+| **Polynomial Evaluation** | Direct high-precision polynomial evaluation via Horner's Method |
+| **Safety Lock** | **Max 20,000 Iteration Limit**: Prevents redundant loops and browser freezes, ensuring safe and reliable output of current roots and error radii |
+| **Convergence Threshold** | Automatic termination when error radius $\Delta z_i \le 10^{-150}$ |
+| **Result Processing** | Ascending sort by real part, complex notation ($a + bi$), and error radius tracking |
+| **Execution Environment** | Pure client-side (HTML5 / JavaScript ES6+) |
+
+---
+
+## 🚀 Key Features & Highlights (v3.2.0)
+
+1. **Direct 200-Digit Calculation Engine & Auto-Scaling**:
+* Executes direct evaluations at a fixed 200-digit precision right from the start. Auto-scaling prevents precision loss, underflow, and overflow, ensuring fast and stable convergence even for ill-conditioned high-degree polynomials.
+
+
+2. **Safety Lock Optimization (20,000 Limit)**:
+* Eliminates redundant loops with a safety threshold of 20,000 iterations to optimize system load on PCs and mobile devices, outputting the most accurate current solutions and error radii.
+
+
+3. **Real-time Progress & Timer UI**:
+* Displays loop progress (%), elapsed time (`hh:mm:ss`), estimated remaining time, and fully converged root counts in real time.
+
+
+4. **Automatic Sorting & Readable Display**:
+* Automatically orders output complex roots by their real parts in ascending order (`1, 2, 3...`).
+
+
+5. **Flexible Batch Paste Input**:
+* Allows quick batch pasting of coefficients in descending order ($a_n \dots a_0$), separated by commas or spaces.
+
+
+6. **Full Support for Complex Coefficients (i, j)**:
+* Capable of processing polynomials containing complex coefficients directly.
+
+
+7. **Instant Language Switching (English / Japanese)**:
+* Toggle the entire UI language instantly with a single click.
+
+
+8. **Fully Offline & Privacy-Focused**:
+* Serverless architecture: zero external data transmission. Works off a single HTML file across all modern browsers.
+
+
+
+---
+
+## ⏱ Performance Benchmarks & Recommended Environments
+
+**【Desktop Environment (Windows 11 Home / 8th Gen Intel Core i7 / 16GB RAM)】**
+
+* **Degree 20 Wilkinson Polynomial $W_{20}(x) = \prod_{i=1}^{20} (x - i)$**:
+* **Total Computation Time**: **00:00:01 (Just 1 second)**
+* **Total Iterations**: **32 loops**
+* **Worst-Case Error Radius**: **$2.532316 \times 10^{-186}$ (186-digit extreme precision)**
+* **Result**: All 20 roots (`1.000...` to `20.000...`) converged completely with 100+ matching digits.
+
+
+* **Degree 65 Wilkinson Polynomial $W_{65}(x) = \prod_{i=1}^{65} (x - i)$**:
+* **Total Computation Time**: **Approx. 4 hours**
+* **Worst-Case Error Radius**: **$10^{-150}$ order (150-digit extreme precision)**
+* **Result**: Even for the notoriously ill-conditioned Degree 65 polynomial with massive coefficient scale gaps, the direct 200-digit engine successfully completes and fully converges all 65 roots (`1.000...` to `65.000...`).
+
+
+
+**【Mobile Environment (Android / iOS / e.g., Galaxy A25 5G)】**
+
+* **Degree 20 Polynomials**: Runs smoothly with high-speed processing.
+* **Degree 65 Polynomials**: **Not recommended** due to high computational load (Desktop PC browsers recommended).
+
+---
+
+## 🎧 Application Example: High-Res Audio Digital Channel Divider
+
+The mathematical engine of *MethodDka* is applied to designing high-precision FIR filters used to bypass the passive crossovers of 3-way speakers (such as the **SONY SS-CS5**) for multi-amplifier driving. Leveraging up to 200 digits of mathematical precision, it executes "minimum-phase conversion" without phase distortion or pre-echo artifacts seamlessly.
+
+---
+
+## 🧪 How to Test
+
+1. Access the [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/).
+2. Paste your Wilkinson coefficient data into the "Batch Paste" area and click "Apply Batch Input".
+3. Click **"🚀 Start 200-Digit High-Precision Calculation!"**.
+
+---
+
+## 🌐 Live Demo & Repository
+
+* **Web Application (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)
+* **GitHub Repository:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
+
+---
+
+## 📁 Repository Structure
+
+```text
+MethodDka/
+├── privacy.html      # Privacy Policy
+├── MethodDka.html    # Integrated Master Code (v3.2.0 / 200-Digit Direct Calculation Engine)
+├── index.html        # Landing Page (v3.2.0)
+├── help.html         # Help Page (v3.2.0)
+└── README.md         # Documentation (v3.2.0)
+
+```
+
+---
+
+## 📜 License & Developer Info
+
+* **Developer**: Yoshiaki Koizumi
+* **License**: MIT License
 ---
