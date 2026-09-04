@@ -67,6 +67,7 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **ダ�
   - **最悪誤差半径**: **$10^{-150}$ オーダー (150桁の極限精度)**
   - **結果**: 巨大な係数・桁差を持つ超難問である 65次多項式においても、200桁ダイレクト演算により全65解（`1.000...` 〜 `65.000...`）を極限精度で完走・完全収束することを確認済み。
   - gist
+  - MethodDka v3.2.0 - 200次ウィルキンソン多項式 (200桁・1,000反復) 計算結果
 https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a
 
 **【スマートフォン環境（Android / iOS / 例: Galaxy A25 5G等）】**
@@ -217,7 +218,9 @@ Utilizing the Durand-Kerner-Aberth (DKA) method, it fully integrates a **Direct 
 
 * **Degree 20 Polynomials**: Runs smoothly with high-speed processing.
 * **Degree 65 Polynomials**: **Not recommended** due to high computational load (Desktop PC browsers recommended).
-
+* gist
+* MethodDka v3.2.0 - Degree 200 Wilkinson Polynomial (200-digit precision, 1,000 iterations) Calculation Results
+[https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a](https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a)
 ---
 
 ## 🎧 Application Example: High-Res Audio Digital Channel Divider
