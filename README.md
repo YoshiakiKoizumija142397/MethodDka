@@ -100,7 +100,7 @@ The v3.2.0 update introduces a **Direct 200-Digit Precision Engine** with Auto-s
 
 ## 🌐 公式ページ ＆ リポジトリ
 
-- **Web アプリ (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)
+- **Web アプリ (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)アクセスカウンターを設置しました
 - **GitHub リポジトリ:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
 
 ---
