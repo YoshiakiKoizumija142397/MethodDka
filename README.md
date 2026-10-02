@@ -1,10 +1,8 @@
+---
+
 # MethodDka (200次対応 & 最大200桁高精度多項式解法・因数分解 Web アプリ / Multilingual Polynomial Solver)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
-![Version](https://img.shields.io/badge/version-v3.2.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-
-[日本語](README.md) | [English](#-english-overview)
+[日本語](https://www.google.com/search?q=README.md) | [English](https://www.google.com/search?q=%23-english-overview)
 
 ---
 
@@ -12,68 +10,92 @@
 
 *MethodDka* は、HTML と JavaScript だけで動作する軽量・高速・超高精度な多項式解法 ＆ 因数分解 Web アプリケーションです。
 
-DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **ダイレクト200桁極限高精度演算** を完全統合しました。最新の v3.2.0 では、最初から200桁固定精度で直接多項式評価を行うダイレクトエンジンとリアルタイム進捗 UI（ループ数・経過時間・残り推定時間・誤差半径トラッキング）を実装し、20次および65次ウィルキンソン多項式などの超悪条件多項式も誤差 $10^{-150} \sim 10^{-186}$ オーダーの極限精度へ完全収束させます。
+DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **ダイレクト200桁極限高精度演算** を完全統合しました。最新の **v3.3.0** では、新たに **「320桁階層型自動GCD前処理エンジン（平方無因子分解・多項式長除法・動的ユークリッド互除法）」** を実装。従来、重根や多重根を持つ多項式で発生しがちであった数値不安定性、次数不整合、見落としを完全に克服しました。前処理フェーズでは内部精度を320桁（$\epsilon = 10^{-220}$）に引き上げて厳密な最大公約多項式 $G(x) = \gcd(P, P')$ を算出し、動的長除法による縮約多項式 $Q(x) = P(x) / G(x)$ の抽出と重複度 $m$ の自動特定を実行します。さらに、構造上の不一致や混在重根に対しては厳格なセーフティガードが自動で検知し、安全に単根モード（パススルー）へフォールバックするロバスト性を備えています。これにより、ダイレクト200桁評価エンジンと相まって、単純な単根から、重根、ウィルキンソン多項式に至るあらゆる悪条件多項式を極限精度で完全攻略します。
 
 ---
 
-## 📋 システム仕様 (Technical Specifications)
+## 📋 システム仕様 (Technical Specifications - v3.3.0)
 
-| 項目 | 詳細仕様 |
-| :--- | :--- |
-| **コア解法** | DKA法 (Durand-Kerner-Aberth Simultaneuous Root-Finding Method) |
-| **演算精度** | 200桁固定精度 (Decimal.js 内部精度の完全適用) |
+| 項目 | 詳細仕様 (v3.3.0 拡張) |
+| --- | --- |
+| **コア解法** | DKA法 (Durand-Kerner-Aberth Simultaneous Root-Finding Method) |
+| **演算精度階層** | **階層型マルチプレシジョン設計**<br>
+
+<br>・前処理フェーズ: **320桁固定精度** ($\epsilon = 10^{-220}$)<br>
+
+<br>・後工程ソルバー: **230桁内部精度 / 200桁極限出力** ($\epsilon = 10^{-170}$) |
+| **自動前処理 (GCD)** | **平方無因子分解 (Square-free Decomposition)**<br>
+
+<br>・微分多項式 $P'(x)$ とのユークリッド互除法による $\gcd(P, P')$ の厳密算出<br>
+
+<br>・動的トラッキング型多項式長除法 (`polyDivide`) による安全な縮約式 $Q(x)$ の抽出<br>
+
+<br>・重複度 $m$ の自動計算と結果の展開処理 |
+| **セーフティガード機構** | 縮約次数の整除関係検証（`origDeg % redDeg === 0`）および余りゼロの厳格検証。構造不一致や混在重根を検知した場合、即座に単根モード（パススルー）へ安全にフォールバック。 |
 | **数値安定化** | **オートスケーリング処理** (最高次係数 $a_n$ による正規化でオーバーフロー・アンダーフローを自動防止) |
 | **初期値配置** | Aberth 初期配置 (円周上の非等間隔複素配置) |
 | **対応最高次数** | 最高 200 次 ($n \le 200$) |
 | **多項式評価** | ホーナー法 (Horner's Method) による高精度多項式直評価 |
 | **セーフティロック** | **最大 20,000 回ループ制限** (無駄なループやブラウザフリーズを徹底排除し、到達時点の解と各誤差半径を安全に確実出力) |
-| **収束判定閾値** | 誤差半径 $\Delta z_i \le 10^{-150}$ での自動終了 |
-| **結果処理** | 実部昇順ソート、複素数表記 ($a + bi$)、誤差半径トラッキング |
+| **結果処理** | 実部昇順ソート、複素数表記 ($a + bi$)、重複度表示、誤差半径トラッキング |
 | **動作環境** | 完全クライアントサイド（HTML5 / JavaScript ES6+） |
 
 ---
 
-## 🚀 主な機能と特徴 (v3.2.0)
+## 🚀 主な機能と特徴 (v3.3.0)
 
-1. **ダイレクト 200 桁演算エンジン ＆ オートスケーリング**:
-   - 最初から 200 桁固定精度で直接評価を実施。オートスケーリング処理により桁落ちやオーバーフロー・アンダーフローを防ぎ、悪条件な高次多項式も高速・確実に収束。
-2. **セーフティロック最適化 (20,000 回制限)**:
-   - 無駄なループを徹底的に排除し、20,000 回の安全上限を設定することで PC や端末の負荷を最適化。常にその時点での最新解と正確な誤差半径を出力します。
-3. **リアルタイム進捗 ＆ タイマー UI**:
-   - 反復ループ進捗率（%）、経過時間（`hh:mm:ss`）、推定残り時間、完全収束数をリアルタイムに画面描画。
-4. **自動ソート ＆ 見やすい表示**:
-   - 算出された複素解を実部の昇順（`1, 2, 3 ...`）へ自動整列。
-5. **柔軟な一括ペースト機能**:
-   - 降順（$a_n \dots a_0$）で並んだ係数データをカンマ・空白区切りで一括入力可能。
-6. **複素数係数（i, j）の完全対応**:
-   - 複素数を含む多項式もそのまま計算可能。
-7. **日本語 / English 瞬時言語切替**:
-   - ワンクリックで UI を切替可能。
+1. **320桁階層型自動GCD前処理エンジン**:
+* 後工程の解精度（200桁）を凌駕する320桁の超高精度・極限ノイズ吸収閾値（$\epsilon = 10^{-220}$）により、ユークリッド互除法の累次除算で蓄積する丸め誤差を完全に遮断。重根構造を数学的かつ決定論的に検出します。
+
+
+2. **動的トラッキング型多項式長除法**:
+* 歯抜けの多項式や次数が激しく変動する演算過程においても、常に最高次数を監視し次数差 (`shift`) を動的に計算して商の正しい位置に係数を書き込む最強の除算アルゴリズムを実装。インデックスのズレを永久に追放。
+
+
+3. **インテリジェント・セーフティガード**:
+* 重複度が混在する多項式や非定型な構造に対しては、数学的矛盾（整除不成立や余り残留）をガード機構が瞬時に検知。エラーを起こすことなく安全に単根モード（パススルー）へ切り替え、DKA本体の200桁反復計算で確実に解き切ります。
+
+
+4. **ダイレクト 200 桁演算エンジン ＆ オートスケーリング**:
+* 最初から 200 桁固定精度で直接評価を実施。オートスケーリング処理により桁落ちやオーバーフロー・アンダーフローを防ぎます。
+
+
+5. **Pro デバッグアナライザ (内部可視化モード)**:
+* 前処理の全ステップ（入力 $P(x)$、微分 $P'(x)$、GCD $G(x)$、縮約式 $Q(x)$、余り最大値、重複度判定）を画面上の専用黒背景パネルにリアルタイムダンプし、開発・検証を強力にサポート。
+
+
+6. **リアルタイム進捗 ＆ タイマー UI**:
+* 反復ループ進捗率（%）、経過時間（`hh:mm:ss`）、推定残り時間、完全収束数をリアルタイムに画面描画。
+
+
+7. **柔軟な一括ペースト機能 ＆ 多言語対応**:
+* 降順（$a_n \dots a_0$）係数のカンマ・空白区切り一括ペースト、および日本語 / English の瞬時言語切替に対応。
+
+
 8. **完全オフライン対応・プライバシー保護**:
-   - サーバー不要、外部送信なし、単一 HTML で全ブラウザ動作。
+* サーバー不要、外部送信なし、単一 HTML で全ブラウザ動作。
+
+
 
 ---
 
 ## ⏱ 動作パフォーマンス ＆ 推奨動作環境（実測値）
 
 **【PC環境（Windows 11 Home / 第8世代 Intel Core i7 / 16GB RAM）】**
-- **20次ウィルキンソン多項式 $W_{20}(x) = \prod_{i=1}^{20} (x - i)$**:
-  - **総計算時間**: **00:00:01 (わずか 1 秒)**
-  - **総反復回数**: **32 回**
-  - **最悪誤差半径**: **$2.532316 \times 10^{-186}$ (186桁の極限精度)**
-  - **結果**: 全20解（`1.000...` 〜 `20.000...`）が100桁以上の表示桁すべてで完全一致・完全収束。
-- **65次ウィルキンソン多項式 $W_{65}(x) = \prod_{i=1}^{65} (x - i)$**:
-  - **総計算時間**: **約 4 時間**
-  - **最悪誤差半径**: **$10^{-150}$ オーダー (150桁の極限精度)**
-  - **結果**: 巨大な係数・桁差を持つ超難問である 65次多項式においても、200桁ダイレクト演算により全65解（`1.000...` 〜 `65.000...`）を極限精度で完走・完全収束することを確認済み。
-  - 
-  - このgistはMSIインストーラ版の結果です
-  - MethodDka v3.2.0 - 200次ウィルキンソン多項式 (200桁・1,000反復) 計算結果
-https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a
 
-**【スマートフォン環境（Android / iOS / 例: Galaxy A25 5G等）】**
-- **20次多項式**: 快適に動作・高速計算可能。
-- **65次多項式**: 演算負荷・計算時間が非常に高いため **非推奨**（PCブラウザでの実行を推奨）。
+* **重根テストケース $(x^2+1)^2 = 0$ ($x^4 + 2x^2 + 1 = 0$)**:
+* **前処理**: 320桁精度により一瞬で GCD = $x^2+1$、重複度 2 を検出。
+* **総計算時間**: **< 0.01 秒 (一瞬)**
+* **結果**: 4つの解（$+i, +i, -i, -i$）が誤差半径 $0$ または極限精度で完全一致・完全収束。
+
+
+* **20次ウィルキンソン多項式 $W_{20}(x) = \prod_{i=1}^{20} (x - i)**:
+* **総計算時間**: **00:00:01 (わずか 1 秒)**
+* **総反復回数**: **32 回**
+* **最悪誤差半径**: **$2.532316 \times 10^{-186}$ (186桁の極限精度)**
+* **結果**: 全20解が100桁以上の表示桁すべてで完全一致・完全収束。
+
+
 
 ---
 
@@ -86,181 +108,85 @@ https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a
 ## 🧪 テスト手順
 
 1. [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/) にアクセス。
-2. ウィルキンソン係数データを「係数一括ペースト」欄へ貼り付けて「一括反映」をクリック。
-3. 「🚀 200桁高精度計算開始！」ボタンを押下。
+2. 重根テスト用係数（例: `1, 0, 2, 0, 1`）やウィルキンソン係数を「係数一括ペースト」欄へ貼り付けて「一括反映」をクリック。
+3. 「🚀 200桁高精度計算開始！」ボタンを押下し、Proアナライザのログと計算結果を確認。
 
 ---
 
-## 🇬🇧 English Overview
+---
 
-*MethodDka* is a lightweight, ultra-fast, and high-precision web application for solving polynomials and factorization using the Durand-Kerner-Aberth (DKA) method powered by `Decimal.js`.
-The v3.2.0 update introduces a **Direct 200-Digit Precision Engine** with Auto-scaling and a 20,000-iteration Safety Lock mechanism. Real-time progress UI tracks loop counts, elapsed/remaining time, and error radii, achieving extreme precision ($10^{-186}$ order in 1 sec / 32 iterations for Degree 20; $10^{-150}$ order in approx. 4 hours for Degree 65). (Note: Degree 20 is fully supported on mobile devices like Galaxy A25 5G; Degree 65+ is recommended for PC/Desktop environments with 16GB RAM).
+# 📄 ソフトウェア開発要求仕様書 (SRS: Software Requirements Specification)
+
+**プロジェクト名**: MethodDka (v3.3.0)
+**文書種別**: システム要件定義・設計仕様書
+
+## 1. 概要と開発目的
+
+本仕様書は、Webブラウザ上で動作する最高200次・最大200桁極限高精度多項式解法システム *MethodDka* v3.3.0 の機能要件、非機能要件、およびアーキテクチャ設計を定義するものである。v3.3.0 では、浮動小数点演算における丸め誤差に起因する重根検出の破綻を根絶するため、**「320桁階層型自動GCD前処理モジュール」** および **「動的トラッキング型多項式長除法」** を新規に導入する。
+
+## 2. システムアーキテクチャ ＆ 精度階層設計
+
+本システムは、前処理と後工程の間で明確な精度ギャップ（Precision Hierarchy）を設けた2段階パイプライン構造を採用する。
+
+1. **前処理フェーズ (Pre-processing Pipeline)**
+* **演算精度**: `Decimal.set({ precision: 320 })`
+* **閾値仕様**: $\epsilon = 10^{-220}$（320桁における極限ノイズ吸収値）
+* **主要機能**:
+* 微分多項式生成 (`derivativePoly`)
+* ユークリッド互除法による最大公約多項式算出 (`polyGCD`)
+* 動的トラッキング型多項式除算 (`polyDivide`) による縮約式 $Q(x)$ の抽出
+* 重複度 $m$ の算定と安全性検証
+
+
+
+
+2. **後工程ソルバーフェーズ (DKA Engine Pipeline)**
+* **演算精度**: `Decimal.set({ precision: 230 })` (出力目標 200桁)
+* **閾値仕様**: $\epsilon = 10^{-170}$
+* **主要機能**: 縮約多項式またはパススルーされた元多項式に対し、Aberth初期配置に基づく Durand-Kerner-Aberth法を適用し、すべての根を並行・高精度収束させる。
+
+
+
+## 3. 前処理モジュール詳細設計
+
+### 3.1 動的トラッキング型多項式長除法 (`polyDivide`)
+
+* 降順配列 `[a_n, ..., a_0]` において、次数差 `degA - degB` に基づき、除算の各ステップで正確に商の係数配列 `Q` の正しいインデックス位置へ係数を書き込む。
+* 途中で係数が 0 に収束するケースでも、配列の破綻を防ぐために `trimLeadingZeros` による動的トリミングを常時実行する。
+
+### 3.2 堅牢なユークリッド互除法 (`polyGCD`)
+
+* 割る数 $B_{curr}$ の次数が 0 になるか、または余りの最大絶対値が $\epsilon = 10^{-220}$ 以下に達するまでループを実行。
+* 割り切れた瞬間の「割る数（$B_{curr}$）」を真の最大公約多項式 $G(x)$ として厳密に返却する。
+
+### 3.3 セーフティガードとフォールバック機構
+
+* 縮約多項式 $Q(x)$ の次数 $redDeg$ に対し、元の次数 $origDeg$ が整除関係を満たさない場合（`origDeg % redDeg !== 0`）、または余りがゼロ許容値を超過した場合は、構造上の不一致（混在重根など）と見なす。
+* 即座に重根フラグを解除し、安全な単根モード（パススルー）として元多項式を DKA エンジンへ引き渡す。
+
+## 4. ユーザーインターフェース (UI) 要件
+
+* **Pro デバッグアナライザ**: 内部処理の各ステップ（入力、微分、GCD、縮約式、余り、重複度）を構造化テキストとして画面上にトグル表示。
+* **リアルタイム進捗パネル**: 反復ループ回数、経過時間、進捗率プログレスバーを動的描画。
+* **多言語対応**: 日本語および英語の瞬時切替機能。
+
+---
+
+## 🇬🇧 English Overview (v3.3.0)
+
+*MethodDka* is a lightweight, ultra-fast, and high-precision web application for solving high-degree polynomials and performing polynomial factorization using the Durand-Kerner-Aberth (DKA) method powered by `Decimal.js`. Version 3.3.0 introduces a **320-Digit Hierarchical Auto-GCD Preprocessing Engine** featuring square-free decomposition, dynamic polynomial long division, and robust safety guard mechanisms. This ensures absolute numerical stability and extreme precision ($10^{-150} \sim 10^{-186}$ orders) across simple roots, multiple roots, and ill-conditioned Wilkinson polynomials.
 
 ---
 
 ## 🌐 公式ページ ＆ リポジトリ
 
-- **Web アプリ (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)アクセスカウンターを設置しました
-- **GitHub リポジトリ:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
-
----
-
-## 📁 リポジトリの構成
-
-```text
-MethodDka/
-├── privacy.html      # プライバシーポリシー
-├── MethodDka.html    # 統合マスターコード (v3.2.0 / 200桁ダイレクト演算エンジン)
-├── index.html        # ランディングページ (v3.2.0)
-├── help.html         # ヘルプページ (v3.2.0)
-└── README.md         # ドキュメント (v3.2.0)
-
-```
+* **Web アプリ (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)
+* **GitHub リポジトリ:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
 
 ---
 
 ## 📜 ライセンス ＆ 開発者情報
 
 * **開発者**: 小泉嘉章 (Yoshiaki Koizumi)
+* **バージョン**: v3.3.0
 * **ライセンス**: MIT License
-
-```
-Here is the complete translation of your `README.md` into English, formatted and tailored specifically for open-source repositories on GitHub.
-
----
-
-# MethodDka (Up to Degree 200 & Max 200-Digit High-Precision Polynomial Solver / Factorization Web App)
-
-[日本語](https://www.google.com/search?q=README.md) | [English](https://www.google.com/search?q=%23-english-overview)
-
----
-
-## 🌐 English Overview
-
-*MethodDka* is a lightweight, ultra-fast, and high-precision web application for solving high-degree polynomials and performing polynomial factorization, running entirely on HTML and JavaScript.
-
-Utilizing the Durand-Kerner-Aberth (DKA) method, it fully integrates a **Direct 200-Digit Extreme Precision Engine** via `Decimal.js`. In version 3.2.0, it features a direct evaluation engine operating at a fixed 200-digit precision alongside a real-time progress UI (tracking loop count, elapsed time, estimated remaining time, and error radius). This enables full convergence even for ill-conditioned polynomials—such as the 20th and 65th-degree Wilkinson polynomials—achieving extreme precision on the order of $10^{-150} \sim 10^{-186}$.
-
----
-
-## 📋 Technical Specifications
-
-| Item | Specification Details |
-| --- | --- |
-| **Core Solver Algorithm** | Durand-Kerner-Aberth (DKA) Simultaneous Root-Finding Method |
-| **Arithmetic Precision** | Fixed 200-digit precision (Full application of `Decimal.js` internal precision) |
-| **Numerical Stabilization** | **Auto-Scaling**: Normalizes by the leading coefficient $a_n$ to automatically prevent overflow and underflow |
-| **Initial Value Placement** | Aberth Initialization (Non-equispaced complex placement on a circle) |
-| **Max Degree Supported** | Up to Degree 200 ($n \le 200$) |
-| **Polynomial Evaluation** | Direct high-precision polynomial evaluation via Horner's Method |
-| **Safety Lock** | **Max 20,000 Iteration Limit**: Prevents redundant loops and browser freezes, ensuring safe and reliable output of current roots and error radii |
-| **Convergence Threshold** | Automatic termination when error radius $\Delta z_i \le 10^{-150}$ |
-| **Result Processing** | Ascending sort by real part, complex notation ($a + bi$), and error radius tracking |
-| **Execution Environment** | Pure client-side (HTML5 / JavaScript ES6+) |
-
----
-
-## 🚀 Key Features & Highlights (v3.2.0)
-
-1. **Direct 200-Digit Calculation Engine & Auto-Scaling**:
-* Executes direct evaluations at a fixed 200-digit precision right from the start. Auto-scaling prevents precision loss, underflow, and overflow, ensuring fast and stable convergence even for ill-conditioned high-degree polynomials.
-
-
-2. **Safety Lock Optimization (20,000 Limit)**:
-* Eliminates redundant loops with a safety threshold of 20,000 iterations to optimize system load on PCs and mobile devices, outputting the most accurate current solutions and error radii.
-
-
-3. **Real-time Progress & Timer UI**:
-* Displays loop progress (%), elapsed time (`hh:mm:ss`), estimated remaining time, and fully converged root counts in real time.
-
-
-4. **Automatic Sorting & Readable Display**:
-* Automatically orders output complex roots by their real parts in ascending order (`1, 2, 3...`).
-
-
-5. **Flexible Batch Paste Input**:
-* Allows quick batch pasting of coefficients in descending order ($a_n \dots a_0$), separated by commas or spaces.
-
-
-6. **Full Support for Complex Coefficients (i, j)**:
-* Capable of processing polynomials containing complex coefficients directly.
-
-
-7. **Instant Language Switching (English / Japanese)**:
-* Toggle the entire UI language instantly with a single click.
-
-
-8. **Fully Offline & Privacy-Focused**:
-* Serverless architecture: zero external data transmission. Works off a single HTML file across all modern browsers.
-
-
-
----
-
-## ⏱ Performance Benchmarks & Recommended Environments
-
-**【Desktop Environment (Windows 11 Home / 8th Gen Intel Core i7 / 16GB RAM)】**
-
-* **Degree 20 Wilkinson Polynomial $W_{20}(x) = \prod_{i=1}^{20} (x - i)$**:
-* **Total Computation Time**: **00:00:01 (Just 1 second)**
-* **Total Iterations**: **32 loops**
-* **Worst-Case Error Radius**: **$2.532316 \times 10^{-186}$ (186-digit extreme precision)**
-* **Result**: All 20 roots (`1.000...` to `20.000...`) converged completely with 100+ matching digits.
-
-
-* **Degree 65 Wilkinson Polynomial $W_{65}(x) = \prod_{i=1}^{65} (x - i)$**:
-* **Total Computation Time**: **Approx. 4 hours**
-* **Worst-Case Error Radius**: **$10^{-150}$ order (150-digit extreme precision)**
-* **Result**: Even for the notoriously ill-conditioned Degree 65 polynomial with massive coefficient scale gaps, the direct 200-digit engine successfully completes and fully converges all 65 roots (`1.000...` to `65.000...`).
-
-
-
-**【Mobile Environment (Android / iOS / e.g., Galaxy A25 5G)】**
-
-* **Degree 20 Polynomials**: Runs smoothly with high-speed processing.
-* **Degree 65 Polynomials**: **Not recommended** due to high computational load (Desktop PC browsers recommended).
-* gist
-* MethodDka v3.2.0 - Degree 200 Wilkinson Polynomial (200-digit precision, 1,000 iterations) Calculation Results
-[https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a](https://gist.github.com/YoshiakiKoizumija142397/649c89263a53df38e4f6cfbe8637883a)
----
-
-## 🎧 Application Example: High-Res Audio Digital Channel Divider
-
-The mathematical engine of *MethodDka* is applied to designing high-precision FIR filters used to bypass the passive crossovers of 3-way speakers (such as the **SONY SS-CS5**) for multi-amplifier driving. Leveraging up to 200 digits of mathematical precision, it executes "minimum-phase conversion" without phase distortion or pre-echo artifacts seamlessly.
-
----
-
-## 🧪 How to Test
-
-1. Access the [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/).
-2. Paste your Wilkinson coefficient data into the "Batch Paste" area and click "Apply Batch Input".
-3. Click **"🚀 Start 200-Digit High-Precision Calculation!"**.
-
----
-
-## 🌐 Live Demo & Repository
-
-* **Web Application (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)
-* **GitHub Repository:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
-
----
-
-## 📁 Repository Structure
-
-```text
-MethodDka/
-├── privacy.html      # Privacy Policy
-├── MethodDka.html    # Integrated Master Code (v3.2.0 / 200-Digit Direct Calculation Engine)
-├── index.html        # Landing Page (v3.2.0)
-├── help.html         # Help Page (v3.2.0)
-└── README.md         # Documentation (v3.2.0)
-
-```
-
----
-
-## 📜 License & Developer Info
-
-* **Developer**: Yoshiaki Koizumi
-* **License**: MIT License
----
