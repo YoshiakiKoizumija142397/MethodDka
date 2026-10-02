@@ -184,9 +184,198 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **ダ�
 * **GitHub リポジトリ:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
 
 ---
-
 ## 📜 ライセンス ＆ 開発者情報
 
 * **開発者**: 小泉嘉章 (Yoshiaki Koizumi)
 * **バージョン**: v3.3.0
 * **ライセンス**: MIT License
+
+  
+# MethodDka (Up to 200th Degree & Max 200-Digit High-Precision Polynomial Solver & Factorization Web App / Multilingual Polynomial Solver)
+
+[日本語](https://www.google.com/search?q=README.md) | [English](https://www.google.com/search?q=%23-english-overview)
+
+---
+
+## 🇯🇵 Japanese Overview
+
+*MethodDka* is a lightweight, high-speed, and ultra-high-precision polynomial solver and factorization web application operating entirely on HTML and JavaScript.
+
+By adopting the DKA method (Durand-Kerner-Aberth Simultaneous Root-Finding Method), it fully integrates **direct 200-digit extreme-precision arithmetic** powered by `Decimal.js`. The latest **v3.3.0** newly introduces the **"320-Digit Hierarchical Automatic GCD Preprocessing Engine (Square-free Decomposition, Polynomial Long Division, Dynamic Euclidean Algorithm)."** This completely overcomes numerical instability, degree inconsistencies, and oversights that traditionally tended to occur in polynomials with multiple or repeated roots. In the preprocessing phase, internal precision is elevated to 320 digits ($\epsilon = 10^{-220}$) to compute the rigorous greatest common divisor polynomial $G(x) = \gcd(P, P')$, extract the reduced polynomial $Q(x) = P(x) / G(x)$ via dynamic long division, and automatically identify the multiplicity $m$. Furthermore, it features a robust safety guard that automatically detects structural mismatches or mixed multiple roots, securely falling back to single-root mode (pass-through). Combined with the direct 200-digit evaluation engine, this completely conquers all ill-conditioned polynomials—ranging from simple single roots to multiple roots and Wilkinson polynomials—with extreme precision.
+
+---
+
+## 📋 System Specifications (Technical Specifications - v3.3.0)
+
+| Item | Detailed Specifications (v3.3.0 Expansion) |
+| --- | --- |
+| **Core Solver** | DKA Method (Durand-Kerner-Aberth Simultaneous Root-Finding Method) |
+| **Arithmetic Precision Hierarchy** | **Hierarchical Multi-precision Design**<br>
+
+<br>
+
+<br>・ Preprocessing Phase: **Fixed 320-digit precision** ($\epsilon = 10^{-220}$)<br>
+
+<br>
+
+<br>・ Post-process Solver: **230-digit internal precision / 200-digit extreme output** ($\epsilon = 10^{-170}$) |
+| **Automatic Preprocessing (GCD)** | **Square-free Decomposition**<br>
+
+<br>
+
+<br>・ Rigorous calculation of $\gcd(P, P')$via Euclidean algorithm with derivative polynomial$P'(x)<br>
+
+<br>
+
+<br>・ Extraction of safe reduced expression $Q(x)$ via dynamic tracking polynomial long division (`polyDivide`)<br>
+
+<br>
+
+<br>・ Automatic calculation of multiplicity $m$ and result expansion processing |
+| **Safety Guard Mechanism** | Verification of divisibility relationship for reduced degree (`origDeg % redDeg === 0`) and rigorous verification of zero remainder. When a structural mismatch or mixed multiple root is detected, immediately falls back safely to single-root mode (pass-through). |
+| **Numerical Stabilization** | **Auto-scaling Processing** (Automatic prevention of overflow/underflow via normalization by leading coefficient $a_n$) |
+| **Initial Value Placement** | Aberth initial placement (non-equidistant complex placement on a circle) |
+| **Supported Maximum Degree** | Up to 200th degree ($n \le 200$) |
+| **Polynomial Evaluation** | High-precision direct polynomial evaluation via Horner's Method |
+| **Safety Lock** | **Max 20,000 loop limit** (thoroughly eliminates redundant loops and browser freezes, safely and reliably outputting the achieved roots and respective error radii) |
+| **Result Processing** | Real part ascending sort, complex number notation ($a + bi$), multiplicity display, error radius tracking |
+| **Operating Environment** | Fully client-side (HTML5 / JavaScript ES6+) |
+
+---
+
+## 🚀 Key Features & Highlights (v3.3.0)
+
+1. **320-Digit Hierarchical Auto-GCD Preprocessing Engine**:
+
+* Achieves complete interception of rounding errors accumulated during sequential divisions of the Euclidean algorithm through an ultra-high-precision, extreme noise-absorption threshold ($\epsilon = 10^{-220}$) that surpasses post-process root precision (200 digits), detecting multiple root structures mathematically and deterministically.
+
+2. **Dynamic Tracking Polynomial Long Division**:
+
+* Implements a powerhouse division algorithm that constantly monitors the highest degree and dynamically calculates degree differences (`shift`) to write coefficients into the correct index positions of the quotient coefficient array `Q`, even during calculation processes with sparse polynomials or volatile degree fluctuations. Index misalignment is permanently banished.
+
+3. **Intelligent Safety Guard**:
+
+* Instantly detects mathematical contradictions (such as non-divisibility or residual remainders) via the guard mechanism for polynomials with mixed multiplicities or atypical structures. Seamlessly switches to single-root mode (pass-through) without causing errors, ensuring reliable resolution through DKA's 200-digit iterative calculations.
+
+4. **Direct 200-Digit Arithmetic Engine & Auto-scaling**:
+
+* Performs direct evaluation starting with a fixed 200-digit precision. Auto-scaling prevents digit loss, overflow, and underflow.
+
+5. **Pro Debug Analyzer (Internal Visualization Mode)**:
+
+* Real-time dumping of all preprocessing steps (input $P(x)$, derivative $P'(x)$, GCD $G(x)$, reduced expression $Q(x)$, maximum remainder, multiplicity determination) onto a dedicated black-background panel on screen, powerfully supporting development and verification.
+
+6. **Real-Time Progress & Timer UI**:
+
+* Real-time rendering of iterative loop progress percentage (%), elapsed time (`hh:mm:ss`), estimated remaining time, and complete convergence count.
+
+7. **Flexible Batch Paste & Multilingual Support**:
+
+* Supports batch pasting of descending ($a_n \dots a_0$) coefficient comma/space-delimited values, alongside instant language toggling between Japanese and English.
+
+8. **Full Offline Support & Privacy Protection**:
+
+* Serverless, zero external transmissions, runs in all browsers via a single HTML file.
+
+---
+
+## ⏱ Operational Performance & Recommended Environment (Measured Values)
+
+**【PC Environment (Windows 11 Home / 8th Gen Intel Core i7 / 16GB RAM)】**
+
+* **Multiple Root Test Case $(x^2+1)^2 = 0$ ($x^4 + 2x^2 + 1 = 0$)**:
+* **Preprocessing**: Instantly detects GCD = $x^2+1$ and multiplicity 2 via 320-digit precision.
+* **Total Calculation Time**: **< 0.01 seconds (Instantaneous)**
+* **Result**: All 4 roots ($+i, +i, -i, -i$) completely match and converge with an error radius of $0$ or extreme precision.
+* **20th-Degree Wilkinson Polynomial $W_{20}(x) = \prod_{i=1}^{20} (x - i)$**:
+* **Total Calculation Time**: **00:00:01 (Only 1 second)**
+* **Total Iterations**: **32 times**
+* **Worst Error Radius**: **$2.532316 \times 10^{-186}$ (Extreme precision to 186 digits)**
+* **Result**: All 20 roots completely match and converge across all displayed digits (over 100 digits).
+
+---
+
+## 🎧 Application Example: Digital Channel Divider for Hi-Res Audio
+
+The mathematical engine of this application is applied to high-precision FIR filter design for bypassing the network of a 3-way speaker **SONY SS-CS5** entirely and repurposing it for multi-amplifier drive. With up to 200 digits of mathematical precision, pre-echo-free "minimum phase conversion" eliminating phase distortion can be executed error-free.
+
+---
+
+## 🧪 Testing Procedure
+
+1. Access the [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/).
+2. Paste multiple root test coefficients (e.g., `1, 0, 2, 0, 1`) or Wilkinson coefficients into the "Coefficient Batch Paste" field and click "Apply All".
+3. Press the "🚀 Start 200-Digit High-Precision Calculation!" button to check the Pro Analyzer logs and calculation results.
+
+---
+
+---
+
+# 📄 Software Requirements Specification (SRS)
+
+**Project Name**: MethodDka (v3.3.0)
+**Document Type**: System Requirements Definition & Design Specification
+
+## 1. Overview and Development Objectives
+
+This specification defines the functional requirements, non-functional requirements, and architectural design of *MethodDka* v3.3.0, an ultra-high-precision polynomial solver system supporting up to the 200th degree and up to 200 digits, operating within web browsers. To eradicate failures in multiple root detection caused by rounding errors in floating-point arithmetic, v3.3.0 introduces the **"320-Digit Hierarchical Auto-GCD Preprocessing Module"** and **"Dynamic Tracking Polynomial Long Division."**
+
+## 2. System Architecture & Precision Hierarchy Design
+
+This system adopts a two-stage pipeline structure with a distinct precision hierarchy established between the preprocessing and post-processing stages.
+
+1. **Preprocessing Phase (Pre-processing Pipeline)**
+
+* **Arithmetic Precision**: `Decimal.set({ precision: 320 })`
+* **Threshold Specification**: $\epsilon = 10^{-220}$ (Extreme noise absorption value at 320 digits)
+* **Key Functions**:
+* Derivative polynomial generation (`derivativePoly`)
+* Calculation of greatest common divisor polynomial via Euclidean algorithm (`polyGCD`)
+* Extraction of reduced expression $Q(x)$ via dynamic tracking polynomial division (`polyDivide`)
+* Computation of multiplicity $m$ and safety verification
+
+2. **Post-process Solver Phase (DKA Engine Pipeline)**
+
+* **Arithmetic Precision**: `Decimal.set({ precision: 230 })` (Target output: 200 digits)
+* **Threshold Specification**: $\epsilon = 10^{-170}$
+* **Key Functions**: Applies the Durand-Kerner-Aberth method based on Aberth initial placement to the reduced polynomial or pass-through original polynomial, causing all roots to converge concurrently and with high precision.
+
+## 3. Preprocessing Module Detailed Design
+
+### 3.1 Dynamic Tracking Polynomial Long Division (`polyDivide`)
+
+* In descending arrays `[a_n, ..., a_0]`, based on the degree difference `degA - degB`, coefficients are written precisely to the correct index positions of the quotient coefficient array `Q` at each division step.
+* Dynamic trimming via `trimLeadingZeros` is constantly executed to prevent array breakdown even in cases where coefficients converge to 0 midway.
+
+### 3.2 Robust Euclidean Algorithm (`polyGCD`)
+
+* Loops execute until the degree of the divisor $B_{curr}$ becomes 0 or the maximum absolute value of the remainder falls below or equals $\epsilon = 10^{-220}$.
+* Strictly returns the "divisor" ($B_{curr}$) at the exact moment of division as the true greatest common divisor polynomial $G(x)$.
+
+### 3.3 Safety Guard and Fallback Mechanism
+
+* If the original degree `origDeg` fails to satisfy a divisibility relationship with the degree `redDeg` of the reduced polynomial $Q(x)$ (`origDeg % redDeg !== 0`), or if the remainder exceeds the zero-tolerance value, it is regarded as a structural mismatch (such as mixed multiple roots).
+* Immediately lifts the multiple root flag and hands over the original polynomial to the DKA engine as a safe single-root mode (pass-through).
+
+## 4. User Interface (UI) Requirements
+
+* **Pro Debug Analyzer**: Toggle display of internal processing steps (input, derivative, GCD, reduced expression, remainder, multiplicity determination) on screen as structured text.
+* **Real-Time Progress Panel**: Dynamic rendering of iterative loop count, elapsed time, and progress bar percentage.
+* **Multilingual Support**: Instant switching capability between Japanese and English.
+
+---
+
+## 🌐 Official Page & Repository
+
+* **Web App (Live Demo):** [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/)
+* **GitHub Repository:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
+
+---
+
+## 📜 License & Developer Information
+
+* **Developer**: Yoshiaki Koizumi
+* **Version**: v3.3.0
+* **License**: MIT License
+
+---
