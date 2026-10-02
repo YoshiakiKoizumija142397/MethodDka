@@ -130,9 +130,9 @@
 
   <div class="hero-section">
     <h1 id="app-title">MethodDka</h1>
-    <span class="version-badge" id="version-text">v3.2.0 (200桁極限高精度版)</span>
+    <span class="version-badge" id="version-text">v3.3.0 (320桁前処理階層型・極限高精度版)</span>
     <p style="font-size: 1.1rem; color: #64748b; margin-top: 15px;" id="app-desc">
-      DKA法 ＆ Decimal.js による超高精度多項式解法・因数分解 Web アプリケーション
+      DKA法 ＆ Decimal.js による超高精度多項式解法・重根自動検出・因数分解 Web アプリケーション
     </p>
   </div>
 
@@ -141,13 +141,13 @@
   </div>
 
   <div class="feature-list">
-    <h3 id="feature-title">✨ 主な特徴 (v3.2.0)</h3>
+    <h3 id="feature-title">✨ 主な特徴 (v3.3.0 新機能)</h3>
     <ul id="feature-items">
-      <li><strong>ダイレクト 200 桁演算:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
-      <li><strong>リアルタイム進行UI ＆ 時間計測:</strong> 反復計算のループ進捗率や経過時間・残り時間をリアルタイム表示。</li>
-      <li><strong>非破壊モード切替トグル:</strong> 高精度解法表示（100桁出力）と因数分解表示（整数化）をワンクリック切り替え。</li>
-      <li><strong>最高 200 次対応:</strong> オートスケーリング機構によりオーバーフローを防止。</li>
-      <li><strong>完全オフライン動作:</strong> ブラウザ単体および Windows 11 ネイティブアプリ（MSI / APPX）で爆速動作。</li>
+      <li><strong>320桁階層型自動GCD前処理:</strong> 微分多項式とのユークリッド互除法と動的長除法により、重根・多重根構造を数学的・決定論的に高精度検出。</li>
+      <li><strong>ダイレクト 200 桁演算エンジン:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
+      <li><strong>インテリジェント・セーフティガード:</strong> 構造不一致や混在重根をガード機構が瞬時に検知し、安全に単根モード（パススルー）へ自動フォールバック。</li>
+      <li><strong>Pro デバッグアナライザ:</strong> 前処理の全ステップ（入力、微分、GCD、縮約式、余り、重複度）を黒背景パネルにリアルタイムダンプ。</li>
+      <li><strong>リアルタイム進行UI ＆ 非破壊モード切替:</strong> 進捗率・経過時間の表示と、高精度解法表示（100桁出力）／因数分解表示（整数化）のワンクリック切替。</li>
     </ul>
   </div>
 
@@ -159,7 +159,7 @@
   </div>
 
   <footer class="footer-copyright">
-    <div><strong>MethodDka v3.2.0</strong> — Created by <strong>Yoshiaki Koizumi (小泉嘉章)</strong></div>
+    <div><strong>MethodDka v3.3.0</strong> — Created by <strong>Yoshiaki Koizumi (小泉嘉章)</strong></div>
     <div>Copyright &copy; 2026 Yoshiaki Koizumi. Released under the <strong>MIT License</strong>.</div>
   </footer>
 </div>
@@ -170,16 +170,16 @@
   const translations = {
     ja: {
       btnLang: "English",
-      versionText: "v3.2.0 (200桁極限高精度版)",
-      appDesc: "DKA法 ＆ Decimal.js による超高精度多項式解法・因数分解 Web アプリケーション",
+      versionText: "v3.3.0 (320桁前処理階層型・極限高精度版)",
+      appDesc: "DKA法 ＆ Decimal.js による超高精度多項式解法・重根自動検出・因数分解 Web アプリケーション",
       btnLaunch: "🚀 MethodDka アプリを起動する",
-      featureTitle: "✨ 主な特徴 (v3.2.0)",
+      featureTitle: "✨ 主な特徴 (v3.3.0 新機能)",
       featureItems: `
-        <li><strong>ダイレクト 200 桁演算:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
-        <li><strong>リアルタイム進行UI ＆ 時間計測:</strong> 反復計算のループ進捗率や経過時間・残り時間をリアルタイム表示。</li>
-        <li><strong>非破壊モード切替トグル:</strong> 高精度解法表示（100桁出力）と因数分解表示（整数化）をワンクリック切り替え。</li>
-        <li><strong>最高 200 次対応:</strong> オートスケーリング機構によりオーバーフローを防止。</li>
-        <li><strong>完全オフライン動作:</strong> ブラウザ単体および Windows 11 ネイティブアプリ（MSI / APPX）で爆速動作。</li>
+        <li><strong>320桁階層型自動GCD前処理:</strong> 微分多項式とのユークリッド互除法と動的長除法により、重根・多重根構造を数学的・決定論的に高精度検出。</li>
+        <li><strong>ダイレクト 200 桁演算エンジン:</strong> 最初から200桁の極限精度（Decimal.js）で演算を行い、悪条件多項式も確実に収束。</li>
+        <li><strong>インテリジェント・セーフティガード:</strong> 構造不一致や混在重根をガード機構が瞬時に検知し、安全に単根モード（パススルー）へ自動フォールバック。</li>
+        <li><strong>Pro デバッグアナライザ:</strong> 前処理の全ステップ（入力、微分、GCD、縮約式、余り、重複度）を黒背景パネルにリアルタイムダンプ。</li>
+        <li><strong>リアルタイム進行UI ＆ 非破壊モード切替:</strong> 進捗率・経過時間の表示と、高精度解法表示（100桁出力）／因数分解表示（整数化）のワンクリック切替。</li>
       `,
       linkCalc: "🧪 計算アプリ",
       linkHelp: "📖 ヘルプ・テストデータ",
@@ -188,16 +188,16 @@
     },
     en: {
       btnLang: "日本語",
-      versionText: "v3.2.0 (200-Digit Extreme Precision)",
-      appDesc: "High-Precision Polynomial Solver & Factorization Web App powered by DKA Method & Decimal.js",
+      versionText: "v3.3.0 (320-Digit Preprocessing & Extreme Precision)",
+      appDesc: "High-Precision Polynomial Solver, Automatic Multiple Root Detection & Factorization Web App powered by DKA Method & Decimal.js",
       btnLaunch: "🚀 Launch MethodDka App",
-      featureTitle: "✨ Key Features (v3.2.0)",
+      featureTitle: "✨ Key Features (v3.3.0 New)",
       featureItems: `
-        <li><strong>Direct 200-Digit Precision:</strong> 200-digit fixed precision (Decimal.js) ensuring convergence for ill-conditioned polynomials.</li>
-        <li><strong>Real-Time Execution Tracking:</strong> Displays iteration loops, progress %, elapsed time, and remaining time.</li>
-        <li><strong>Non-Destructive Mode Toggle:</strong> Instant switch between High Precision Root Mode and Factored Form Mode.</li>
-        <li><strong>Degree Up To 200:</strong> Integrated auto-scaling mechanism preventing numerical overflow/underflow.</li>
-        <li><strong>100% Offline Execution:</strong> Runs completely client-side in browsers and Windows 11 native apps.</li>
+        <li><strong>320-Digit Hierarchical Auto-GCD Preprocessing:</strong> Accurately detects multiple roots using Euclidean algorithm with derivatives and dynamic polynomial long division.</li>
+        <li><strong>Direct 200-Digit Calculation Engine:</strong> 200-digit fixed precision (Decimal.js) ensuring convergence for ill-conditioned polynomials.</li>
+        <li><strong>Intelligent Safety Guard:</strong> Instantly detects structural mismatches or mixed multiplicities and safely falls back to simple root mode.</li>
+        <li><strong>Pro Debug Analyzer:</strong> Real-time visual logging of all preprocessing steps (Input, Derivative, GCD, Quotient, Remainder, Multiplicity).</li>
+        <li><strong>Real-Time UI & Mode Toggle:</strong> Progress tracking with instant switching between High Precision Root Mode and Factored Form Mode.</li>
       `,
       linkCalc: "🧪 Solver App",
       linkHelp: "📖 Help & Benchmark",
