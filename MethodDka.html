@@ -130,7 +130,7 @@ const translations = {
         navPrivacy: "🔒 プライバシー",
         counterLabel: "👀 訪問数:",
         langBtn: "English",
-        mainTitle: "MethodDka (200桁極限高精度版)",
+        mainTitle: "MethodDka (200桁極限高精度版) <span class=\"pro-badge\">PRO EXTENSION</span>",
         infoOverview: "<strong>概要:</strong> DKA法と Decimal.js による <strong>200桁固定の超高精度演算</strong>（320桁階層型自動GCD前処理機能付き）で多項式を解きます。",
         labelDegree: "最高次数 (n ≤ 200):",
         labelMaxIter: "最大反復回数 (セーフティロック):",
@@ -140,7 +140,6 @@ const translations = {
         btnBulk: "一括反映",
         labelCoeffList: "各項の係数入力 (a_n ... a_0):",
         btnStart: "🚀 200桁高精度計算開始！",
-        statusPhase: "モード: 200桁高精度反復計算中",
         statusPhaseGcd: "モード: [320桁超高精度前処理成功] 重根検出 ➔ 縮約多項式で高速解法中",
         statusPhaseNormal: "モード: 200桁高精度反復計算中 (単根多項式)",
         statusTimePrefix: "経過時間: ",
@@ -148,6 +147,7 @@ const translations = {
         resultHeader: "計算結果:",
         resultPlaceholder: "ここに解が表示されます。",
         calculatingText: "計算を実行中...",
+        gcdSuccessBadge: "⚡ [320桁超高精度前処理成功] 重根を検出し、縮約多項式で高速計算しました",
         rootText: "解",
         iterText: "反復",
         errRadiusText: "誤差半径",
@@ -155,7 +155,39 @@ const translations = {
         imagPartText: "虚部",
         multiplicityText: "重複度 (Multiplicity)"
     },
-    en: { /* 英語省略 */ }
+    en: {
+        pageTitle: "MethodDka (200-Digit Ultra Precision Pro Ext)",
+        navHome: "🏠 Home",
+        navCalc: "🧮 Calc",
+        navHelp: "📖 Help",
+        navPrivacy: "🔒 Privacy",
+        counterLabel: "👀 Visits:",
+        langBtn: "日本語",
+        mainTitle: "MethodDka (200-Digit Ultra Precision) <span class=\"pro-badge\">PRO EXTENSION</span>",
+        infoOverview: "<strong>Overview:</strong> Solves polynomials with <strong>fixed 200-digit ultra precision</strong> using DKA method and Decimal.js (includes 320-digit hierarchical automatic GCD preprocessing).",
+        labelDegree: "Max Degree (n ≤ 200):",
+        labelMaxIter: "Max Iterations (Safety Lock):",
+        btnGen: "Generate Inputs",
+        infoGenerator: '💡 Test coefficients for arbitrary degrees can be generated & pasted using the <a href="https://yoshiakikoizumija142397.github.io/wilkinson-coeff-generator/" target="_blank" rel="noopener" style="font-weight: bold; color: #1a73e8; text-decoration: underline;">Wilkinson Coefficient Generator (Web)</a>.',
+        labelBulk: "📋 Bulk Paste Coefficients (comma/space separated):",
+        btnBulk: "Apply Bulk",
+        labelCoeffList: "Coefficient Inputs (a_n ... a_0):",
+        btnStart: "🚀 Start 200-Digit Precision Calc!",
+        statusPhaseGcd: "Mode: [320-Digit Preprocessing Success] Multiple roots detected ➔ Solving fast with reduced polynomial",
+        statusPhaseNormal: "Mode: 200-Digit Precision Iteration (Simple Roots)",
+        statusTimePrefix: "Elapsed Time: ",
+        statusProgressPrefix: "Progress: ",
+        resultHeader: "Calculation Results:",
+        resultPlaceholder: "Roots will be displayed here.",
+        calculatingText: "Calculating...",
+        gcdSuccessBadge: "⚡ [320-Digit Preprocessing Success] Multiple roots detected, calculated quickly using reduced polynomial.",
+        rootText: "Root",
+        iterText: "Iter",
+        errRadiusText: "Error Radius",
+        realPartText: "Real Part",
+        imagPartText: "Imaginary Part",
+        multiplicityText: "Multiplicity"
+    }
 };
 
 function initAccessCounter() {
@@ -165,7 +197,53 @@ function initAccessCounter() {
     const countElem = document.getElementById('counterVal');
     if (countElem) countElem.innerText = count.toLocaleString();
 }
-function toggleLanguage() { /* 省略 */ }
+
+// === 言語切り替え処理の実装 ===
+function toggleLanguage() {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    document.documentElement.lang = currentLang; // HTMLタグのlang属性更新
+    applyTranslations();
+}
+
+function applyTranslations() {
+    const t = translations[currentLang];
+    
+    // 静的テキストの更新
+    document.getElementById('pageTitle').innerText = t.pageTitle;
+    document.getElementById('navHome').innerText = t.navHome;
+    document.getElementById('navCalc').innerText = t.navCalc;
+    document.getElementById('navHelp').innerText = t.navHelp;
+    document.getElementById('navPrivacy').innerText = t.navPrivacy;
+    document.getElementById('counterLabel').innerText = t.counterLabel;
+    document.getElementById('langBtn').innerText = t.langBtn;
+    
+    // HTMLを含む部分の更新
+    document.getElementById('mainTitle').innerHTML = t.mainTitle;
+    document.getElementById('infoOverview').innerHTML = t.infoOverview;
+    document.getElementById('infoGenerator').innerHTML = t.infoGenerator;
+    
+    document.getElementById('labelDegree').innerText = t.labelDegree;
+    document.getElementById('labelMaxIter').innerText = t.labelMaxIter;
+    document.getElementById('btnGen').innerText = t.btnGen;
+    document.getElementById('labelBulk').innerText = t.labelBulk;
+    document.getElementById('btnBulk').innerText = t.btnBulk;
+    document.getElementById('labelCoeffList').innerText = t.labelCoeffList;
+    document.getElementById('btnStart').innerText = t.btnStart;
+    document.getElementById('resultHeader').innerText = t.resultHeader;
+
+    // placeholderや待機中テキストの更新
+    const resOut = document.getElementById('resultOutput');
+    const oldJaPlace = translations['ja'].resultPlaceholder;
+    const oldEnPlace = translations['en'].resultPlaceholder;
+    const oldJaCalc = translations['ja'].calculatingText;
+    const oldEnCalc = translations['en'].calculatingText;
+    
+    if (resOut.innerText === oldJaPlace || resOut.innerText === oldEnPlace) {
+        resOut.innerText = t.resultPlaceholder;
+    } else if (resOut.innerText === oldJaCalc || resOut.innerText === oldEnCalc) {
+        resOut.innerText = t.calculatingText;
+    }
+}
 
 // 複素数演算ライブラリ (Decimal.js)
 function c_add(a, b) { return { re: a.re.add(b.re), im: a.im.add(b.im) }; }
@@ -271,7 +349,6 @@ function normalizePoly(poly, eps) {
     return p.map(c => c.div(lead));
 }
 
-// ★修正箇所1: ユークリッドの互除法の戻り値修正★
 function polyGCD(A_in, B_in, eps) {
     let A_curr = normalizePoly(A_in, eps);
     let B_curr = normalizePoly(B_in, eps);
@@ -332,7 +409,6 @@ function preprocessSquareFree(polyCoeffs, eps) {
         logDebug(`▶ 縮約多項式 Q(x) = P/GCD [次数 ${redDeg}]: ${polyToString(Q)}`);
         logDebug(`▶ 割り算の余りの最大絶対値 (精度確認): ${maxRem.toExponential(4)}`);
 
-        // ★修正箇所2: 余りのガード追加★
         if (maxRem.gt(eps)) {
             logDebug(`⚠️ P(x) が GCD で完全に割り切れませんでした。単根としてフォールバックします`);
             return { hasMultiplicity: false, reducedPoly: P, multiplicity: 1 };
@@ -358,7 +434,7 @@ function preprocessSquareFree(polyCoeffs, eps) {
 }
 
 // ============================================================
-// 画面制御処理・DKA本体処理 (変更なし)
+// 画面制御処理・DKA本体処理
 // ============================================================
 function generateInputs() {
     const n = parseInt(document.getElementById('degree').value);
@@ -393,9 +469,10 @@ let startTime, timerInterval;
 
 function startCalculationAsync() {
     const origDegree = parseInt(document.getElementById('degree').value);
-    const t = translations[currentLang] || translations['ja'];
+    const t = translations[currentLang];
+    
     document.getElementById('statusPanel').style.display = 'block';
-    document.getElementById('resultOutput').innerHTML = "計算を実行中...";
+    document.getElementById('resultOutput').innerHTML = t.calculatingText;
 
     // 【ステップ 1: 前処理フェーズ 320桁】
     Decimal.set({ precision: 320 });
@@ -420,12 +497,12 @@ function startCalculationAsync() {
     let multiplicity = 1;
 
     if (gcdResult.hasMultiplicity) {
-        document.getElementById('statusPhase').innerText = t.statusPhaseGcd || "モード: [320桁超高精度前処理成功] 重根検出 ➔ 縮約多項式で高速解法中";
+        document.getElementById('statusPhase').innerText = t.statusPhaseGcd;
         activeCoeffs = gcdResult.reducedPoly.map(c => new Decimal(c.toString()));
         n = activeCoeffs.length - 1;
         multiplicity = gcdResult.multiplicity;
     } else {
-        document.getElementById('statusPhase').innerText = t.statusPhaseNormal || "モード: 200桁高精度反復計算中 (単根多項式)";
+        document.getElementById('statusPhase').innerText = t.statusPhaseNormal;
         activeCoeffs = rawCoeffs320.map(c => new Decimal(c.toString()));
         n = origDegree;
         multiplicity = 1;
@@ -442,7 +519,7 @@ function startCalculationAsync() {
         const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
         const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
         const secs = String(elapsed % 60).padStart(2, '0');
-        document.getElementById('statusTime').innerText = `経過時間: ${hrs}:${mins}:${secs}`;
+        document.getElementById('statusTime').innerText = `${t.statusTimePrefix}${hrs}:${mins}:${secs}`;
     }, 1000);
 
     let z = [];
@@ -495,7 +572,7 @@ function startCalculationAsync() {
 
         const percent = ((iter / MAX_ITER) * 100).toFixed(1);
         document.getElementById('statusLoop').innerText = `Loop: ${iter} / ${MAX_ITER}`;
-        document.getElementById('statusConvergence').innerText = `進捗率: ${percent}%`;
+        document.getElementById('statusConvergence').innerText = `${t.statusProgressPrefix}${percent}%`;
         document.getElementById('progressBar').style.width = `${percent}%`;
 
         if (allConverged || iter >= MAX_ITER) {
@@ -530,13 +607,14 @@ function startCalculationAsync() {
 }
 
 function displayResults(results, hasMultiplicity) {
+    const t = translations[currentLang];
     const output = document.getElementById('resultOutput');
     output.innerHTML = '';
     
     if (hasMultiplicity) {
         const badge = document.createElement('div');
         badge.className = 'gcd-badge';
-        badge.innerText = "⚡ [320桁超高精度前処理成功] 重根を検出し、縮約多項式で高速計算しました";
+        badge.innerText = t.gcdSuccessBadge;
         output.appendChild(badge);
     }
 
@@ -544,17 +622,19 @@ function displayResults(results, hasMultiplicity) {
         const card = document.createElement('div');
         card.className = `root-card ${res.statusClass}`;
         const sign = new Decimal(res.imStr).isNegative() ? '' : '+ ';
-        const multInfo = res.multiplicity > 1 ? ` | 重複度 (Multiplicity): ${res.multiplicity}` : '';
+        const multInfo = res.multiplicity > 1 ? ` | ${t.multiplicityText}: ${res.multiplicity}` : '';
+        
         card.innerHTML = `
-            <strong>解 ${res.id}</strong> [反復: ${res.iterations} | 誤差半径: ${res.errRadiusStr}${multInfo}]<br>
-            実部: ${res.reStr}<br>
-            虚部: ${sign}${res.imStr} i
+            <strong>${t.rootText} ${res.id}</strong> [${t.iterText}: ${res.iterations} | ${t.errRadiusText}: ${res.errRadiusStr}${multInfo}]<br>
+            ${t.realPartText}: ${res.reStr}<br>
+            ${t.imagPartText}: ${sign}${res.imStr} i
         `;
         output.appendChild(card);
     });
 }
 
 // 初期化
+applyTranslations(); // ページロード時に初期言語（ja）を適用
 generateInputs();
 initAccessCounter();
 </script>
