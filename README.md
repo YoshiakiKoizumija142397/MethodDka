@@ -17,9 +17,19 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 | 項目 | 詳細仕様 (v3.4.0 拡張) |
 | --- | --- |
 | **コア解法** | DKA法 (Durand-Kerner-Aberth Simultaneous Root-Finding Method) |
-| **演算精度階層** | **階層型マルチプレシジョン設計**<br>・前処理フェーズ: 整数係数は **BigInt厳密演算**、その他は **320桁固定精度** ($\epsilon = 10^{-220}$)<br>・後工程ソルバー: **260桁内部演算 / 最大200桁形式で出力**（60桁のガード桁、スケール後の補正量閾値 $\epsilon = 10^{-220}$。出力桁数は正しい有効桁数を保証しません） |
+| **演算精度階層** | **階層型マルチプレシジョン設計**<br>
+
+<br>・前処理フェーズ: 整数係数は **BigInt厳密演算**、その他は **320桁固定精度** ($\epsilon = 10^{-220}$)<br>
+
+<br>・後工程ソルバー: **260桁内部演算 / 最大200桁形式で出力**（60桁のガード桁、スケール後の補正量閾値 $\epsilon = 10^{-220}$。出力桁数は正しい有効桁数を保証しません） |
 | **精度の解釈** | 実部は有効数字200桁、虚部は $10^{-200}$ の単位で四捨五入して出力します。これは表示形式であり、正しい有効桁数の保証ではありません。20次ウィルキンソン多項式との照合結果はそのベンチマークに限った数値確認です。正規化残差は後退誤差の数値指標です。例えば残差 $10^{-307}$ は「根が307桁正しい」ことを意味せず、有効桁数を認証するものでもありません。 |
-| **自動前処理 (GCD)** | **ユンの平方無因子分解 (Yun's Square-free Decomposition)**<br>・微分多項式 $P'(x)$ とのユークリッド互除法による $\gcd(P, P')$ の算出<br>・整数係数ではBigInt擬似剰余列を使った厳密GCD、それ以外では320桁精度と動的多項式除算 (`polyDivide`) を用いて重複度別の平方無因子群 $Q_k(x)$ を抽出<br>・重複度 $m$ の自動計算と結果の展開処理 |
+| **自動前処理 (GCD)** | **ユンの平方無因子分解 (Yun's Square-free Decomposition)**<br>
+
+<br>・微分多項式 $P'(x)$ とのユークリッド互除法による $\gcd(P, P')$ の算出<br>
+
+<br>・整数係数ではBigInt擬似剰余列を使った厳密GCD、それ以外では320桁精度と動的多項式除算 (`polyDivide`) を用いて重複度別の平方無因子群 $Q_k(x)$ を抽出<br>
+
+<br>・重複度 $m$ の自動計算と結果の展開処理 |
 | **セーフティガード機構** | 各多項式除算の余り、因子の平方無因子性、重複度を反映した再構成次数を検証。失敗時は診断ログを出して元多項式をDKAへ渡す。 |
 | **数値安定化** | 非整数係数の前処理と各DKA因子をそれぞれモニック化し、Fujiwara根上界に基づく変数スケール $x=S y$ を適用 |
 | **初期値配置** | スケール済み変数 $y$ の円周上にAberth初期値を配置 |
@@ -34,38 +44,57 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 ## 🚀 主な機能と特徴 (v3.4.0)
 
 1. **ユンの平方無因子分解**:
+
 * 整数係数はBigIntによる厳密なGCD・多項式除算で、それ以外は320桁精度と $\epsilon = 10^{-220}$ で処理し、同じ重複度を持つ根の因子群 $Q_k(x)$ を分離します。各群の平方無因子性と元の次数の再構成を検証します。
 
-
 2. **動的トラッキング型多項式長除法**:
+
 * 歯抜けの多項式や次数が激しく変動する演算過程においても、常に最高次数を監視し次数差 (`shift`) を動的に計算して商の正しい位置に係数を書き込む最強の除算アルゴリズムを実装。インデックスのズレを永久に追放。
 
-
 3. **検証付きフォールバック**:
+
 * 割り算の余り、平方無因子性、再構成次数のいずれかが検証を通らない場合は診断をログへ出し、元多項式を既存DKAへ渡します。正常に分解できた混在重根は重複度別に個別計算します。
 
-
 4. **オートスケーリング付きDKA**:
-* 非整数係数の前処理と各平方無因子因子のDKAで、Fujiwara上界 $S=2\max_i |a_i|^{1/i}$ を使って $x=S y$ に変数変換します。因子分解後は因子を元の変数へ戻し、DKAは各因子を再スケールして解き、根と最終補正量を元の尺度へ戻します。補正量は真の誤差を保証するものではなく、スケーリングも全ての多項式の収束を保証するものではありません。
 
+* 非整数係数の前処理と各平方無因子因子のDKAで、Fujiwara上界 $S=2\max_i \vert{}a_i\vert{}^{1/i}$ を使って $x=S y$ に変数変換します。因子分解後は因子を元の変数へ戻し、DKAは各因子を再スケールして解き、根と最終補正量を元の尺度へ戻します。補正量は真の誤差を保証するものではなく、スケーリングも全ての多項式の収束を保証するものではありません。
 
 5. **Pro デバッグアナライザ (内部可視化モード)**:
+
 * 前処理の全ステップ（入力 $P(x)$、微分 $P'(x)$、GCD $G(x)$、縮約式 $Q(x)$、余り最大値、重複度判定）を画面上の専用黒背景パネルにリアルタイムダンプし、開発・検証を強力にサポート。
 
-
 6. **リアルタイム進捗 ＆ タイマー UI**:
+
 * 反復ループ進捗率（%）、経過時間（`hh:mm:ss`）、推定残り時間、完全収束数をリアルタイムに画面描画。
 
-
 7. **柔軟な一括ペースト機能 ＆ 多言語対応**:
+
 * 降順（$a_n \dots a_0$）係数のカンマ・空白区切り一括ペースト、および日本語 / English の瞬時言語切替に対応。
 
-
 8. **クライアントサイド計算・プライバシー保護**:
+
 * 多項式計算はブラウザー内で実行。Gemini解説を利用しない限り、係数や計算結果を外部へ送信しません。
 
 9. **Gemini Proによる任意のAI解説**:
+
 * 計算結果を日本語または英語で解説。利用者が実行した場合のみ係数と解をGoogle Gemini APIへ送信し、APIキーは送信時に入力欄から消去して保存しません。
+
+---
+
+## 📦 配信・配布形態 (Distribution Formats)
+
+本プロジェクトは、用途と環境に合わせて以下の3つの形態で配布しています。
+
+1. **オンライン版（GitHub Pages）**
+* **全OS対応**。インストール不要で、ブラウザからアクセスするだけで即座に利用可能です。
+
+
+2. **オフライン版（ZIPファイルダウンロード）**
+* **全OS対応**。リポジトリからZIPファイルをダウンロードして解凍し、ローカル環境で `MethodDka.html` をブラウザで開くことで、オフラインでも動作します（※初回ライブラリ読み込みやAI解説機能を除く）。
+
+
+3. **インストーラ版（MSIパッケージ）**
+* **Windows 11 26H2 正式対応**の完全オフライン版。Electron Builderを用いてビルドされたWindows向けのネイティブインストーラで、デスクトップアプリとして快適に利用できます。
 
 
 
@@ -79,18 +108,14 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 * **前処理**: 整数係数をBigIntで厳密に処理し、一瞬で GCD = $x^2+1$、重複度 2 を検出。
 * **総計算時間**: **< 0.01 秒 (一瞬)**
 * **結果**: 4つの解（$+i, +i, -i, -i$）を取得。表示する補正量はDKAの最終反復補正であり、真の誤差の保証ではありません。
-
-
 * **20次ウィルキンソン多項式 $W_{20}(x) = \prod_{i=1}^{20} (x - i)$**:
 * **v3.4.0 実測例（1回の実行）**: 上記検証環境での経過時間 **00:00:07**、因子反復合計 **110回**、反復収束 **20/20**、正規化残差チェック（$\le 10^{-180}$） **20/20**、係数再構成誤差 **$2.8046 \times 10^{-247}$**。最大の最終補正量（推定）は **$2.5735 \times 10^{-246}$**（解16）でした。
 * **50次ウィルキンソン多項式 $W_{50}(x) = \prod_{i=1}^{50} (x - i)$**:
 * **v3.4.0 実測例（1回の実行）**: 上記と同じ検証環境で、経過時間 **00:01:56**、因子反復合計 **308回**、反復収束 **50/50**、正規化残差チェック（$\le 10^{-180}$） **50/50**、係数再構成誤差 **$2.2324 \times 10^{-220}$** でした。
 * **100次ウィルキンソン多項式 $W_{100}(x) = \prod_{i=1}^{100} (x - i)$**:
-* **v3.4.0 実測例（反復上限1,000回での1回の実行）**: 経過時間 **00:29:52**、因子反復合計 **1,000回**。反復収束は **22/100（22%）**で、全解の反復収束には至りませんでした。一方、正規化残差チェックは **100/100** 合格し、係数再構成誤差は **$2.1544 \times 10^{-186}$**（判定閾値 $\le 10^{-180}$）でした。
-* **同じハードウェアでの追加実測（反復上限5,000回、1回の実行）**: 経過時間 **01:55:12**、因子反復合計 **5,000回**。反復収束判定は **23/100（23%）**で全根の判定条件には達しませんでした。一方、正規化残差チェックは **100/100** 合格し、多項式係数再構成誤差も **$1.1202 \times 10^{-187}$**（判定閾値 $\le 10^{-180}$）で合格しました。この実行では根集合と入力多項式の数値的整合性が確認されましたが、反復収束判定の未達を「全根の収束」とみなすことや、真の根の正しさ・誤差を保証するものではありません。
+* **v3.4.0 実測例（反復上限1,000回での1回の実行）**: 経過時間 **00:29:52**、因子反復合計 **1,000回**。反復収束は 22/100（22%）で、全解の反復収束には至りませんでした。一方、正規化残差チェックは **100/100** 合格し、係数再構成誤差は **$2.1544 \times 10^{-186}$**（判定閾値 $\le 10^{-180}$）でした。
+* **同じハードウェアでの追加実測（反復上限5,000回、1回の実行）**: 経過時間 **01:55:12**、因子反復合計 **5,000回**。反復収束判定は 23/100（23%）で全根の判定条件には達しませんでした。一方、正規化残差チェックは **100/100** 合格し、多項式係数再構成誤差も **$1.1202 \times 10^{-187}$**（判定閾値 $\le 10^{-180}$）で合格しました。この実行では根集合と入力多項式の数値的整合性が確認されましたが、反復収束判定の未達を「全根の収束」とみなすことや、真の根の正しさ・誤差を保証するものではありません。
 * 時間・反復回数・補正量は環境や実行ごとに変動します。最終補正量と残差・係数再構成誤差は数値指標であり、真の誤差や表示された桁の正しさを保証するものではありません。
-
-
 
 ---
 
@@ -103,9 +128,9 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 ## 🧪 テスト手順
 
 1. [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/) にアクセス。
-2. 重根テスト用係数（例: `1, 0, 2, 0, 1`）やウィルキンソン係数を「係数一括ペースト」欄へ貼り付けて「一括反映」をクリック。
-3. 「🚀 高精度数値計算開始！」ボタンを押下し、Proアナライザのログと計算結果を確認。
-4. Gemini解説を試す場合は、計算結果欄で自分のGemini APIキーを入力して解説を依頼します。依頼時に係数と計算結果がGoogleへ送信されます。
+​2. 重根テスト用係数（例: `1, 0, 2, 0, 1`）やウィルキンソン係数を「係数一括ペースト」欄へ貼り付けて「一括反映」をクリック。
+2. 「🚀 高精度数値計算開始！」ボタンを押下し、Proアナライザのログと計算結果を確認。
+3. Gemini解説を試す場合は、計算結果欄で自分のGemini APIキーを入力して解説を依頼します。依頼時に係数と計算結果がGoogleへ送信されます。
 
 ---
 
@@ -125,6 +150,7 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 本システムは、前処理と後工程の間で明確な精度ギャップ（Precision Hierarchy）を設けた2段階パイプライン構造を採用する。
 
 1. **前処理フェーズ (Pre-processing Pipeline)**
+
 * **演算精度**: 整数係数はBigInt厳密演算、それ以外は `Decimal.set({ precision: 320 })`
 * **閾値仕様**: 整数係数は厳密割り切れ性、それ以外は $\epsilon = 10^{-220}$
 * **主要機能**:
@@ -133,15 +159,11 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 * 重複度 $k$ 別の平方無因子因子 $Q_k(x)$ の抽出
 * 割り算の余り、平方無因子性、重み付き再構成次数の検証
 
-
-
-
 2. **後工程ソルバーフェーズ (DKA Engine Pipeline)**
+
 * **演算精度**: `Decimal.set({ precision: 260 })` (出力 200有効桁、60ガード桁)
 * **閾値仕様**: スケール空間の補正量 $\epsilon = 10^{-220}$
 * **主要機能**: 前処理で検証された各平方無因子因子 $Q_k(x)$ を一つずつ既存のDurand-Kerner-Aberth法へ渡し、計算結果を重複度 $k$ に従って展開・統合する。分解検証に失敗した場合はログを出して元多項式を渡す。
-
-
 
 ## 3. 前処理モジュール詳細設計
 
@@ -181,13 +203,17 @@ DKA法（Durand-Kerner-Aberth 法）を採用し、`Decimal.js` による **260�
 * **GitHub リポジトリ:** [MethodDka Repository](https://github.com/YoshiakiKoizumija142397/MethodDka)
 
 ---
+
 ## 📜 ライセンス ＆ 開発者情報
 
 * **開発者**: 小泉嘉章 (Yoshiaki Koizumi)
 * **バージョン**: v3.4.0
 * **ライセンス**: MIT License
 
-  
+
+
+
+
 # MethodDka (Up to Degree 200, 260-Digit Internal Arithmetic, Up to 200-Digit-Format Output; Correct Digits Not Guaranteed)
 
 [日本語](https://www.google.com/search?q=README.md) | [English](https://www.google.com/search?q=%23-english-overview)
@@ -207,8 +233,18 @@ It uses the DKA method (Durand-Kerner-Aberth) with **260-digit internal arithmet
 | Item | Detailed Specifications (v3.4.0 Expansion) |
 | --- | --- |
 | **Core Solver** | DKA Method (Durand-Kerner-Aberth Simultaneous Root-Finding Method) |
-| **Arithmetic Precision Hierarchy** | **Hierarchical Multi-precision Design**<br>・ Preprocessing Phase: **Exact BigInt arithmetic** for integer coefficients; otherwise **fixed 320-digit precision** ($\epsilon = 10^{-220}$)<br>・ Post-process Solver: **260-digit internal precision / output formatted to at most 200 significant digits** (60 guard digits; scaled correction threshold $\epsilon = 10^{-220}$; output length does not guarantee correct digits) |
-| **Automatic Preprocessing (GCD)** | **Yun's Square-free Decomposition**<br>・ Calculation of $\gcd(P, P')$ using the Euclidean algorithm with derivative polynomial $P'(x)$<br>・ Extraction of multiplicity-specific square-free factors $Q_k(x)$ using exact BigInt pseudo-remainder sequences for integer coefficients, or 320-digit arithmetic and dynamic polynomial division (`polyDivide`) otherwise<br>・ Automatic calculation of multiplicity $m$ and result expansion processing |
+| **Arithmetic Precision Hierarchy** | **Hierarchical Multi-precision Design**<br>
+
+<br>・ Preprocessing Phase: **Exact BigInt arithmetic** for integer coefficients; otherwise **fixed 320-digit precision** ($\epsilon = 10^{-220}$)<br>
+
+<br>・ Post-process Solver: **260-digit internal precision / output formatted to at most 200 significant digits** (60 guard digits; scaled correction threshold $\epsilon = 10^{-220}$; output length does not guarantee correct digits) |
+| **Automatic Preprocessing (GCD)** | **Yun's Square-free Decomposition**<br>
+
+<br>・ Calculation of $\gcd(P, P')$ using the Euclidean algorithm with derivative polynomial $P'(x)$<br>
+
+<br>・ Extraction of multiplicity-specific square-free factors $Q_k(x)$ using exact BigInt pseudo-remainder sequences for integer coefficients, or 320-digit arithmetic and dynamic polynomial division (`polyDivide`) otherwise<br>
+
+<br>・ Automatic calculation of multiplicity $m$ and result expansion processing |
 | **Safety Guard Mechanism** | Validates division remainders, square-freeness of each factor, and reconstructed degree. On failure, logs diagnostics and passes the original polynomial to DKA. |
 | **Numerical Stabilization** | Non-integer preprocessing and each DKA factor are scaled independently with $x=S y$, using a Fujiwara root bound |
 | **Initial Value Placement** | Aberth initial values are placed on a circle in the scaled variable $y$ |
@@ -236,7 +272,7 @@ It uses the DKA method (Durand-Kerner-Aberth) with **260-digit internal arithmet
 
 4. **Auto-scaled DKA**:
 
-* Non-integer preprocessing and each square-free factor are made monic and scaled with the Fujiwara bound $S=2\max_i |a_i|^{1/i}$ using $x=S y$. Factors are converted back after decomposition; DKA rescales each factor and converts roots and final correction magnitudes back to the original variable. A correction magnitude is not a bound on the true error, and scaling does not guarantee convergence for every polynomial.
+* Non-integer preprocessing and each square-free factor are made monic and scaled with the Fujiwara bound $S=2\max_i \vert{}a_i\vert{}^{1/i}$ using $x=S y$. Factors are converted back after decomposition; DKA rescales each factor and converts roots and final correction magnitudes back to the original variable. A correction magnitude is not a bound on the true error, and scaling does not guarantee convergence for every polynomial.
 
 5. **Pro Debug Analyzer (Internal Visualization Mode)**:
 
@@ -257,6 +293,25 @@ It uses the DKA method (Durand-Kerner-Aberth) with **260-digit internal arithmet
 9. **Optional Gemini Pro AI Explanations**:
 
 * Get explanations in Japanese or English. Coefficients and roots are sent to the Google Gemini API only when requested; the API key field is cleared on submission and the key is not saved.
+
+---
+
+## 📦 Distribution Formats
+
+This project is distributed and provided in the following three formats to best suit your environment:
+
+1. **Online Version (GitHub Pages)**
+* **Supports all OS**. No installation required; instantly accessible directly from your browser.
+
+
+2. **Offline Version (ZIP Download)**
+* **Supports all OS**. Download the ZIP file from the repository, extract it, and open `MethodDka.html` in your browser to run it locally (offline usage supported, excluding initial library loading and AI explanation features).
+
+
+3. **Installer Version (MSI Package)**
+* **Fully offline version officially supporting Windows 11 26H2**. A native Windows installer built with Electron Builder, allowing you to use it comfortably as a desktop application.
+
+
 
 ---
 
@@ -290,9 +345,9 @@ The numerical engine has been used as an example in FIR filter design for a mult
 ## 🧪 Testing Procedure
 
 1. Access the [MethodDka Live Demo](https://yoshiakikoizumija142397.github.io/MethodDka/).
-2. Paste multiple root test coefficients (e.g., `1, 0, 2, 0, 1`) or Wilkinson coefficients into the "Coefficient Batch Paste" field and click "Apply All".
-3. Press the "🚀 Start High-Precision Numerical Calculation!" button to check the Pro Analyzer logs and calculation results.
-4. To try Gemini explanations, enter your Gemini API key in the results panel and request an explanation. The coefficients and results are sent to Google for that request.
+​2. Paste multiple root test coefficients (e.g., `1, 0, 2, 0, 1`) or Wilkinson coefficients into the "Coefficient Batch Paste" field and click "Apply All".
+2. Press the "🚀 Start High-Precision Numerical Calculation!" button to check the Pro Analyzer logs and calculation results.
+3. To try Gemini explanations, enter your Gemini API key in the results panel and request an explanation. The coefficients and results are sent to Google for that request.
 
 ---
 
@@ -366,5 +421,3 @@ This system adopts a two-stage pipeline structure with a distinct precision hier
 * **Developer**: Yoshiaki Koizumi
 * **Version**: v3.4.0
 * **License**: MIT License
-
----
