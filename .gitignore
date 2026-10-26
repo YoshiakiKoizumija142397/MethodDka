@@ -1,0 +1,10 @@
+node_modules/
+.vs/
+.vscode/
+*.code-workspace
+dist/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+
