@@ -82,26 +82,28 @@ export function coefficientReconstructionResidual(coefficients, roots) {
 }
 
 /**
- * Formats a root's real part to 200 significant digits in exponential format.
+ * Formats a root's real part to significant digits (default 180 digits for v3.5.0) in exponential format.
  * @param {Decimal|string|number} value
+ * @param {number} [digits=180]
  * @returns {string}
  */
-export function formatRootDisplay(value) {
+export function formatRootDisplay(value, digits = 180) {
   const number = new Decimal(value);
   return number.isZero()
-    ? `0.${'0'.repeat(199)}e+0`
-    : number.toExponential(199);
+    ? `0.${'0'.repeat(digits - 1)}e+0`
+    : number.toExponential(digits - 1);
 }
 
 /**
- * Formats a root's imaginary part rounded to 10^-200 with 200 decimal places.
+ * Formats a root's imaginary part rounded to 10^-digits (default 180 decimal places for v3.5.0).
  * @param {Decimal|string|number} value
+ * @param {number} [digits=180]
  * @returns {string}
  */
-export function formatImaginaryRoot(value) {
+export function formatImaginaryRoot(value, digits = 180) {
   return new Decimal(value)
-    .toDecimalPlaces(200, Decimal.ROUND_HALF_UP)
-    .toFixed(200);
+    .toDecimalPlaces(digits, Decimal.ROUND_HALF_UP)
+    .toFixed(digits);
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "method-dka",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "High-precision polynomial root-finding and factorization engine powered by the Durand-Kerner-Aberth (DKA) method and Yun's square-free decomposition.",
   "type": "module",
   "main": "src/index.js",
