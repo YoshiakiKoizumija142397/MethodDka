@@ -6,31 +6,37 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-/**
- * Builds the standalone distribution HTML file (dist/MethodDka.html).
- * Ensures that the modularized engine and existing UI remain 100% in sync.
- */
 function buildDistribution() {
-  console.log('Building MethodDka standalone distribution...');
+  console.log('Building MethodDka distribution and copying static assets to docs/...');
 
-  const distDir = path.join(rootDir, 'dist');
-  if (!fs.existsSync(distDir)) {
-    fs.mkdirSync(distDir, { recursive: true });
+  const docsDir = path.join(rootDir, 'docs');
+  if (!fs.existsSync(docsDir)) {
+    fs.mkdirSync(docsDir, { recursive: true });
   }
 
-  const srcHtmlPath = path.join(rootDir, 'MethodDka.html');
-  const destHtmlPath = path.join(distDir, 'MethodDka.html');
+  // GitHub Pagesで必要なHTMLファイルのリスト
+  const filesToCopy = [
+    'MethodDka.html',
+    'index.html',
+    'help.html',
+    'privacy.html'
+  ];
 
-  if (!fs.existsSync(srcHtmlPath)) {
-    throw new Error(`Source HTML not found: ${srcHtmlPath}`);
+  for (const file of filesToCopy) {
+    const srcPath = path.join(rootDir, file);
+    const destPath = path.join(docsDir, file);
+
+    if (!fs.existsSync(srcPath)) {
+      console.warn(`⚠ Warning: Source file not found, skipping: ${srcPath}`);
+      continue;
+    }
+
+    const content = fs.readFileSync(srcPath, 'utf8');
+    fs.writeFileSync(destPath, content, 'utf8');
+    console.log(`✓ Copied: ${file} -> docs/${file}`);
   }
 
-  const htmlContent = fs.readFileSync(srcHtmlPath, 'utf8');
-
-  // Write to dist/MethodDka.html
-  fs.writeFileSync(destHtmlPath, htmlContent, 'utf8');
-  console.log(`✓ Standalone distribution successfully created: ${destHtmlPath}`);
+  console.log('✓ Build completed successfully!');
 }
 
 buildDistribution();
-
