@@ -1,10 +1,20 @@
+> **MethodDka Ecosystem**: 本リポジトリは超高精度多項式根ソルバープロジェクトの一部です。
+> 全6つのディストリビューションを展開しています：
+> [📦 Core (CUI)](https://github.com/YoshiakiKoizumija142397/method-dka-core) | 
+> [🖥️ Win11 (GUI)](https://github.com/YoshiakiKoizumija142397/MethodDkaWindows11) | 
+> [🌐 Web (PWA)](https://github.com/YoshiakiKoizumija142397/MethodDka) | 
+> [📱 Android (Java)](https://github.com/YoshiakiKoizumija142397) | 
+> [📜 N88-BASIC](https://github.com/YoshiakiKoizumija142397/MethodDkaN88BASIC) |
+> [📜 VB Express](https://github.com/YoshiakiKoizumija142397/MethodDkaVBExpressEdition)
+
 ---
 
 # MethodDka (最大1000次対応・260桁内部演算／最大180桁形式出力の多項式数値解法 Web アプリ)
 
-[日本語](https://www.google.com/search?q=%23-%E6%97%A5%E6%9C%AC%E8%AA%9E%E6%A6%82%E8%A6%81) | [English](https://www.google.com/search?q=%23-english-overview)
+[日本語](#-日本語概要) | [English](#-english-overview)
+# MethodDka (最大1000次対応・260桁内部演算／最大180桁形式出力の多項式数値解法 Web アプリ)
 
----
+[日本語](#-日本語概要) | [English](#-english-overview)
 
 ## 🇯🇵 日本語概要
 
